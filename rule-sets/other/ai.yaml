@@ -1,0 +1,85 @@
+payload:
+  # OpenAI / ChatGPT
+  - DOMAIN-SUFFIX,openai.com
+  - DOMAIN-SUFFIX,chatgpt.com
+  - DOMAIN-SUFFIX,oaistatic.com
+  - DOMAIN-SUFFIX,oaiusercontent.com
+  # Anthropic / Claude
+  - DOMAIN-SUFFIX,anthropic.com
+  - DOMAIN-SUFFIX,claude.ai
+  # Google Gemini / AI Studio / Vertex / Labs (Android часто бьёт в *.googleapis.com и pa.googleapis.com, не только в generativelanguage)
+  - DOMAIN-SUFFIX,gemini.google.com
+  - DOMAIN-SUFFIX,bard.google.com
+  - DOMAIN-SUFFIX,ai.google.com
+  - DOMAIN-SUFFIX,aistudio.google.com
+  - DOMAIN-SUFFIX,notebooklm.google.com
+  - DOMAIN-SUFFIX,labs.google.com
+  - DOMAIN-SUFFIX,generativelanguage.googleapis.com
+  - DOMAIN-SUFFIX,aiplatform.googleapis.com
+  - DOMAIN-SUFFIX,cloudcode-pa.googleapis.com
+  - DOMAIN-SUFFIX,embeddedassistant.googleapis.com
+  - DOMAIN-SUFFIX,texttospeech.googleapis.com
+  - DOMAIN-SUFFIX,speech.googleapis.com
+  - DOMAIN-SUFFIX,ai.google.dev
+  - DOMAIN-SUFFIX,makersuite.google.com
+  # Дополнительные домены из Android-логов
+  - DOMAIN-SUFFIX,robinfrontend-pa.googleapis.com
+  - DOMAIN-SUFFIX,agnss.goog
+  - DOMAIN-SUFFIX,content-autofill.googleapis.com
+  - DOMAIN-SUFFIX,dns.google.com
+  - DOMAIN-SUFFIX,mtalk.google.com
+  - DOMAIN-SUFFIX,subscriptionsfirstparty-pa.googleapis.com
+  # Другие крупные AI-платформы
+  - DOMAIN-SUFFIX,perplexity.ai
+  - DOMAIN-SUFFIX,poe.com
+  - DOMAIN-SUFFIX,x.ai
+  - DOMAIN-SUFFIX,grok.com
+  - DOMAIN-SUFFIX,mistral.ai
+  - DOMAIN-SUFFIX,cohere.com
+  - DOMAIN-SUFFIX,huggingface.co
+  - DOMAIN-SUFFIX,hf.co
+  - DOMAIN-SUFFIX,deepseek.com
+  - DOMAIN-SUFFIX,deepseek.ai
+  - DOMAIN-SUFFIX,qwenlm.ai
+  - DOMAIN-SUFFIX,character.ai
+  - DOMAIN-SUFFIX,c.ai
+  - DOMAIN-SUFFIX,midjourney.com
+  - DOMAIN-SUFFIX,runwayml.com
+  # AI IDE / ассистенты разработки
+  - DOMAIN-SUFFIX,githubcopilot.com
+  - DOMAIN-SUFFIX,copilot.microsoft.com
+  - DOMAIN-SUFFIX,cursor.sh
+  - DOMAIN-SUFFIX,windsurf.com
+  - DOMAIN-SUFFIX,codeium.com
+  - DOMAIN-SUFFIX,openrouter.ai
+  # --- Десктоп: исполняемый файл ---
+  - PROCESS-NAME,ChatGPT
+  - PROCESS-NAME,ChatGPT.exe
+  - PROCESS-NAME,Claude
+  - PROCESS-NAME,Claude.exe
+  - PROCESS-NAME,Cursor
+  - PROCESS-NAME,Cursor.exe
+  - PROCESS-NAME,Windsurf
+  - PROCESS-NAME,Windsurf.exe
+  - PROCESS-NAME,CherryStudio
+  - PROCESS-NAME,CherryStudio.exe
+  # --- Google Gemini (отдельное приложение; на Android пакет всё ещё bard) ---
+  - PROCESS-NAME,com.google.android.apps.bard
+  - PROCESS-NAME,com.google.gemini
+  # --- Android: package name ---
+  - PROCESS-NAME,com.openai.chatgpt
+  - PROCESS-NAME,com.anthropic.claude
+  - PROCESS-NAME,ai.perplexity.app.android
+  - PROCESS-NAME,com.microsoft.copilot
+  - PROCESS-NAME,com.deepseek.chat
+  - PROCESS-NAME,ai.x.grok
+  - PROCESS-NAME,com.poe.android
+  - PROCESS-NAME,ai.character.app
+  - PROCESS-NAME,ai.mistral.chat
+  - PROCESS-NAME,com.facebook.stella
+  # --- iOS: bundle identifier (часть совпадает с Android) ---
+  - PROCESS-NAME,com.openai.chat
+  - PROCESS-NAME,ai.perplexity.app
+  - PROCESS-NAME,ai.x.GrokApp
+  - PROCESS-NAME,com.quora.app.Experts
+  - PROCESS-NAME,com.facebook.stellaapp
