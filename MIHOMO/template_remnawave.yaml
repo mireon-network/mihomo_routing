@@ -9,9 +9,13 @@
 # DNS:         fake-ip, Yandex DNS (direct) + Google DNS (proxy)
 #              IPv6 в DNS отключён, весь IPv6-трафик ядра блокируется на уровне правил
 #
-# Группы прокси:
-#   🛡️ VPN       — основная группа (по умолчанию)
-#   ⚡️ Авто      — автовыбор по задержке (url-test, интервал 5 мин)
+# Группы прокси (vlessRoute → friendly name, remark gateway_beget_* / gateway_selectel_*):
+#   🌉 Мост — ⚡️ Авто | 🌍 Selectel | 🌍 Beget (только мост)
+#   🛡️ VPN — VPN · 🇫🇮|🇩🇪|🇫🇷 (три страны; листья · Beget / · Selectel раздельно)
+#   Правила → 🌉 Мост → 🌍 Selectel|Beget → лист страны (без default и без общего 🛡️ VPN в цепочке)
+#   1001 Польша | 1002 Финляндия | 1003 Германия | 1004 Франция | 1005 Германия NC | 1006 Финляндия 135
+#   ⚡️ Авто   — скрытый url-test для загрузки rule-sets
+#   ⚡️ Авто мост — url-test среди gateway_beget|gateway_selectel
 #   📺 Youtube   — отдельный выбор узла для YouTube
 #   💬 Discord   — отдельный выбор узла для Discord / Vesktop
 #   🎮 Игры      — игровые сервисы (Steam, Epic, Origin, Riot, EfT, FaceIT…)
@@ -128,58 +132,263 @@ profile:
   store-fake-ip: true
 proxies: # LEAVE THIS LINE!
 proxy-groups:
+  # --- Листья vlessRoute (скрытые) ---
+  - name: 🇵🇱 Польша · Beget
+    type: select
+    include-all: true
+    filter: '(?i)gateway_beget[_-]?1001|gateway_beget.*1001'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  - name: 🇫🇮 Финляндия · Beget
+    type: select
+    include-all: true
+    filter: '(?i)gateway_beget[_-]?1002|gateway_beget.*1002'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  - name: 🇩🇪 Германия · Beget
+    type: select
+    include-all: true
+    filter: '(?i)gateway_beget[_-]?1003|gateway_beget.*1003'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  - name: 🇫🇷 Франция · Beget
+    type: select
+    include-all: true
+    filter: '(?i)gateway_beget[_-]?1004|gateway_beget.*1004'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  - name: 🇩🇪 Германия · NC · Beget
+    type: select
+    include-all: true
+    filter: '(?i)gateway_beget[_-]?1005|gateway_beget.*1005'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  - name: 🇫🇮 Финляндия · 135 · Beget
+    type: select
+    include-all: true
+    filter: '(?i)gateway_beget[_-]?1006|gateway_beget.*1006'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  - name: 🇵🇱 Польша · Selectel
+    type: select
+    include-all: true
+    filter: '(?i)gateway_selectel[_-]?1001|gateway_selectel.*1001'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  - name: 🇫🇮 Финляндия · Selectel
+    type: select
+    include-all: true
+    filter: '(?i)gateway_selectel[_-]?1002|gateway_selectel.*1002'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  - name: 🇩🇪 Германия · Selectel
+    type: select
+    include-all: true
+    filter: '(?i)gateway_selectel[_-]?1003|gateway_selectel.*1003'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  - name: 🇫🇷 Франция · Selectel
+    type: select
+    include-all: true
+    filter: '(?i)gateway_selectel[_-]?1004|gateway_selectel.*1004'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  - name: 🇩🇪 Германия · NC · Selectel
+    type: select
+    include-all: true
+    filter: '(?i)gateway_selectel[_-]?1005|gateway_selectel.*1005'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  - name: 🇫🇮 Финляндия · 135 · Selectel
+    type: select
+    include-all: true
+    filter: '(?i)gateway_selectel[_-]?1006|gateway_selectel.*1006'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  - name: 🇫🇮 Финляндия · авто · Selectel
+    type: select
+    include-all: true
+    filter: '(?i)gateway_selectel[_-]?101\b|gateway_selectel.*_101\b'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  - name: 🇩🇪 Германия · авто · Selectel
+    type: select
+    include-all: true
+    filter: '(?i)gateway_selectel[_-]?102\b|gateway_selectel.*_102\b'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  # --- Скрытые агрегаторы только для ⚡️ Авто мост (url-test Beget vs Selectel) ---
+  - name: 🌍 Beget
+    type: select
+    remnawave:
+      include-proxies: false
+    hidden: true
+    proxies:
+      - VPN · 🇫🇮 Финляндия · Beget
+      - VPN · 🇩🇪 Германия · Beget
+      - VPN · 🇫🇷 Франция · Beget
+  - name: 🌍 Selectel
+    type: select
+    remnawave:
+      include-proxies: false
+    hidden: true
+    proxies:
+      - VPN · 🇫🇮 Финляндия · Selectel
+      - VPN · 🇩🇪 Германия · Selectel
+      - VPN · 🇫🇷 Франция · Selectel
+  - name: ⚡️ Авто мост
+    type: url-test
+    tolerance: 150
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    remnawave:
+      include-proxies: false
+    proxies:
+      - 🌍 Beget
+      - 🌍 Selectel
+    hidden: true
+  - name: 🌉 Мост
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/World_Map.png
+    type: select
+    remnawave:
+      include-proxies: false
+    proxies:
+      - ⚡️ Авто мост
+      - 🌍 Selectel
+      - 🌍 Beget
+  # --- VPN: три страны; мост задаётся вкладкой «Мост», страна — вкладкой «VPN» ---
+  - name: VPN · 🇫🇮 Финляндия · Beget
+    type: select
+    include-all: true
+    filter: '(?i)gateway_beget[_-]?1002|gateway_beget.*1002'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  - name: VPN · 🇩🇪 Германия · Beget
+    type: select
+    include-all: true
+    filter: '(?i)gateway_beget[_-]?1003|gateway_beget.*1003'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  - name: VPN · 🇫🇷 Франция · Beget
+    type: select
+    include-all: true
+    filter: '(?i)gateway_beget[_-]?1004|gateway_beget.*1004'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  - name: VPN · 🇫🇮 Финляндия · Selectel
+    type: select
+    include-all: true
+    filter: '(?i)gateway_selectel[_-]?1002|gateway_selectel.*1002'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  - name: VPN · 🇩🇪 Германия · Selectel
+    type: select
+    include-all: true
+    filter: '(?i)gateway_selectel[_-]?1003|gateway_selectel.*1003'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  - name: VPN · 🇫🇷 Франция · Selectel
+    type: select
+    include-all: true
+    filter: '(?i)gateway_selectel[_-]?1004|gateway_selectel.*1004'
+    remnawave:
+      include-proxies: false
+    hidden: true
+  - name: VPN · 🇫🇮 Финляндия
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Finland.png
+    type: select
+    remnawave:
+      include-proxies: false
+    hidden: true
+    proxies:
+      - VPN · 🇫🇮 Финляндия · Beget
+      - VPN · 🇫🇮 Финляндия · Selectel
+  - name: VPN · 🇩🇪 Германия
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Germany.png
+    type: select
+    remnawave:
+      include-proxies: false
+    hidden: true
+    proxies:
+      - VPN · 🇩🇪 Германия · Beget
+      - VPN · 🇩🇪 Германия · Selectel
+  - name: VPN · 🇫🇷 Франция
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/France.png
+    type: select
+    remnawave:
+      include-proxies: false
+    hidden: true
+    proxies:
+      - VPN · 🇫🇷 Франция · Beget
+      - VPN · 🇫🇷 Франция · Selectel
   - name: 🛡️ VPN
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hijacking.png
     type: select
+    remnawave:
+      include-proxies: false
     proxies:
-      - ⚡️ Авто
+      - VPN · 🇫🇮 Финляндия
+      - VPN · 🇩🇪 Германия
+      - VPN · 🇫🇷 Франция
     # LEAVE THIS LINE!
-    url: https://www.gstatic.com/generate_204
   - name: 📺 Youtube
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png
     type: select
     remnawave:
       include-proxies: false
-    include-all: true
-    # filter: '🇫🇮 Finland' # Filter connections containing this value (hosts should be named like 🇫🇮 Finland1, 🇫🇮 Finland2, etc.)
     proxies:
-      - 🛡️ VPN
-      # Если хотите оставить на выбор только определенные узлы, воспользуйтесь filter
+      - 🌉 Мост
   - name: 💬 Discord.exe
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png
     type: select
     remnawave:
       include-proxies: false
-    include-all: true
     proxies:
-      - 🛡️ VPN
+      - 🌉 Мост
   - name: 🎮 Игры
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png
     type: select
     remnawave:
       include-proxies: false
-    include-all: true
     proxies:
       - 🔓 Без VPN
-      - 🛡️ VPN
+      - 🌉 Мост
   - name: 🤖 ИИ
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bot.png
     type: select
     remnawave:
       include-proxies: false
-    include-all: true
     proxies:
-      - 🛡️ VPN
+      - 🌉 Мост
       - 🔓 Без VPN
   - name: ⚡️ Авто
     type: url-test
     tolerance: 150
     url: https://www.gstatic.com/generate_204
     interval: 300
-    # exclude-filter: прокси, которые хотите исключить
     remnawave:
       include-proxies: false
-    include-all: true
+    proxies:
+      - 🌉 Мост
     hidden: true
   - name: PROXY
     type: select
@@ -187,7 +396,7 @@ proxy-groups:
     remnawave:
       include-proxies: false
     proxies:
-      - 🛡️ VPN
+      - 🌉 Мост
   - name: 🔓 Без VPN
     type: select
     hidden: true

@@ -1,1 +1,3 @@
 *.bak
+scripts/ping-abroad-hosts.log.tsv
+temp/
