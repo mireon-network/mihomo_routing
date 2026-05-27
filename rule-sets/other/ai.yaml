@@ -22,6 +22,7 @@ payload:
   - DOMAIN-SUFFIX,speech.googleapis.com
   - DOMAIN-SUFFIX,ai.google.dev
   - DOMAIN-SUFFIX,makersuite.google.com
+  - DOMAIN-SUFFIX,gemini.gstatic.com
   # Дополнительные домены из Android-логов
   - DOMAIN-SUFFIX,robinfrontend-pa.googleapis.com
   - DOMAIN-SUFFIX,agnss.goog
