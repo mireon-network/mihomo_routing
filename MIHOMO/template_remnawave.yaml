@@ -10,8 +10,8 @@
 #              IPv6 в DNS отключён, весь IPv6-трафик ядра блокируется на уровне правил
 #
 # Группы прокси:
-#   🛡️ VPN       — основная группа (по умолчанию)
-#   ⚡️ Авто      — автовыбор по задержке (url-test, интервал 5 мин)
+#   🛡️ VPN       — единственная видимая группа: Автовыбор / Финляндия / Германия / Франция
+#   (скрытые)    — url-test по gateway_*; Автовыбор — все маршруты, страны — свой vlessRoute
 #   📺 Youtube   — отдельный выбор узла для YouTube
 #   💬 Discord   — отдельный выбор узла для Discord / Vesktop
 #   🎮 Игры      — игровые сервисы (Steam, Epic, Origin, Riot, EfT, FaceIT…)
@@ -40,6 +40,10 @@
 # Будем благодарны любой поддержке:
 # USDT TRC20 — TMu3N2ZjK5omJ7n3WAj5MNCSM5querBXsR
 # ============================================================
+
+remnawave:
+  # Не включать хосты, отмеченные в Remnawave как hidden (например, internal gateway_*)
+  includeHiddenHosts: false
 
 mixed-port: 7890
 mode: rule
@@ -131,8 +135,13 @@ proxy-groups:
   - name: 🛡️ VPN
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hijacking.png
     type: select
+    remnawave:
+      include-proxies: false
     proxies:
-      - ⚡️ Авто
+      - ⚡️ Автовыбор
+      - 🇫🇮 Финляндия
+      - 🇩🇪 Германия
+      - 🇫🇷 Франция
     # LEAVE THIS LINE!
     url: https://www.gstatic.com/generate_204
   - name: 📺 Youtube
@@ -140,47 +149,97 @@ proxy-groups:
     type: select
     remnawave:
       include-proxies: false
-    include-all: true
-    # filter: '🇫🇮 Finland' # Filter connections containing this value (hosts should be named like 🇫🇮 Finland1, 🇫🇮 Finland2, etc.)
     proxies:
       - 🛡️ VPN
-      # Если хотите оставить на выбор только определенные узлы, воспользуйтесь filter
+      - 🇫🇮 Финляндия
+      - 🇩🇪 Германия
+      - 🇫🇷 Франция
   - name: 💬 Discord.exe
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png
     type: select
     remnawave:
       include-proxies: false
-    include-all: true
     proxies:
       - 🛡️ VPN
+      - 🇫🇮 Финляндия
+      - 🇩🇪 Германия
+      - 🇫🇷 Франция
   - name: 🎮 Игры
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png
     type: select
     remnawave:
       include-proxies: false
-    include-all: true
     proxies:
       - 🔓 Без VPN
       - 🛡️ VPN
+      - 🇫🇮 Финляндия
+      - 🇩🇪 Германия
+      - 🇫🇷 Франция
   - name: 🤖 ИИ
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bot.png
     type: select
     remnawave:
       include-proxies: false
-    include-all: true
     proxies:
       - 🛡️ VPN
-      - 🔓 Без VPN
-  - name: ⚡️ Авто
+      - 🇫🇮 Финляндия
+      - 🇩🇪 Германия
+      - 🇫🇷 Франция
+  - name: ⚡️ Автовыбор
     type: url-test
-    tolerance: 150
+    hidden: true
+    tolerance: 80
     url: https://www.gstatic.com/generate_204
-    interval: 300
-    # exclude-filter: прокси, которые хотите исключить
+    interval: 600
     remnawave:
       include-proxies: false
     include-all: true
+    filter: "(?i)^gateway_(beget|selectel)_(101|102|1004)$"
+    proxies:
+      # LEAVE THIS LINE!
+  - name: ⚡️ Авто
+    type: select
     hidden: true
+    remnawave:
+      include-proxies: false
+    proxies:
+      - ⚡️ Автовыбор
+  - name: 🇫🇮 Финляндия
+    type: url-test
+    hidden: true
+    tolerance: 50
+    url: https://www.gstatic.com/generate_204
+    interval: 600
+    remnawave:
+      include-proxies: false
+    include-all: true
+    filter: "(?i)^gateway_(beget|selectel)_101$"
+    proxies:
+      # LEAVE THIS LINE!
+  - name: 🇩🇪 Германия
+    type: url-test
+    hidden: true
+    tolerance: 50
+    url: https://www.gstatic.com/generate_204
+    interval: 600
+    remnawave:
+      include-proxies: false
+    include-all: true
+    filter: "(?i)^gateway_(beget|selectel)_102$"
+    proxies:
+      # LEAVE THIS LINE!
+  - name: 🇫🇷 Франция
+    type: url-test
+    hidden: true
+    tolerance: 50
+    url: https://www.gstatic.com/generate_204
+    interval: 600
+    remnawave:
+      include-proxies: false
+    include-all: true
+    filter: "(?i)^gateway_(beget|selectel)_1004$"
+    proxies:
+      # LEAVE THIS LINE!
   - name: PROXY
     type: select
     hidden: true
