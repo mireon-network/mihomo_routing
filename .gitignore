@@ -1,5 +1,6 @@
 *.bak
 .tools/
+.sync-upstream/
 rule-sets/mrs/.sync-staging/
 rule-sets/mrs/.sync-baseline/
 rule-sets/mrs/conflicts/
