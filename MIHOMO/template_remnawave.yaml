@@ -34,6 +34,8 @@
 #
 # UDP-порт 443 (QUIC) блокируется глобально — принудительный fallback на TCP.
 #
+# TCP keep-alive: пробные пакеты до idle-timeout балансировщика (Beget/Selectel gateway).
+#
 # Схема gateway (Remnawave hidden hosts gateway_beget_* / gateway_selectel_*):
 #   ⚡️ Автовыбор     — url-test между странами; внутри страны — load-balance
 #   🇫🇮/🇩🇪/🇫🇷      — load-balance sticky-sessions (Beget ↔ Selectel)
@@ -56,6 +58,9 @@ allow-lan: false
 ipv6: true # для перехвата ipv6 трафика в ядро
 unified-delay: true
 tcp-concurrent: true
+disable-keep-alive: false
+keep-alive-idle: 30 # сек до первого probe при простое (типичный LB idle ~60–120 с)
+keep-alive-interval: 15 # интервал probe-пакетов, сек
 tun:
   enable: true
   stack: system
