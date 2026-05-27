@@ -36,9 +36,11 @@
 
 ```bash
 ./scripts/cdn-url.sh rule-sets/mihomo/games.yaml
+./scripts/cdn-purge.sh rule-sets/other/ai.yaml   # сброс кэша jsDelivr
+./scripts/cdn-purge.sh --all                     # все rule-providers из шаблона
 ```
 
-После `git push` в `main` файлы доступны на CDN автоматически (кэш jsDelivr может обновляться с задержкой; при срочном обновлении — [purge](https://www.jsdelivr.com/tools/purge)).
+После `git push` в `main` файлы доступны на CDN автоматически (кэш jsDelivr может обновляться с задержкой; при срочном обновлении — `./scripts/cdn-purge.sh` или [purge](https://www.jsdelivr.com/tools/purge)).
 
 ## Использование в Remnawave
 
