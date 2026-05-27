@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Перед коммитом: text/*.list → bin/*.mrs и добавить .mrs в индекс.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+cd "$ROOT"
+
+TEXT_DIR="rule-sets/mrs/text"
+BIN_DIR="rule-sets/mrs/bin"
+
+# Нет vendored mrs — ничего не делаем
+[[ -d "$TEXT_DIR" ]] || exit 0
+
+needs_pack=0
+if git diff --cached --name-only --diff-filter=ACMR | grep -q '^rule-sets/mrs/text/.*\.list$'; then
+  needs_pack=1
+fi
+
+# Распакованный text новее bin, но не в индексе — тоже упаковать
+while IFS= read -r -d '' f; do
+  base="$(basename "$f" .list)"
+  bin="$BIN_DIR/${base}.mrs"
+  if [[ ! -f "$bin" ]] || [[ "$f" -nt "$bin" ]]; then
+    needs_pack=1
+    break
+  fi
+done < <(find "$TEXT_DIR" -name '*.list' -print0 2>/dev/null || true)
+
+if [[ "$needs_pack" -eq 0 ]]; then
+  exit 0
+fi
+
+echo "pre-commit: упаковка rule-sets/mrs…"
+"$ROOT/scripts/mrs-tool.sh" pack
+
+if [[ -d "$BIN_DIR" ]]; then
+  git add "$BIN_DIR"/*.mrs 2>/dev/null || true
+fi
+
+exit 0

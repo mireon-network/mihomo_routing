@@ -13,6 +13,8 @@
 | `rule-sets/mihomo/games.yaml` | Игры ([roscomvpn/custom-category](https://github.com/roscomvpn/custom-category)) + [GeForce NOW](https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json) (облако = сеть, `PROCESS-NAME` через [gamedatabase.json](https://gist.github.com/Gr3gorywolf/1757c79ce1152966bf77bf8c6d069161)) |
 | `rule-sets/mihomo/ru-apps.yaml` | RU-приложения (тот же репозиторий) |
 | `rule-sets/other/ai.yaml` | AI / LLM — только здесь, своими правками |
+| `rule-sets/mrs/text/*.list` | Распакованные MRS-наборы (редактировать здесь) |
+| `rule-sets/mrs/bin/*.mrs` | Бинарные rule-set для Mihomo (собираются из `text/`) |
 
 В `template_remnawave.yaml` для vendored rule-sets используются **raw** URL этого репо (для `rule-providers` типа `http` нужен `raw.githubusercontent.com`, не ссылка `github.com/.../blob/...`):
 
@@ -20,6 +22,36 @@
 - `https://raw.githubusercontent.com/mireon-network/mihomo_routing/main/rule-sets/mihomo/games.yaml`
 - `https://raw.githubusercontent.com/mireon-network/mihomo_routing/main/rule-sets/mihomo/ru-apps.yaml`
 - `https://raw.githubusercontent.com/mireon-network/mihomo_routing/main/rule-sets/other/ai.yaml`
+
+## MRS rule-sets (geosite / geoip)
+
+Наборы с `format: mrs` в шаблоне vendored в репозитории:
+
+| Каталог | Назначение |
+|---------|------------|
+| `rule-sets/mrs/bin/` | Скачанные или собранные `.mrs` |
+| `rule-sets/mrs/text/` | Текст после `mihomo convert-ruleset … mrs` (источник правок) |
+| `rule-sets/mrs/manifest.yaml` | URL, `behavior`, имена файлов |
+
+Первичная загрузка и распаковка из CDN RoscomVPN:
+
+```bash
+./scripts/mrs-tool.sh sync
+```
+
+Редактируйте `rule-sets/mrs/text/<имя>.list`, затем коммит — **pre-commit** сам вызовет `pack` и добавит обновлённые `rule-sets/mrs/bin/*.mrs` в индекс.
+
+Установка хука (один раз после клонирования):
+
+```bash
+./scripts/mrs-tool.sh install-hooks
+```
+
+Отдельные команды: `download`, `unpack`, `pack`. Бинарник `mihomo` берётся из `PATH` или скачивается в `.tools/mihomo` (в `.gitignore`).
+
+В `MIHOMO/template_remnawave.yaml` провайдеры с `format: mrs` ссылаются на:
+
+`https://raw.githubusercontent.com/mireon-network/mihomo_routing/main/rule-sets/mrs/bin/<имя>.mrs`
 
 ## Использование в Remnawave
 

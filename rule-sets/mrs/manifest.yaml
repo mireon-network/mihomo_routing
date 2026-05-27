@@ -1,0 +1,96 @@
+# Соответствует rule-providers с format: mrs в MIHOMO/template_remnawave.yaml
+# file — имя без расширения; bin/*.mrs и text/*.list
+version: 1
+sets:
+  - id: private-domains
+    behavior: domain
+    file: geosite-private
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/private.mrs
+  - id: category-ru
+    behavior: domain
+    file: category-ru
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/category-ru.mrs
+  - id: whitelist
+    behavior: domain
+    file: whitelist
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/whitelist.mrs
+  - id: microsoft
+    behavior: domain
+    file: microsoft
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/microsoft.mrs
+  - id: apple
+    behavior: domain
+    file: apple
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/apple.mrs
+  - id: google-play
+    behavior: domain
+    file: google-play
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/google-play.mrs
+  - id: epicgames
+    behavior: domain
+    file: epicgames
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/epicgames.mrs
+  - id: origin
+    behavior: domain
+    file: origin
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/origin.mrs
+  - id: riot
+    behavior: domain
+    file: riot
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/riot.mrs
+  - id: escapefromtarkov
+    behavior: domain
+    file: escapefromtarkov
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/escapefromtarkov.mrs
+  - id: steam
+    behavior: domain
+    file: steam
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/steam.mrs
+  - id: twitch
+    behavior: domain
+    file: twitch
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/twitch.mrs
+  - id: pinterest
+    behavior: domain
+    file: pinterest
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/pinterest.mrs
+  - id: faceit
+    behavior: domain
+    file: faceit
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/faceit.mrs
+  - id: private-ips
+    behavior: ipcidr
+    file: geoip-private
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geoip/release/mihomo/private.mrs
+  - id: direct-ips
+    behavior: ipcidr
+    file: direct-ips
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geoip/release/mihomo/direct.mrs
+  - id: github
+    behavior: domain
+    file: github
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/github.mrs
+  - id: twitch-ads
+    behavior: domain
+    file: twitch-ads
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/twitch-ads.mrs
+  - id: youtube
+    behavior: domain
+    file: youtube
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/youtube.mrs
+  - id: telegram
+    behavior: domain
+    file: telegram
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/telegram.mrs
+  - id: win-spy
+    behavior: domain
+    file: win-spy
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/win-spy.mrs
+  - id: torrent-domains
+    behavior: domain
+    file: torrent-domains
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/torrent.mrs
+  - id: category-ads
+    behavior: domain
+    file: category-ads
+    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/category-ads.mrs
