@@ -11,7 +11,8 @@
 #
 # Группы прокси:
 #   🛡️ VPN       — единственная видимая группа: Автовыбор / Финляндия / Германия / Франция
-#   (скрытые)    — url-test по gateway_*; Автовыбор — все маршруты, страны — свой vlessRoute
+#   (скрытые)    — load-balance sticky-sessions (Beget/Selectel); Автовыбор — url-test
+#                  lazy: false + expected-status: 204 — актуальный пинг и health-check
 #   📺 Youtube   — отдельный выбор узла для YouTube
 #   💬 Discord   — отдельный выбор узла для Discord / Vesktop
 #   🎮 Игры      — игровые сервисы (Steam, Epic, Origin, Riot, EfT, FaceIT…)
@@ -31,7 +32,11 @@
 #   • AI-сервисы                            → 🤖 ИИ (rule-sets/other/ai.yaml; выше google-play)
 #   • Остальное                             → PROXY
 #
-# UDP-порт 443/853 (QUIC/DoQ) блокируется глобально.
+# UDP-порт 443 (QUIC) блокируется глобально — принудительный fallback на TCP.
+#
+# Схема gateway (Remnawave hidden hosts gateway_beget_* / gateway_selectel_*):
+#   ⚡️ Автовыбор     — url-test между странами; внутри страны — load-balance
+#   🇫🇮/🇩🇪/🇫🇷      — load-balance sticky-sessions (Beget ↔ Selectel)
 #
 # Разработка: ristavor
 # Благодарности: hydraponique & fatyzzz
@@ -42,7 +47,6 @@
 # ============================================================
 
 remnawave:
-  # Не включать хосты, отмеченные в Remnawave как hidden (например, internal gateway_*)
   includeHiddenHosts: false
 
 mixed-port: 7890
@@ -144,6 +148,9 @@ proxy-groups:
       - 🇫🇷 Франция
     # LEAVE THIS LINE!
     url: https://www.gstatic.com/generate_204
+    interval: 600
+    lazy: false
+    expected-status: 204
   - name: 📺 Youtube
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png
     type: select
@@ -185,31 +192,15 @@ proxy-groups:
       - 🇫🇮 Финляндия
       - 🇩🇪 Германия
       - 🇫🇷 Франция
-  - name: ⚡️ Автовыбор
-    type: url-test
-    hidden: true
-    tolerance: 80
-    url: https://www.gstatic.com/generate_204
-    interval: 600
-    remnawave:
-      include-proxies: false
-    include-all: true
-    filter: "(?i)^gateway_(beget|selectel)_(101|102|1004)$"
-    proxies:
-      # LEAVE THIS LINE!
-  - name: ⚡️ Авто
-    type: select
-    hidden: true
-    remnawave:
-      include-proxies: false
-    proxies:
-      - ⚡️ Автовыбор
   - name: 🇫🇮 Финляндия
-    type: url-test
+    type: load-balance
     hidden: true
-    tolerance: 50
+    lazy: false
+    strategy: sticky-sessions
     url: https://www.gstatic.com/generate_204
     interval: 600
+    expected-status: 204
+    max-failed-times: 3
     remnawave:
       include-proxies: false
     include-all: true
@@ -217,11 +208,14 @@ proxy-groups:
     proxies:
       # LEAVE THIS LINE!
   - name: 🇩🇪 Германия
-    type: url-test
+    type: load-balance
     hidden: true
-    tolerance: 50
+    lazy: false
+    strategy: sticky-sessions
     url: https://www.gstatic.com/generate_204
     interval: 600
+    expected-status: 204
+    max-failed-times: 3
     remnawave:
       include-proxies: false
     include-all: true
@@ -229,17 +223,42 @@ proxy-groups:
     proxies:
       # LEAVE THIS LINE!
   - name: 🇫🇷 Франция
-    type: url-test
+    type: load-balance
     hidden: true
-    tolerance: 50
+    lazy: false
+    strategy: sticky-sessions
     url: https://www.gstatic.com/generate_204
     interval: 600
+    expected-status: 204
+    max-failed-times: 3
     remnawave:
       include-proxies: false
     include-all: true
     filter: "(?i)^gateway_(beget|selectel)_1004$"
     proxies:
       # LEAVE THIS LINE!
+  - name: ⚡️ Автовыбор
+    type: url-test
+    hidden: true
+    tolerance: 80
+    url: https://www.gstatic.com/generate_204
+    interval: 600
+    lazy: false
+    expected-status: 204
+    max-failed-times: 3
+    remnawave:
+      include-proxies: false
+    proxies:
+      - 🇫🇮 Финляндия
+      - 🇩🇪 Германия
+      - 🇫🇷 Франция
+  - name: ⚡️ Авто
+    type: select
+    hidden: true
+    remnawave:
+      include-proxies: false
+    proxies:
+      - ⚡️ Автовыбор
   - name: PROXY
     type: select
     hidden: true
