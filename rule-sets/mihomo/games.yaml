@@ -451,3 +451,4 @@ payload:
   - PROCESS-NAME,REPO-Win64-Shipping.exe
   - PROCESS-NAME,Raft.exe
   - PROCESS-NAME,Tanki.exe
+  - PROCESS-NAME,Overwolf.exe
