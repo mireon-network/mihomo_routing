@@ -7,6 +7,9 @@ MRS_DIR="$ROOT/rule-sets/mrs"
 MANIFEST="$MRS_DIR/manifest.yaml"
 BIN_DIR="$MRS_DIR/bin"
 TEXT_DIR="$MRS_DIR/text"
+STAGING_DIR="$MRS_DIR/.sync-staging"
+BASELINE_DIR="$MRS_DIR/.sync-baseline"
+CONFLICTS_REPORT="$MRS_DIR/SYNC-CONFLICTS.md"
 TOOLS_DIR="$ROOT/.tools"
 MIHOMO_BIN="${MIHOMO_BIN:-$TOOLS_DIR/mihomo}"
 MIHOMO_VERSION="${MIHOMO_VERSION:-v1.19.25}"
@@ -43,7 +46,6 @@ ensure_mihomo() {
   chmod +x "$MIHOMO_BIN"
 }
 
-# shellcheck disable=SC2034
 parse_manifest() {
   [[ -f "$MANIFEST" ]] || die "нет $MANIFEST"
 }
@@ -74,25 +76,51 @@ for item in sets:
 PY
 }
 
-cmd_download() {
-  mkdir -p "$BIN_DIR"
+# $1 — каталог bin; $2 — force (1 = перезаписать)
+staging_download() {
+  local dest="${1:-$BIN_DIR}"
+  local force="${2:-0}"
+  mkdir -p "$dest"
   while IFS=$'\t' read -r _ _ file url; do
-    local out="$BIN_DIR/${file}.mrs"
+    local out="$dest/${file}.mrs"
+    if [[ "$force" != "1" && -f "$out" ]]; then
+      echo "→ $file.mrs (пропуск, уже есть; --force чтобы перезаписать)"
+      continue
+    fi
     echo "→ $file.mrs"
     curl -fsSL -o "$out" "$url"
   done < <(list_sets)
 }
 
-cmd_unpack() {
+# $1 — bin dir; $2 — text dir
+staging_unpack() {
+  local bin_d="${1:-$BIN_DIR}"
+  local text_d="${2:-$TEXT_DIR}"
   ensure_mihomo
-  mkdir -p "$TEXT_DIR"
+  mkdir -p "$text_d"
   while IFS=$'\t' read -r _ behavior file _; do
-    local bin="$BIN_DIR/${file}.mrs"
-    local txt="$TEXT_DIR/${file}.list"
-    [[ -f "$bin" ]] || die "нет $bin (сначала: $0 download)"
-    echo "→ $file.list"
+    local bin="$bin_d/${file}.mrs"
+    local txt="$text_d/${file}.list"
+    [[ -f "$bin" ]] || die "нет $bin"
+    echo "→ $txt"
     "$MIHOMO_BIN" convert-ruleset "$behavior" mrs "$bin" "$txt"
   done < <(list_sets)
+}
+
+cmd_download() {
+  local force=0
+  if [[ "${1:-}" == "--force" ]]; then
+    force=1
+  fi
+  staging_download "$BIN_DIR" "$force"
+}
+
+cmd_unpack() {
+  if [[ "${1:-}" == "--force" ]]; then
+    staging_unpack "$BIN_DIR" "$TEXT_DIR"
+    return
+  fi
+  die "unpack перезаписывает text/; для безопасного обновления используйте: $0 sync"
 }
 
 cmd_pack() {
@@ -115,8 +143,50 @@ cmd_pack() {
 }
 
 cmd_sync() {
-  cmd_download
-  cmd_unpack
+  ensure_mihomo
+  rm -rf "$STAGING_DIR"
+  mkdir -p "$STAGING_DIR/bin" "$STAGING_DIR/text"
+
+  echo "mrs-tool: загрузка upstream в staging…"
+  staging_download "$STAGING_DIR/bin" 1
+  staging_unpack "$STAGING_DIR/bin" "$STAGING_DIR/text"
+
+  echo "mrs-tool: слияние с локальным text/…"
+  local merge_rc=0
+  python3 "$ROOT/scripts/mrs-sync-merge.py" \
+    --mrs-dir "$MRS_DIR" \
+    --manifest "$MANIFEST" || merge_rc=$?
+
+  echo "mrs-tool: упаковка локальных правок в bin/…"
+  cmd_pack
+
+  if [[ "$merge_rc" -ne 0 ]]; then
+    echo "mrs-tool: есть конфликты — см. $CONFLICTS_REPORT" >&2
+    exit 1
+  fi
+  echo "mrs-tool: sync завершён без конфликтов"
+}
+
+cmd_resolve() {
+  parse_manifest
+  python3 "$ROOT/scripts/mrs-sync-merge.py" \
+    --mrs-dir "$MRS_DIR" \
+    --manifest "$MANIFEST" \
+    --resolve "$@"
+  cmd_pack
+}
+
+cmd_baseline_init() {
+  mkdir -p "$BASELINE_DIR"
+  local n=0
+  for f in "$TEXT_DIR"/*.list; do
+    [[ -f "$f" ]] || continue
+    local base
+    base="$(basename "$f")"
+    cp "$f" "$BASELINE_DIR/$base"
+    n=$((n + 1))
+  done
+  echo "mrs-tool: baseline инициализирован ($n файлов) в .sync-baseline/"
 }
 
 cmd_install_hooks() {
@@ -132,23 +202,29 @@ usage() {
   cat <<EOF
 Использование: $(basename "$0") <команда>
 
-  download       — скачать .mrs в rule-sets/mrs/bin/
-  unpack         — bin/*.mrs → text/*.list (нужен mihomo)
-  pack           — text/*.list → bin/*.mrs (нужен mihomo)
-  sync           — download + unpack
-  install-hooks  — установить git pre-commit
+  download [--force]  — скачать .mrs в rule-sets/mrs/bin/
+  unpack --force        — bin/*.mrs → text/*.list (перезаписывает text/)
+  pack                  — text/*.list → bin/*.mrs
+  sync                  — upstream → staging, слияние без перетирания локальных правок
+  resolve [имя …]       — после ручного merge: local → baseline, убрать conflict
+  baseline-init         — один раз: скопировать text/ → .sync-baseline/
+  install-hooks         — git pre-commit
 
-Переменные: MIHOMO_BIN, MIHOMO_VERSION
+  sync при конфликте создаёт $CONFLICTS_REPORT и каталоги conflicts/<имя>/.
+  Переменные: MIHOMO_BIN, MIHOMO_VERSION
 EOF
 }
 
 main() {
   local cmd="${1:-}"
+  shift || true
   case "$cmd" in
-    download) cmd_download ;;
-    unpack) cmd_unpack ;;
+    download) cmd_download "$@" ;;
+    unpack) cmd_unpack "$@" ;;
     pack) cmd_pack ;;
     sync) cmd_sync ;;
+    resolve) cmd_resolve "$@" ;;
+    baseline-init) cmd_baseline_init ;;
     install-hooks) cmd_install_hooks ;;
     -h|--help|"") usage ;;
     *) die "неизвестная команда: $cmd (см. --help)" ;;

@@ -33,11 +33,13 @@
 | `rule-sets/mrs/text/` | Текст после `mihomo convert-ruleset … mrs` (источник правок) |
 | `rule-sets/mrs/manifest.yaml` | URL, `behavior`, имена файлов |
 
-Первичная загрузка и распаковка из CDN RoscomVPN:
+Первичная загрузка и обновление из manifest (URL в `manifest.yaml`):
 
 ```bash
 ./scripts/mrs-tool.sh sync
 ```
+
+`sync` **не перезаписывает** локальные правки в `text/`: сравнивает upstream (staging), ваш `text/` и `.sync-baseline/` (снимок после последней успешной синхронизации). При конфликте — `SYNC-CONFLICTS.md` и `conflicts/<имя>/{baseline,local,remote}.list`. После ручного merge: `./scripts/mrs-tool.sh resolve [имя]`. Один раз после первого импорта без baseline: `./scripts/mrs-tool.sh baseline-init`. Принудительная перезапись: `download --force` и `unpack --force`.
 
 Редактируйте `rule-sets/mrs/text/<имя>.list`, затем коммит — **pre-commit** сам вызовет `pack` и добавит обновлённые `rule-sets/mrs/bin/*.mrs` в индекс.
 
