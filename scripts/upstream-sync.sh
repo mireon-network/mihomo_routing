@@ -26,7 +26,7 @@ usage() {
   $(basename "$0") baseline-init
   $(basename "$0") sync
 
-Локальные-only (не синхронизируются): rule-sets/other/ai.yaml
+Локальные-only (не синхронизируются): rule-sets/yaml/ai.yaml
 EOF
 }
 

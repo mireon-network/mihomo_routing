@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Собрать блок GeForce NOW для rule-sets/mihomo/games.yaml.
+"""Собрать блок GeForce NOW для rule-sets/yaml/games.yaml.
 
 Источники:
   - https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json
@@ -15,7 +15,7 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-GAMES_YAML = ROOT / "rule-sets/mihomo/games.yaml"
+GAMES_YAML = ROOT / "rule-sets/yaml/games.yaml"
 
 GFN_URL = "https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json"
 GDB_URL = "https://gist.githubusercontent.com/Gr3gorywolf/1757c79ce1152966bf77bf8c6d069161/raw/gamedatabase.json"

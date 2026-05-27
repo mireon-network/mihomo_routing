@@ -28,7 +28,7 @@
 #   • Twitch, Pinterest                     → DIRECT
 #   • YouTube, Telegram, GitHub             → PROXY
 #   • Игровые сервисы                       → 🎮 Игры
-#   • AI-сервисы                            → 🤖 ИИ (rule-sets/other/ai.yaml; выше google-play)
+#   • AI-сервисы                            → 🤖 ИИ (rule-sets/yaml/ai.yaml; выше google-play)
 #   • Остальное                             → PROXY
 #
 # UDP-порт 443/853 (QUIC/DoQ) блокируется глобально.
@@ -398,7 +398,7 @@ rule-providers:
     type: http
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/other/torrent-clients.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-clients.yaml
     path: ./ruleset/torrent-clients.yaml
     proxy: ⚡️ Авто
     interval: 86400
@@ -406,7 +406,7 @@ rule-providers:
     type: http
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mihomo/games.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/games.yaml
     path: ./ruleset/games.yaml
     proxy: ⚡️ Авто
     interval: 86400
@@ -414,7 +414,7 @@ rule-providers:
     type: http
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/other/ai.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/ai.yaml
     path: ./ruleset/ai.yaml
     proxy: ⚡️ Авто
     interval: 86400
@@ -422,7 +422,7 @@ rule-providers:
     type: http
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mihomo/ru-apps.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/ru-apps.yaml
     path: ./ruleset/ru-apps.yaml
     proxy: ⚡️ Авто
     interval: 86400

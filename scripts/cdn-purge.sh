@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Сброс кэша jsDelivr для файлов репозитория (purge API).
 # Использование:
-#   ./scripts/cdn-purge.sh rule-sets/other/ai.yaml
+#   ./scripts/cdn-purge.sh rule-sets/yaml/ai.yaml
 #   ./scripts/cdn-purge.sh --all    # все URL из MIHOMO/template_remnawave.yaml
 set -euo pipefail
 
