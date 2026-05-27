@@ -239,7 +239,7 @@ payload:
   - PROCESS-NAME,steamlauncher.exe
 
   # Brawlhalla (Steam | Action, Free To Play, Indie; match=gfn_title)
-  - PROCESS-NAME,Brawlhalla.exe
+  # - PROCESS-NAME,Brawlhalla.exe
 
   # Conan Exiles (Steam | Action, Adventure, Massively Multiplayer Online; match=gfn_title)
   - PROCESS-NAME,conansandbox_be.exe
