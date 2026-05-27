@@ -2,7 +2,7 @@
 
 Форк конфигурации Mihomo (Remnawave) на базе [RoscomVPN routing](https://github.com/hydraponique/roscomvpn-routing) с локальными rule-sets и правилами для AI.
 
-Файлы правятся **вручную** в этом репозитории; автосинхронизации нет.
+Локальные правки сохраняются: обновление из upstream — через скрипты с **трёхсторонним merge** (baseline / local / remote), без слепой перезаписи.
 
 ## Содержимое
 
@@ -10,11 +10,17 @@
 |------|----------|
 | `MIHOMO/template_remnawave.yaml` | Шаблон для Remnawave |
 | `rule-sets/other/torrent-clients.yaml` | Торрент-клиенты (форк [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets/blob/main/other/torrent-clients.yaml)) |
-| `rule-sets/mihomo/games.yaml` | Игры ([roscomvpn/custom-category](https://github.com/roscomvpn/custom-category)) + [GeForce NOW](https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json) (облако = сеть, `PROCESS-NAME` через [gamedatabase.json](https://gist.github.com/Gr3gorywolf/1757c79ce1152966bf77bf8c6d069161)) |
+| `rule-sets/mihomo/games.yaml` | Игры ([roscomvpn/custom-category](https://github.com/roscomvpn/custom-category)) + [GeForce NOW](https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json) |
 | `rule-sets/mihomo/ru-apps.yaml` | RU-приложения (тот же репозиторий) |
-| `rule-sets/other/ai.yaml` | AI / LLM — только здесь, своими правками |
+| `rule-sets/other/ai.yaml` | AI / LLM — **только локально**, upstream не синхронизируется |
 | `rule-sets/mrs/text/*.list` | Распакованные MRS-наборы (редактировать здесь) |
 | `rule-sets/mrs/bin/*.mrs` | Бинарные rule-set для Mihomo (собираются из `text/`) |
+| `scripts/upstream-sync.sh` | Обновление YAML из upstream-репозиториев |
+| `scripts/mrs-tool.sh` | Обновление MRS rule-sets |
+| `scripts/upstream-manifest.yaml` | Список upstream-источников для `upstream-sync.sh` |
+| `scripts/generate-gfn-games-block.py` | Пересборка блока GeForce NOW в `games.yaml` |
+
+## CDN
 
 В `template_remnawave.yaml` vendored rule-sets отдаются через **jsDelivr GitHub CDN** (не `github.com/.../blob/...`):
 
@@ -26,35 +32,13 @@
 - `…/rule-sets/other/ai.yaml`
 - `…/rule-sets/mrs/bin/<имя>.mrs`
 
+Проверка URL для файла:
+
+```bash
+./scripts/cdn-url.sh rule-sets/mihomo/games.yaml
+```
+
 После `git push` в `main` файлы доступны на CDN автоматически (кэш jsDelivr может обновляться с задержкой; при срочном обновлении — [purge](https://www.jsdelivr.com/tools/purge)).
-
-## MRS rule-sets (geosite / geoip)
-
-Наборы с `format: mrs` в шаблоне vendored в репозитории:
-
-| Каталог | Назначение |
-|---------|------------|
-| `rule-sets/mrs/bin/` | Скачанные или собранные `.mrs` |
-| `rule-sets/mrs/text/` | Текст после `mihomo convert-ruleset … mrs` (источник правок) |
-| `rule-sets/mrs/manifest.yaml` | URL, `behavior`, имена файлов |
-
-Первичная загрузка и обновление из manifest (URL в `manifest.yaml`):
-
-```bash
-./scripts/mrs-tool.sh sync
-```
-
-`sync` **не перезаписывает** локальные правки в `text/`: сравнивает upstream (staging), ваш `text/` и `.sync-baseline/` (снимок после последней успешной синхронизации). При конфликте — `SYNC-CONFLICTS.md` и `conflicts/<имя>/{baseline,local,remote}.list`. После ручного merge: `./scripts/mrs-tool.sh resolve [имя]`. Один раз после первого импорта без baseline: `./scripts/mrs-tool.sh baseline-init`. Принудительная перезапись: `download --force` и `unpack --force`.
-
-Редактируйте `rule-sets/mrs/text/<имя>.list`, затем коммит — **pre-commit** сам вызовет `pack` и добавит обновлённые `rule-sets/mrs/bin/*.mrs` в индекс.
-
-Установка хука (один раз после клонирования):
-
-```bash
-./scripts/mrs-tool.sh install-hooks
-```
-
-Отдельные команды: `download`, `unpack`, `pack`. Бинарник `mihomo` берётся из `PATH` или скачивается в `.tools/mihomo` (в `.gitignore`).
 
 ## Использование в Remnawave
 
@@ -62,108 +46,145 @@
 
 `https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/MIHOMO/template_remnawave.yaml`
 
-## Как вручную подтянуть изменения из upstream
+## Обновление из upstream
 
-Источники:
+Два независимых контура синхронизации:
 
-| Что обновлять | Upstream |
-|---------------|----------|
-| Шаблон Mihomo | [hydraponique/roscomvpn-routing — `MIHOMO/template_remnawave.yaml`](https://github.com/hydraponique/roscomvpn-routing/blob/main/MIHOMO/template_remnawave.yaml) |
-| Торрент-клиенты | [legiz-ru/mihomo-rule-sets — `other/torrent-clients.yaml`](https://github.com/legiz-ru/mihomo-rule-sets/blob/main/other/torrent-clients.yaml) |
-| Игры (база, верх `games.yaml`) | [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category) — не перезаписывать целиком |
-| GeForce NOW → `PROCESS-NAME` | [NVIDIA `gfnpc-en-US.json`](https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json) + [gamedatabase.json](https://gist.github.com/Gr3gorywolf/1757c79ce1152966bf77bf8c6d069161) + [jsnli/steamappidlist](https://github.com/jsnli/steamappidlist) |
-| RU-приложения | [roscomvpn/custom-category — `release/mihomo/ru-apps.yaml`](https://github.com/roscomvpn/custom-category/blob/release/mihomo/ru-apps.yaml) |
+| Контур | Скрипт | Что обновляет |
+|--------|--------|---------------|
+| YAML rule-sets, шаблон | `./scripts/upstream-sync.sh` | `MIHOMO/`, `rule-sets/other/`, `rule-sets/mihomo/` |
+| MRS (geosite / geoip) | `./scripts/mrs-tool.sh` | `rule-sets/mrs/text/` → `bin/` |
 
-### 1. Скачать свежие файлы
-
-Из корня репозитория:
+### Быстрый старт
 
 ```bash
-curl -fsSL -o MIHOMO/template_remnawave.yaml \
-  "https://raw.githubusercontent.com/hydraponique/roscomvpn-routing/main/MIHOMO/template_remnawave.yaml"
+# один раз после клонирования или перед первым sync
+./scripts/upstream-sync.sh baseline-init
+./scripts/mrs-tool.sh baseline-init   # если ещё не делали для MRS
+./scripts/mrs-tool.sh install-hooks   # pre-commit: pack .mrs при коммите
 
-curl -fsSL -o rule-sets/other/torrent-clients.yaml \
-  "https://raw.githubusercontent.com/legiz-ru/mihomo-rule-sets/main/other/torrent-clients.yaml"
-
-curl -fsSL -o /tmp/gfnpc-en-US.json \
-  "https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json"
-
-curl -fsSL -o /tmp/gamedatabase.json \
-  "https://gist.githubusercontent.com/Gr3gorywolf/1757c79ce1152966bf77bf8c6d069161/raw/gamedatabase.json"
-
-curl -fsSL -o /tmp/games_appid.json \
-  "https://raw.githubusercontent.com/jsnli/steamappidlist/master/data/games_appid.json"
-
-# games.yaml — гибрид: база roscomvpn + блок GeForce NOW (`python3 scripts/generate-gfn-games-block.py`)
-
-curl -fsSL -o rule-sets/mihomo/ru-apps.yaml \
-  "https://raw.githubusercontent.com/roscomvpn/custom-category/release/mihomo/ru-apps.yaml"
+# обновить всё
+./scripts/upstream-sync.sh sync
 ```
 
-`rule-sets/other/ai.yaml` из upstream **не качается** — это ваш локальный набор.
+`upstream-sync.sh sync` последовательно:
 
-Блок **GeForce NOW** в `games.yaml` (после лаунчеров): только игры с **явным онлайном в жанрах** JSON (Multiplayer, MMO, F2P online, Battle Royale, Co-op/PvP и т.д.) — не весь каталог облака. Сопоставление exe:
+1. скачивает upstream в `.sync-upstream/staging/`;
+2. сливает с локальными файлами (см. логику ниже);
+3. запускает post-hooks (CDN URL в шаблоне, блок GFN в `games.yaml`);
+4. вызывает `./scripts/mrs-tool.sh sync`.
 
-1. точное имя GFN ↔ [gamedatabase.json](https://gist.github.com/Gr3gorywolf/1757c79ce1152966bf77bf8c6d069161);
-2. для Steam-URL — имя из [jsnli/steamappidlist](https://github.com/jsnli/steamappidlist) `games_appid.json`, затем снова gamedatabase;
-3. осторожное substring-совпадение имён (длинные строки).
+### Источники (`scripts/upstream-manifest.yaml`)
 
-Пересобрать блок:
+| id | Файл | Upstream | auto_apply |
+|----|------|----------|------------|
+| `template_remnawave` | `MIHOMO/template_remnawave.yaml` | [hydraponique/roscomvpn-routing](https://github.com/hydraponique/roscomvpn-routing) | **false** (форк) |
+| `torrent_clients` | `rule-sets/other/torrent-clients.yaml` | [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets) | true |
+| `games` | `rule-sets/mihomo/games.yaml` | [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category) | **false** (форк + GFN) |
+| `ru_apps` | `rule-sets/mihomo/ru-apps.yaml` | roscomvpn/custom-category | true |
+
+**Не синхронизируется:** `rule-sets/other/ai.yaml` — локальный набор.
+
+Добавить новый источник — запись в `scripts/upstream-manifest.yaml`.
+
+### Логика merge (без перетирания правок)
+
+Для каждого файла хранится **baseline** в `.sync-upstream/baseline/` (снимок после последней успешной синхронизации).
+
+| Ситуация | Результат |
+|----------|-----------|
+| local = baseline, upstream изменился, `auto_apply: true` | подтянуть upstream (`applied`) |
+| local = baseline, upstream изменился, `auto_apply: false` | **конфликт** — нужен ручной merge |
+| local изменён, upstream нет | оставить local (`kept_local`) |
+| local и upstream изменились по-разному | **конфликт** |
+
+При конфликте:
+
+- отчёт: `.sync-upstream/SYNC-CONFLICTS.md`;
+- файлы: `.sync-upstream/conflicts/<id>/{baseline,local,remote}`.
+
+Разрешение:
+
+```bash
+# вручную собрать итог в рабочем файле, затем:
+./scripts/upstream-sync.sh resolve template_remnawave
+./scripts/upstream-sync.sh sync
+```
+
+Команды `upstream-sync.sh`:
+
+```bash
+./scripts/upstream-sync.sh sync            # YAML + MRS
+./scripts/upstream-sync.sh download        # только скачать в staging
+./scripts/upstream-sync.sh baseline-init   # зафиксировать текущие файлы как baseline
+./scripts/upstream-sync.sh resolve [id]    # принять local как baseline
+./scripts/upstream-sync.sh mrs-only        # только MRS
+```
+
+### MRS rule-sets
+
+| Каталог | Назначение |
+|---------|------------|
+| `rule-sets/mrs/bin/` | Скачанные или собранные `.mrs` |
+| `rule-sets/mrs/text/` | Текст после `mihomo convert-ruleset … mrs` (источник правок) |
+| `rule-sets/mrs/manifest.yaml` | URL, `behavior`, имена файлов |
+
+```bash
+./scripts/mrs-tool.sh sync
+```
+
+При конфликте — `rule-sets/mrs/SYNC-CONFLICTS.md` и `rule-sets/mrs/conflicts/<имя>/`. После ручного merge: `./scripts/mrs-tool.sh resolve [имя]`.
+
+Редактируйте `rule-sets/mrs/text/<имя>.list`, затем коммит — **pre-commit** вызовет `pack` и добавит обновлённые `rule-sets/mrs/bin/*.mrs` в индекс.
+
+Отдельные команды MRS: `download`, `unpack`, `pack`. Бинарник `mihomo` — из `PATH` или `.tools/mihomo` (в `.gitignore`).
+
+Служебные каталоги (в `.gitignore`): `.sync-upstream/`, `rule-sets/mrs/.sync-staging/`, `rule-sets/mrs/.sync-baseline/`, `rule-sets/mrs/conflicts/`.
+
+## games.yaml и GeForce NOW
+
+`games.yaml` — гибрид: база roscomvpn + блок GeForce NOW + секция «Добавленно вручную».
+
+После sync с upstream roscomvpn скрипт автоматически пересобирает блок GFN (`regenerate_gfn_block`). Вручную:
 
 ```bash
 python3 scripts/generate-gfn-games-block.py
 ```
 
-Скрипт не трогает верх файла (roscomvpn + ваши правки). Офлайн-одиночки из GFN (Alan Wake, Cities: Skylines…) в блок **не** попадают.
+Источники GFN:
 
-Игры вне каталога GFN (например **R.E.P.O.** — онлайн co-op, но нет в `gfnpc-en-US.json`) — в секции «Добавленно вручную» внизу `games.yaml` и в `generate-gfn-games-block.py` (не перезаписываются при пересборке GFN).
+- [gfnpc-en-US.json](https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json)
+- [gamedatabase.json](https://gist.github.com/Gr3gorywolf/1757c79ce1152966bf77bf8c6d069161)
+- [jsnli/steamappidlist](https://github.com/jsnli/steamappidlist) — `games_appid.json`
 
-### 2. Подставить URL на rule-sets из этого репо
+В блок попадают только игры с **явным онлайном в жанрах** GFN (Multiplayer, MMO, F2P online, Battle Royale, Co-op/PvP…). Офлайн-одиночки не включаются.
 
-В `MIHOMO/template_remnawave.yaml` в секции `rule-providers` заменить внешние ссылки на CDN **mihomo_routing** (если upstream снова указал legiz-ru / roscomvpn):
+Игры вне каталога GFN (например **R.E.P.O.**) — в секции «Добавленно вручную» внизу `games.yaml` и в `generate-gfn-games-block.py` (не перезаписываются при пересборке GFN).
 
-```text
-legiz-ru/.../torrent-clients.yaml
-  → https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/other/torrent-clients.yaml
+## Локальные дополнения в шаблоне
 
-roscomvpn/.../games.yaml
-  → https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mihomo/games.yaml
+После merge upstream-шаблона из hydraponique проверьте, что сохранены локальные блоки:
 
-roscomvpn/.../ru-apps.yaml
-  → https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mihomo/ru-apps.yaml
-```
+### 🤖 ИИ
 
-Проверка:
+1. **proxy-groups** — группа `🤖 ИИ` (как у `📺 Youtube`: `remnawave.include-proxies: false`, прокси `🛡️ VPN` + переопределение стран).
+2. **rule-providers** — провайдер `ai` → `rule-sets/other/ai.yaml`.
+3. **rules** — `RULE-SET,ai,🤖 ИИ` **выше** `RULE-SET,google-play`.
+
+### CDN URL в rule-providers
+
+Post-hook `fix_template_cdn` подставляет jsDelivr **mireon-network/mihomo_routing** вместо legiz-ru / roscomvpn. Проверка:
 
 ```bash
 grep -E "url:.*cdn\.jsdelivr\.net/gh/mireon-network/mihomo_routing@main" MIHOMO/template_remnawave.yaml
-./scripts/cdn-url.sh rule-sets/mihomo/games.yaml
 ```
 
-### 3. Вернуть локальные дополнения (AI)
-
-После перезаписи шаблона из hydraponique снова нужны блоки для **🤖 ИИ** (если их нет в upstream):
-
-1. **proxy-groups** — группа `🤖 ИИ` (как у `📺 Youtube`: `remnawave`, `include-all`, прокси `🛡️ VPN` / `🔓 Без VPN`).
-2. **rule-providers** — провайдер `ai` на `rule-sets/other/ai.yaml` (classical yaml).
-3. **rules** — `RULE-SET,ai,🤖 ИИ` **выше** `RULE-SET,google-play`, иначе Gemini/Google API уйдут в общий PROXY.
-
-Ориентир по структуре — ваш прошлый форк или текущий коммит в `MIHOMO/template_remnawave.yaml` до обновления (`git show HEAD:MIHOMO/template_remnawave.yaml`).
-
-Сравнить с upstream:
+Сравнить форк с upstream:
 
 ```bash
-curl -fsSL /tmp/upstream-template.yaml \
+curl -fsSL -o /tmp/upstream-template.yaml \
   "https://raw.githubusercontent.com/hydraponique/roscomvpn-routing/main/MIHOMO/template_remnawave.yaml"
 diff -u /tmp/upstream-template.yaml MIHOMO/template_remnawave.yaml
-```
-
-### 4. Закоммитить
-
-```bash
-git add MIHOMO/template_remnawave.yaml rule-sets/
-git commit -m "chore: update from upstream RoscomVPN / rule-sets"
-git push
 ```
 
 ## Благодарности

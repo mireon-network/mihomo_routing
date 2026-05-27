@@ -1,0 +1,25 @@
+# Источники для ./scripts/upstream-sync.sh
+# Локальные-only файлы (rule-sets/other/ai.yaml и т.п.) сюда не добавлять.
+
+sources:
+  - id: template_remnawave
+    url: https://raw.githubusercontent.com/hydraponique/roscomvpn-routing/main/MIHOMO/template_remnawave.yaml
+    path: MIHOMO/template_remnawave.yaml
+    auto_apply: false
+    post:
+      - fix_template_cdn
+
+  - id: torrent_clients
+    url: https://raw.githubusercontent.com/legiz-ru/mihomo-rule-sets/main/other/torrent-clients.yaml
+    path: rule-sets/other/torrent-clients.yaml
+
+  - id: games
+    url: https://raw.githubusercontent.com/roscomvpn/custom-category/release/mihomo/games.yaml
+    path: rule-sets/mihomo/games.yaml
+    auto_apply: false
+    post:
+      - regenerate_gfn_block
+
+  - id: ru_apps
+    url: https://raw.githubusercontent.com/roscomvpn/custom-category/release/mihomo/ru-apps.yaml
+    path: rule-sets/mihomo/ru-apps.yaml
