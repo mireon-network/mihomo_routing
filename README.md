@@ -16,12 +16,17 @@
 | `rule-sets/mrs/text/*.list` | Распакованные MRS-наборы (редактировать здесь) |
 | `rule-sets/mrs/bin/*.mrs` | Бинарные rule-set для Mihomo (собираются из `text/`) |
 
-В `template_remnawave.yaml` для vendored rule-sets используются **raw** URL этого репо (для `rule-providers` типа `http` нужен `raw.githubusercontent.com`, не ссылка `github.com/.../blob/...`):
+В `template_remnawave.yaml` vendored rule-sets отдаются через **jsDelivr GitHub CDN** (не `github.com/.../blob/...`):
 
-- `https://raw.githubusercontent.com/mireon-network/mihomo_routing/main/rule-sets/other/torrent-clients.yaml`
-- `https://raw.githubusercontent.com/mireon-network/mihomo_routing/main/rule-sets/mihomo/games.yaml`
-- `https://raw.githubusercontent.com/mireon-network/mihomo_routing/main/rule-sets/mihomo/ru-apps.yaml`
-- `https://raw.githubusercontent.com/mireon-network/mihomo_routing/main/rule-sets/other/ai.yaml`
+База: `https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/`
+
+- `…/rule-sets/other/torrent-clients.yaml`
+- `…/rule-sets/mihomo/games.yaml`
+- `…/rule-sets/mihomo/ru-apps.yaml`
+- `…/rule-sets/other/ai.yaml`
+- `…/rule-sets/mrs/bin/<имя>.mrs`
+
+После `git push` в `main` файлы доступны на CDN автоматически (кэш jsDelivr может обновляться с задержкой; при срочном обновлении — [purge](https://www.jsdelivr.com/tools/purge)).
 
 ## MRS rule-sets (geosite / geoip)
 
@@ -51,15 +56,11 @@
 
 Отдельные команды: `download`, `unpack`, `pack`. Бинарник `mihomo` берётся из `PATH` или скачивается в `.tools/mihomo` (в `.gitignore`).
 
-В `MIHOMO/template_remnawave.yaml` провайдеры с `format: mrs` ссылаются на:
-
-`https://raw.githubusercontent.com/mireon-network/mihomo_routing/main/rule-sets/mrs/bin/<имя>.mrs`
-
 ## Использование в Remnawave
 
 Шаблон:
 
-`https://raw.githubusercontent.com/mireon-network/mihomo_routing/main/MIHOMO/template_remnawave.yaml`
+`https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/MIHOMO/template_remnawave.yaml`
 
 ## Как вручную подтянуть изменения из upstream
 
@@ -119,26 +120,25 @@ python3 scripts/generate-gfn-games-block.py
 
 ### 2. Подставить URL на rule-sets из этого репо
 
-В `MIHOMO/template_remnawave.yaml` в секции `rule-providers` заменить внешние ссылки на raw URL **mihomo_routing** (если upstream снова указал legiz-ru / roscomvpn):
+В `MIHOMO/template_remnawave.yaml` в секции `rule-providers` заменить внешние ссылки на CDN **mihomo_routing** (если upstream снова указал legiz-ru / roscomvpn):
 
 ```text
 legiz-ru/.../torrent-clients.yaml
-  → https://raw.githubusercontent.com/mireon-network/mihomo_routing/main/rule-sets/other/torrent-clients.yaml
+  → https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/other/torrent-clients.yaml
 
 roscomvpn/.../games.yaml
-  → https://raw.githubusercontent.com/mireon-network/mihomo_routing/main/rule-sets/mihomo/games.yaml
+  → https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mihomo/games.yaml
 
 roscomvpn/.../ru-apps.yaml
-  → https://raw.githubusercontent.com/mireon-network/mihomo_routing/main/rule-sets/mihomo/ru-apps.yaml
+  → https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mihomo/ru-apps.yaml
 ```
 
 Проверка:
 
 ```bash
-grep -E "url:.*(torrent-clients|games|ru-apps|ai)\.yaml" MIHOMO/template_remnawave.yaml
+grep -E "url:.*cdn\.jsdelivr\.net/gh/mireon-network/mihomo_routing@main" MIHOMO/template_remnawave.yaml
+./scripts/cdn-url.sh rule-sets/mihomo/games.yaml
 ```
-
-Все четыре `url:` должны вести на `mireon-network/mihomo_routing`.
 
 ### 3. Вернуть локальные дополнения (AI)
 
