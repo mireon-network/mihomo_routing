@@ -150,6 +150,7 @@ proxy-groups:
     url: https://www.gstatic.com/generate_204
     interval: 600
     lazy: false
+    timeout: 3000
     expected-status: 204
   - name: 📺 Youtube
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png
@@ -201,6 +202,7 @@ proxy-groups:
     interval: 600
     expected-status: 204
     max-failed-times: 3
+    timeout: 3000
     remnawave:
       include-proxies: false
     include-all: true
@@ -216,6 +218,7 @@ proxy-groups:
     interval: 600
     expected-status: 204
     max-failed-times: 3
+    timeout: 3000
     remnawave:
       include-proxies: false
     include-all: true
@@ -231,6 +234,7 @@ proxy-groups:
     interval: 600
     expected-status: 204
     max-failed-times: 3
+    timeout: 3000
     remnawave:
       include-proxies: false
     include-all: true
@@ -244,6 +248,7 @@ proxy-groups:
     url: https://www.gstatic.com/generate_204
     interval: 600
     lazy: false
+    timeout: 3000
     expected-status: 204
     max-failed-times: 3
     remnawave:
