@@ -9,10 +9,10 @@
 | Путь | Описание |
 |------|----------|
 | `MIHOMO/template_remnawave.yaml` | Шаблон для Remnawave |
-| `rule-sets/other/torrent-clients.yaml` | Торрент-клиенты (форк [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets/blob/main/other/torrent-clients.yaml)) |
-| `rule-sets/mihomo/games.yaml` | Игры ([roscomvpn/custom-category](https://github.com/roscomvpn/custom-category)) + [GeForce NOW](https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json) |
-| `rule-sets/mihomo/ru-apps.yaml` | RU-приложения (тот же репозиторий) |
-| `rule-sets/other/ai.yaml` | AI / LLM — **только локально**, upstream не синхронизируется |
+| `rule-sets/yaml/torrent-clients.yaml` | Торрент-клиенты (форк [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets/blob/main/other/torrent-clients.yaml)) |
+| `rule-sets/yaml/games.yaml` | Игры ([roscomvpn/custom-category](https://github.com/roscomvpn/custom-category)) + [GeForce NOW](https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json) |
+| `rule-sets/yaml/ru-apps.yaml` | RU-приложения (тот же репозиторий) |
+| `rule-sets/yaml/ai.yaml` | AI / LLM — **только локально**, upstream не синхронизируется |
 | `rule-sets/mrs/text/*.list` | Распакованные MRS-наборы (редактировать здесь) |
 | `rule-sets/mrs/bin/*.mrs` | Бинарные rule-set для Mihomo (собираются из `text/`) |
 | `scripts/upstream-sync.sh` | Обновление YAML из upstream-репозиториев |
@@ -26,17 +26,17 @@
 
 База: `https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/`
 
-- `…/rule-sets/other/torrent-clients.yaml`
-- `…/rule-sets/mihomo/games.yaml`
-- `…/rule-sets/mihomo/ru-apps.yaml`
-- `…/rule-sets/other/ai.yaml`
+- `…/rule-sets/yaml/torrent-clients.yaml`
+- `…/rule-sets/yaml/games.yaml`
+- `…/rule-sets/yaml/ru-apps.yaml`
+- `…/rule-sets/yaml/ai.yaml`
 - `…/rule-sets/mrs/bin/<имя>.mrs`
 
 Проверка URL для файла:
 
 ```bash
-./scripts/cdn-url.sh rule-sets/mihomo/games.yaml
-./scripts/cdn-purge.sh rule-sets/other/ai.yaml   # сброс кэша jsDelivr
+./scripts/cdn-url.sh rule-sets/yaml/games.yaml
+./scripts/cdn-purge.sh rule-sets/yaml/ai.yaml   # сброс кэша jsDelivr
 ./scripts/cdn-purge.sh --all                     # все rule-providers из шаблона
 ```
 
@@ -54,7 +54,7 @@
 
 | Контур | Скрипт | Что обновляет |
 |--------|--------|---------------|
-| YAML rule-sets, шаблон | `./scripts/upstream-sync.sh` | `MIHOMO/`, `rule-sets/other/`, `rule-sets/mihomo/` |
+| YAML rule-sets, шаблон | `./scripts/upstream-sync.sh` | `MIHOMO/`, `rule-sets/yaml/` |
 | MRS (geosite / geoip) | `./scripts/mrs-tool.sh` | `rule-sets/mrs/text/` → `bin/` |
 
 ### Быстрый старт
@@ -81,11 +81,11 @@
 | id | Файл | Upstream | auto_apply |
 |----|------|----------|------------|
 | `template_remnawave` | `MIHOMO/template_remnawave.yaml` | [hydraponique/roscomvpn-routing](https://github.com/hydraponique/roscomvpn-routing) | **false** (форк) |
-| `torrent_clients` | `rule-sets/other/torrent-clients.yaml` | [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets) | true |
-| `games` | `rule-sets/mihomo/games.yaml` | [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category) | **false** (форк + GFN) |
-| `ru_apps` | `rule-sets/mihomo/ru-apps.yaml` | roscomvpn/custom-category | true |
+| `torrent_clients` | `rule-sets/yaml/torrent-clients.yaml` | [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets) | true |
+| `games` | `rule-sets/yaml/games.yaml` | [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category) | **false** (форк + GFN) |
+| `ru_apps` | `rule-sets/yaml/ru-apps.yaml` | roscomvpn/custom-category | true |
 
-**Не синхронизируется:** `rule-sets/other/ai.yaml` — локальный набор.
+**Не синхронизируется:** `rule-sets/yaml/ai.yaml` — локальный набор.
 
 Добавить новый источник — запись в `scripts/upstream-manifest.yaml`.
 
@@ -170,7 +170,7 @@ python3 scripts/generate-gfn-games-block.py
 ### 🤖 ИИ
 
 1. **proxy-groups** — группа `🤖 ИИ` (как у `📺 Youtube`: `remnawave.include-proxies: false`, прокси `🛡️ VPN` + переопределение стран).
-2. **rule-providers** — провайдер `ai` → `rule-sets/other/ai.yaml`.
+2. **rule-providers** — провайдер `ai` → `rule-sets/yaml/ai.yaml`.
 3. **rules** — `RULE-SET,ai,🤖 ИИ` **выше** `RULE-SET,google-play`.
 
 ### CDN URL в rule-providers

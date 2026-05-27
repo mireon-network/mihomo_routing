@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Публичный CDN для файлов репозитория (jsDelivr GitHub).
-# Использование: ./scripts/cdn-url.sh rule-sets/mihomo/games.yaml
+# Использование: ./scripts/cdn-url.sh rule-sets/yaml/games.yaml
 set -euo pipefail
 
 CDN_BASE="${CDN_BASE:-https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main}"
