@@ -1,4 +1,14 @@
 payload:
+  # VK Play / Atomic Heart — строго DIRECT (раньше остальной категории games)
+  - PROCESS-NAME,GameCenter.exe,DIRECT # VK Play
+  - PROCESS-NAME,VKPlayLoader.exe,DIRECT # VK Play
+  - DOMAIN-SUFFIX,vkplay.ru,DIRECT
+  - DOMAIN-SUFFIX,my.games,DIRECT
+  - PROCESS-NAME,AtomicHeart.exe,DIRECT # Atomic Heart
+  - PROCESS-NAME,AtomicHeart-Win64-Shipping.exe,DIRECT # Atomic Heart
+  - DOMAIN-SUFFIX,atomicheart.com,DIRECT
+  - DOMAIN-SUFFIX,mundfish.com,DIRECT
+
   # Marvel Rivals / Marathon — строго PROXY (раньше остальной категории games)
   - DOMAIN-SUFFIX,easebar.com,PROXY
   - DOMAIN-SUFFIX,deadorbit.net,PROXY
