@@ -6,7 +6,6 @@ payload:
   - DOMAIN-SUFFIX,my.games,DIRECT
   - PROCESS-NAME,AtomicHeart.exe,DIRECT # Atomic Heart
   - PROCESS-NAME,AtomicHeart-Win64-Shipping.exe,DIRECT # Atomic Heart
-  - DOMAIN-SUFFIX,atomicheart.com,DIRECT
   - DOMAIN-SUFFIX,mundfish.com,DIRECT
 
   # Marvel Rivals / Marathon — строго PROXY (раньше остальной категории games)
