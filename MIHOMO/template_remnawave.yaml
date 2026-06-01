@@ -490,12 +490,12 @@ rule-providers:
     path: ./ruleset/torrent-clients.yaml
     proxy: ⚡️ Авто
     interval: 86400
-  games-proxy-domains:
+  games-proxy-rules:
     type: http
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/games-proxy-domains.yaml
-    path: ./ruleset/games-proxy-domains.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/games-proxy-rules.yaml
+    path: ./ruleset/games-proxy-rules.yaml
     proxy: ⚡️ Авто
     interval: 86400
   games-launchers-direct:
@@ -555,8 +555,8 @@ rules:
   - RULE-SET,telegram,PROXY
   - RULE-SET,github,PROXY
 
-  # --- Игры: домены → PROXY (раньше лаунчеров и MRS steam/epic) ---
-  - RULE-SET,games-proxy-domains,PROXY
+  # --- Игры: домены и процессы → PROXY (раньше лаунчеров и MRS steam/epic) ---
+  - RULE-SET,games-proxy-rules,PROXY
 
   # --- Игровые лаунчеры → DIRECT (до MRS steam/epic; P2P-загрузки не через VPN) ---
   - RULE-SET,games-launchers-direct,DIRECT

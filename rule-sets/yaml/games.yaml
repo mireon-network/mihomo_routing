@@ -1,5 +1,5 @@
 payload:
-  # Исключения: games-launchers-direct.yaml, games-proxy-domains.yaml
+  # Исключения: games-launchers-direct.yaml, games-proxy-rules.yaml
 
   # Unreal Engine games
   - PROCESS-NAME-REGEX,(?i).*Win64-Shipping.*
@@ -209,9 +209,6 @@ payload:
 
   # Black Squad (Steam | First-Person Shooter, Action, Free To Play; match=gfn_title)
   # steamlauncher.exe → games-launchers-direct.yaml
-
-  # Brawlhalla (Steam | Action, Free To Play, Indie; match=gfn_title)
-  - PROCESS-NAME,Brawlhalla.exe
 
   # Conan Exiles (Steam | Action, Adventure, Massively Multiplayer Online; match=gfn_title)
   - PROCESS-NAME,conansandbox_be.exe
