@@ -23,6 +23,26 @@ STEAM_URL = "https://raw.githubusercontent.com/jsnli/steamappidlist/master/data/
 
 GFN_MARKER = "  # --- GeForce NOW"
 
+# Не попадают в games.yaml — см. rule-sets/yaml/games-launchers-direct.yaml
+LAUNCHER_PROCESS_EXACT = frozenset(
+    {
+        "battalionlauncher.exe",
+        "steamlauncher.exe",
+        "launcher.exe",
+        "slauncher.exe",
+        "dundeflauncher.exe",
+        "wowslauncher.exe",
+        "mycomgames.exe",
+    }
+)
+
+
+def is_launcher_process(proc: str) -> bool:
+    pl = proc.lower()
+    if pl in LAUNCHER_PROCESS_EXACT:
+        return True
+    return pl.endswith("launcher.exe")
+
 # Жанры GFN, где в метаданных явно указан сетевой/мультиплеерный геймплей.
 ONLINE_GENRE_KEYWORDS = (
     "multiplayer",
@@ -146,6 +166,9 @@ def main() -> int:
         if not proc:
             stats["skipped_no_exe"] = stats.get("skipped_no_exe", 0) + 1
             continue
+        if is_launcher_process(proc):
+            stats["skipped_launcher"] = stats.get("skipped_launcher", 0) + 1
+            continue
         stats[via] = stats.get(via, 0) + 1
         pl = proc.lower()
         if pl in existing:
@@ -179,6 +202,7 @@ def main() -> int:
         "  - PROCESS-NAME,REPO-Win64-Shipping.exe\n"
         "  - PROCESS-NAME,Raft.exe\n"
         "  - PROCESS-NAME,Tanki.exe\n"
+        "  - PROCESS-NAME,Overwolf.exe\n"
     )
     out = base + "\n".join(lines) + manual
     GAMES_YAML.write_text(out, encoding="utf-8")

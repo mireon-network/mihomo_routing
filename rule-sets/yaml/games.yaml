@@ -1,16 +1,5 @@
 payload:
-  # VK Play / Atomic Heart — строго DIRECT (раньше остальной категории games)
-  - PROCESS-NAME,GameCenter.exe,DIRECT # VK Play
-  - PROCESS-NAME,VKPlayLoader.exe,DIRECT # VK Play
-  - DOMAIN-SUFFIX,vkplay.ru,DIRECT
-  - DOMAIN-SUFFIX,my.games,DIRECT
-  - PROCESS-NAME,AtomicHeart.exe,DIRECT # Atomic Heart
-  - PROCESS-NAME,AtomicHeart-Win64-Shipping.exe,DIRECT # Atomic Heart
-  - DOMAIN-SUFFIX,mundfish.com,DIRECT
-
-  # Marvel Rivals / Marathon — строго PROXY (раньше остальной категории games)
-  - DOMAIN-SUFFIX,easebar.com,PROXY
-  - DOMAIN-SUFFIX,deadorbit.net,PROXY
+  # Исключения: games-launchers-direct.yaml, games-proxy-domains.yaml
 
   # Unreal Engine games
   - PROCESS-NAME-REGEX,(?i).*Win64-Shipping.*
@@ -22,7 +11,6 @@ payload:
   - PROCESS-NAME,Among Us.exe
 
   # Apex Legends
-  - PROCESS-NAME,ApexLauncher.exe # Launcher
   - PROCESS-NAME,r5apex_dx12.exe # Apex Legends (DX12)
 
   # BattleBit Remastered
@@ -45,7 +33,6 @@ payload:
   - PROCESS-NAME,PEAK.exe
 
   # PUBG (PlayerUnknown's Battlegrounds)
-  - PROCESS-NAME,ExecPubg.exe # Launcher
   - PROCESS-NAME-REGEX,TslGame.* # Game
 
   # Minecraft
@@ -68,8 +55,6 @@ payload:
   - PROCESS-NAME,FiveM.exe # FiveM
   - PROCESS-NAME-REGEX,(?i).*ragemp.* # RageMP
   - PROCESS-NAME-REGEX,(?i).*Majestic.* # Majestic RP
-  - PROCESS-NAME-REGEX,(?i).*Rockstar.* # Rockstar Games Launcher
-  - PROCESS-NAME-REGEX,(?i).*SocialClub.* # Rockstar Social Club
 
   # Team Fortress 2
   - PROCESS-NAME,tf.exe
@@ -91,7 +76,6 @@ payload:
   - PROCESS-NAME,VALORANT-Win64-Shipping.exe
 
   # Escape from Tarkov
-  - PROCESS-NAME,BsgLauncher.exe # EFT Launcher
   - PROCESS-NAME,EscapeFromTarkov.exe # Escape From Tarkov
   - PROCESS-NAME,EscapeFromTarkovArena.exe # Escape From Tarkov - Arena
 
@@ -127,6 +111,10 @@ payload:
   - PROCESS-NAME,Discovery.exe
   - PROCESS-NAME,Discovery-d.exe
 
+  # TEKKEN (онлайн на PC: 7, 8; Tekken 6 / TTT2 / Revolution — консоли или RPCS3)
+  - PROCESS-NAME,TekkenGame-Win64-Shipping.exe # Tekken 7 — ranked, лобби (Steam 389730)
+  - PROCESS-NAME,Polaris-Win64-Shipping.exe # Tekken 8 — онлайн (Steam 1778820)
+
   # Rust
   - PROCESS-NAME-REGEX,(?i).*RustClient.*
 
@@ -137,13 +125,10 @@ payload:
   - PROCESS-NAME,UAGame.exe
 
   # Marvel Rivals
-  - PROCESS-NAME,MarvelRivals_Launcher.exe
   - PROCESS-NAME,Marvel-Win64-Shipping.exe
 
   # Overwatch 2
   - PROCESS-NAME,Overwatch.exe
-  - PROCESS-NAME,Battle.net.exe
-  - PROCESS-NAME,BlizzardBrowser.exe
 
   # HoYoverse
   - PROCESS-NAME,GenshinImpact.exe
@@ -151,9 +136,6 @@ payload:
   - PROCESS-NAME,StarRail.exe
   - PROCESS-NAME,BH3.exe
   - PROCESS-NAME,ZFGameBrowser.exe # In-game webview
-  - PROCESS-NAME,HYUpdater.exe
-  - PROCESS-NAME,HYPHelper.exe
-  - PROCESS-NAME,HYP.exe
 
   # Umamusume: Pretty Derby
   - PROCESS-NAME,UmamusumePrettyDerby.exe
@@ -162,42 +144,27 @@ payload:
   - PROCESS-NAME,Wuthering Waves.exe
   - PROCESS-NAME,KRWebView.exe # In-game webview
   - PROCESS-NAME,KRSDKExternal.exe
-  # --- Steam ---
-  - PROCESS-NAME,steam.exe
-  - PROCESS-NAME,steamwebhelper.exe
-  - PROCESS-NAME,steamservice.exe
 
   # --- Valve (Dota 2, CS2) ---
   - PROCESS-NAME,csgo.exe
 
   # --- Riot Games (LoL, Valorant) ---
-  - PROCESS-NAME,LeagueClient.exe
   - PROCESS-NAME,League of Legends.exe
   - PROCESS-NAME,VALORANT.exe
-  - PROCESS-NAME,RiotClientServices.exe
 
-  # --- Blizzard / Battle.net ---
+  # --- Blizzard (игры) ---
   - PROCESS-NAME,Hearthstone.exe
   - PROCESS-NAME,Diablo IV.exe
   - PROCESS-NAME,World of Warcraft.exe
   - PROCESS-NAME,StarCraft II.exe
 
-  # --- EA / Origin ---
-  - PROCESS-NAME,Origin.exe
-  - PROCESS-NAME,EADesktop.exe
+  # --- EA ---
   - PROCESS-NAME,r5apex.exe
   - PROCESS-NAME,FIFA24.exe
   - PROCESS-NAME,FIFA23.exe
 
-  # --- Ubisoft ---
-  - PROCESS-NAME,upc.exe
-  - PROCESS-NAME,UbisoftConnect.exe
-
-  # --- Epic Games ---
-  - PROCESS-NAME,EpicGamesLauncher.exe
+  # --- Epic Games (игры) ---
   - PROCESS-NAME,FortniteClient-Win64-Shipping.exe
-
-  # --- Escape from Tarkov ---
 
   # --- Популярные игры ---
   - PROCESS-NAME,PUBG-Win64-Shipping.exe
@@ -213,10 +180,6 @@ payload:
   - PROCESS-NAME,ForzaHorizon5.exe
   - PROCESS-NAME,Warthunder.exe
   - PROCESS-NAME,WorldOfTanks.exe
-
-  # --- Лаунчеры ---
-  - PROCESS-NAME,GOGGalaxy.exe
-  - PROCESS-NAME,playnite.exe
 
   # --- GeForce NOW (только онлайн/MP по жанрам GFN) ---
   # JSON: https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json
@@ -239,16 +202,16 @@ payload:
   - PROCESS-NAME,armoredwarfare.exe
 
   # BATTALION 1944 (Steam | Action, Massively Multiplayer Online, First-Person Shooter; match=gfn_title)
-  - PROCESS-NAME,battalionlauncher.exe
+  # battalionlauncher.exe → games-launchers-direct.yaml
 
   # Black Desert (Steam | Action, Adventure, Massively Multiplayer Online; match=substring)
   - PROCESS-NAME,blackdesertpatcher32.pae.exe
 
   # Black Squad (Steam | First-Person Shooter, Action, Free To Play; match=gfn_title)
-  - PROCESS-NAME,steamlauncher.exe
+  # steamlauncher.exe → games-launchers-direct.yaml
 
   # Brawlhalla (Steam | Action, Free To Play, Indie; match=gfn_title)
-  # - PROCESS-NAME,Brawlhalla.exe
+  - PROCESS-NAME,Brawlhalla.exe
 
   # Conan Exiles (Steam | Action, Adventure, Massively Multiplayer Online; match=gfn_title)
   - PROCESS-NAME,conansandbox_be.exe
@@ -257,13 +220,13 @@ payload:
   - PROCESS-NAME,creativerse.exe
 
   # Crossout (Steam | Action, Massively Multiplayer Online, Racing; match=gfn_title)
-  - PROCESS-NAME,launcher.exe
+  # launcher.exe → games-launchers-direct.yaml
 
   # Crowfall ( | Massively Multiplayer Online, Role Playing; match=gfn_title)
   - PROCESS-NAME,CrowfallClient.exe
 
   # CRSED: F.O.A.D. (Steam | Action, Free To Play, Massively Multiplayer Online; match=steam_substring)
-  - PROCESS-NAME,slauncher.exe
+  # slauncher.exe → games-launchers-direct.yaml
 
   # Crusader Kings II (Steam | Free To Play, Role Playing, Simulation; match=gfn_title)
   - PROCESS-NAME,CK2game.exe
@@ -287,7 +250,7 @@ payload:
   - PROCESS-NAME,ShooterGame-Win32-Shipping.exe
 
   # Dungeon Defenders II (Steam | Action, Casual, Free To Play; match=gfn_title)
-  - PROCESS-NAME,dundeflauncher.exe
+  # dundeflauncher.exe → games-launchers-direct.yaml
 
   # Elite Dangerous (Steam | Action, Adventure, Massively Multiplayer Online; match=gfn_title)
   - PROCESS-NAME,elitedangerous64.exe
@@ -437,7 +400,7 @@ payload:
   - PROCESS-NAME,warrobots.exe
 
   # Warface ( | Action, Free To Play, Massively Multiplayer Online; match=gfn_title)
-  - PROCESS-NAME,mycomgames.exe
+  # mycomgames.exe → games-launchers-direct.yaml
 
   # Warframe (Epic | Action, Free To Play, Multiplayer Online Battle Arena; match=gfn_title)
   - PROCESS-NAME,Warframe.x64.exe
@@ -449,7 +412,7 @@ payload:
   - PROCESS-NAME,worldofwarplanes.exe
 
   # World of Warships (Epic | Action, Free To Play, Massively Multiplayer Online; match=gfn_title)
-  - PROCESS-NAME,WoWSLauncher.exe
+  # WoWSLauncher.exe → games-launchers-direct.yaml
 
   # Ylands (Steam | Adventure, Casual, Free To Play; match=gfn_title)
   - PROCESS-NAME,ylands.exe

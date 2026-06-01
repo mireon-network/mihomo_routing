@@ -1,0 +1,6 @@
+payload:
+  # Домены игр и лаунчеров — всегда PROXY (доступ без VPN часто недоступен или ломается)
+  - DOMAIN-SUFFIX,easebar.com,PROXY
+  - DOMAIN-SUFFIX,deadorbit.net,PROXY
+  - DOMAIN-SUFFIX,ubi.com,PROXY
+  

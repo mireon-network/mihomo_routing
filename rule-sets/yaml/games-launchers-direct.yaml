@@ -1,0 +1,66 @@
+payload:
+  # Лаунчеры игровых платформ — только DIRECT.
+  # Чтобы P2P/загрузки (Steam, VK Play и др.) не шли через VPN и не попадали под блокировщик торрентов.
+
+  # --- Steam ---
+  - PROCESS-NAME,steam.exe,DIRECT
+  - PROCESS-NAME,steamwebhelper.exe,DIRECT
+  - PROCESS-NAME,steamservice.exe,DIRECT
+
+  # --- Epic Games ---
+  - PROCESS-NAME,EpicGamesLauncher.exe,DIRECT
+
+  # --- EA / Origin ---
+  - PROCESS-NAME,Origin.exe,DIRECT
+  - PROCESS-NAME,EADesktop.exe,DIRECT
+
+  # --- Ubisoft Connect ---
+  - PROCESS-NAME,upc.exe,DIRECT
+  - PROCESS-NAME,UbisoftConnect.exe,DIRECT
+
+  # --- GOG / Playnite ---
+  - PROCESS-NAME,GOGGalaxy.exe,DIRECT
+  - PROCESS-NAME,playnite.exe,DIRECT
+
+  # --- Blizzard / Battle.net ---
+  - PROCESS-NAME,Battle.net.exe,DIRECT
+  - PROCESS-NAME,BlizzardBrowser.exe,DIRECT
+
+  # --- Riot Games ---
+  - PROCESS-NAME,LeagueClient.exe,DIRECT
+  - PROCESS-NAME,RiotClientServices.exe,DIRECT
+
+  # --- Rockstar Games / Social Club ---
+  - PROCESS-NAME-REGEX,(?i).*Rockstar.*,DIRECT
+  - PROCESS-NAME-REGEX,(?i).*SocialClub.*,DIRECT
+
+  # --- VK Play / MY.GAMES ---
+  - PROCESS-NAME,GameCenter.exe,DIRECT
+  - PROCESS-NAME,VKPlayLoader.exe,DIRECT
+  - PROCESS-NAME,mycomgames.exe,DIRECT
+  - DOMAIN-SUFFIX,vkplay.ru,DIRECT
+  - DOMAIN-SUFFIX,my.games,DIRECT
+
+  # --- HoYoverse (лаунчер / обновления) ---
+  - PROCESS-NAME,HYUpdater.exe,DIRECT
+  - PROCESS-NAME,HYP.exe,DIRECT
+  - PROCESS-NAME,HYPHelper.exe,DIRECT
+
+  # --- Xbox (Microsoft Store / PC Game Pass) ---
+  - PROCESS-NAME,XboxApp.exe,DIRECT
+  - PROCESS-NAME,XboxPcApp.exe,DIRECT
+
+  # --- Bethesda ---
+  - PROCESS-NAME,BethesdaNetLauncher.exe,DIRECT
+
+  # --- Прочие лаунчеры (отдельные игры / платформы) ---
+  - PROCESS-NAME,ApexLauncher.exe,DIRECT
+  - PROCESS-NAME,ExecPubg.exe,DIRECT
+  - PROCESS-NAME,BsgLauncher.exe,DIRECT
+  - PROCESS-NAME,MarvelRivals_Launcher.exe,DIRECT
+  - PROCESS-NAME,WoWSLauncher.exe,DIRECT
+  - PROCESS-NAME,battalionlauncher.exe,DIRECT
+  - PROCESS-NAME,steamlauncher.exe,DIRECT
+  - PROCESS-NAME,launcher.exe,DIRECT
+  - PROCESS-NAME,slauncher.exe,DIRECT
+  - PROCESS-NAME,dundeflauncher.exe,DIRECT
