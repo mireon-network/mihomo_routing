@@ -11,7 +11,7 @@
 #
 # Группы прокси:
 #   🛡️ VPN       — единственная видимая группа: Автовыбор / Финляндия / Германия / Франция
-#   (скрытые)    — load-balance sticky-sessions (Beget/Selectel); Автовыбор — url-test
+#   (скрытые)    — load-balance sticky-sessions (Beget/Selectel/Reg.ru); Автовыбор — url-test
 #                  lazy: false + expected-status: 204 — актуальный пинг и health-check
 #   📺 Youtube   — отдельный выбор узла для YouTube
 #   💬 Discord   — отдельный выбор узла для Discord / Vesktop
@@ -34,11 +34,11 @@
 #
 # UDP-порт 443 (QUIC) блокируется глобально — принудительный fallback на TCP.
 #
-# TCP keep-alive: пробные пакеты до idle-timeout балансировщика (Beget/Selectel gateway).
+# TCP keep-alive: пробные пакеты до idle-timeout балансировщика (Beget/Selectel/Reg.ru gateway).
 #
-# Схема gateway (Remnawave hidden hosts gateway_beget_* / gateway_selectel_*):
+# Схема gateway (Remnawave hidden hosts gateway_beget_* / gateway_selectel_* / gateway_regru_*):
 #   ⚡️ Автовыбор     — url-test между странами; внутри страны — load-balance
-#   🇫🇮/🇩🇪/🇫🇷      — load-balance sticky-sessions (Beget ↔ Selectel)
+#   🇫🇮/🇩🇪/🇫🇷      — load-balance sticky-sessions (Beget ↔ Selectel ↔ Reg.ru)
 #
 # Разработка: ristavor
 # Благодарности: hydraponique & fatyzzz
@@ -211,7 +211,7 @@ proxy-groups:
     remnawave:
       include-proxies: false
     include-all: true
-    filter: "(?i)^gateway_(beget|selectel)_101$"
+    filter: "(?i)^gateway_(beget|selectel|regru)_101$"
     proxies:
       # LEAVE THIS LINE!
   - name: 🇩🇪 Германия
@@ -227,7 +227,7 @@ proxy-groups:
     remnawave:
       include-proxies: false
     include-all: true
-    filter: "(?i)^gateway_(beget|selectel)_102$"
+    filter: "(?i)^gateway_(beget|selectel|regru)_102$"
     proxies:
       # LEAVE THIS LINE!
   - name: 🇫🇷 Франция
@@ -243,7 +243,7 @@ proxy-groups:
     remnawave:
       include-proxies: false
     include-all: true
-    filter: "(?i)^gateway_(beget|selectel)_1004$"
+    filter: "(?i)^gateway_(beget|selectel|regru)_1004$"
     proxies:
       # LEAVE THIS LINE!
   - name: ⚡️ Автовыбор
