@@ -167,7 +167,7 @@ proxy-groups:
       - 🇫🇮 Финляндия
       - 🇩🇪 Германия
       - 🇫🇷 Франция
-  - name: 💬 Discord.exe
+  - name: 💬 Discord
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png
     type: select
     remnawave:
@@ -594,8 +594,8 @@ rules:
   - RULE-SET,torrent-clients,DIRECT                # торрент-клиенты по процессу
 
   # --- Приложения по имени процесса ---
-  - PROCESS-NAME-REGEX,discord,💬 Discord.exe
-  - PROCESS-NAME-REGEX,vesktop,💬 Discord.exe
+  - PROCESS-NAME-REGEX,discord,💬 Discord
+  - PROCESS-NAME-REGEX,vesktop,💬 Discord
 
   # --- Широкие категории ---
   - RULE-SET,games,🎮 Игры                         # общая игровая категория
