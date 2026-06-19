@@ -64,3 +64,48 @@ payload:
   - PROCESS-NAME,launcher.exe,DIRECT
   - PROCESS-NAME,slauncher.exe,DIRECT
   - PROCESS-NAME,dundeflauncher.exe,DIRECT
+
+  # =========================================================
+  # macOS — имена бинарников внутри .app
+  # =========================================================
+
+  # --- Steam ---
+  - PROCESS-NAME,steam_osx,DIRECT
+  - PROCESS-NAME,steamwebhelper,DIRECT
+
+  # --- Epic Games ---
+  - PROCESS-NAME,EpicGamesLauncher,DIRECT
+  - PROCESS-NAME,EpicWebHelper,DIRECT
+
+  # --- EA / Origin ---
+  - PROCESS-NAME,EADesktop,DIRECT
+  - PROCESS-NAME,Origin,DIRECT
+
+  # --- GOG Galaxy ---
+  - PROCESS-NAME,GOG Galaxy,DIRECT
+
+  # --- Blizzard / Battle.net ---
+  - PROCESS-NAME,Battle.net,DIRECT
+  - PROCESS-NAME,Battle.net Helper,DIRECT
+
+  # --- Riot Games ---
+  - PROCESS-NAME,LeagueClient,DIRECT
+  - PROCESS-NAME,RiotClientServices,DIRECT
+
+  # --- Heroic (Epic/GOG/Amazon, кроссплатформенный) ---
+  - PROCESS-NAME,Heroic,DIRECT
+
+  # =========================================================
+  # Linux — имена бинарников
+  # =========================================================
+
+  # --- Steam ---
+  - PROCESS-NAME,steam,DIRECT
+  - PROCESS-NAME,steam.sh,DIRECT
+
+  # --- Менеджеры/лаунчеры игр ---
+  - PROCESS-NAME,lutris,DIRECT
+  - PROCESS-NAME,heroic,DIRECT
+  - PROCESS-NAME,bottles,DIRECT
+  - PROCESS-NAME,minigalaxy,DIRECT
+  - PROCESS-NAME,legendary,DIRECT
