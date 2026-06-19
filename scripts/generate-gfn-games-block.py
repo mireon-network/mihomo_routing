@@ -23,7 +23,7 @@ STEAM_URL = "https://raw.githubusercontent.com/jsnli/steamappidlist/master/data/
 
 GFN_MARKER = "  # --- GeForce NOW"
 
-# Не попадают в games.yaml — см. rule-sets/yaml/games-launchers-direct.yaml
+# Не попадают в games.yaml — см. rule-sets/yaml/games-launchers.yaml
 LAUNCHER_PROCESS_EXACT = frozenset(
     {
         "battalionlauncher.exe",

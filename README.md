@@ -11,7 +11,7 @@
 | `MIHOMO/template_remnawave.yaml` | Шаблон для Remnawave |
 | `rule-sets/yaml/torrent-clients.yaml` | Торрент-клиенты (форк [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets/blob/main/other/torrent-clients.yaml)) |
 | `rule-sets/yaml/games.yaml` | Игры ([roscomvpn/custom-category](https://github.com/roscomvpn/custom-category)) + [GeForce NOW](https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json) |
-| `rule-sets/yaml/games-launchers-direct.yaml` | Игровые лаунчеры (Steam, Epic, VK Play…) — всегда DIRECT |
+| `rule-sets/yaml/games-launchers.yaml` | Игровые лаунчеры (Steam, Epic, VK Play…) — всегда DIRECT |
 | `rule-sets/yaml/games-proxy-rules.yaml` | Игровые домены и процессы, требующие PROXY для доступа |
 | `rule-sets/yaml/ru-apps.yaml` | RU-приложения (тот же репозиторий) |
 | `rule-sets/yaml/ai.yaml` | AI / LLM — **только локально**, upstream не синхронизируется |
@@ -30,7 +30,7 @@
 
 - `…/rule-sets/yaml/torrent-clients.yaml`
 - `…/rule-sets/yaml/games.yaml`
-- `…/rule-sets/yaml/games-launchers-direct.yaml`
+- `…/rule-sets/yaml/games-launchers.yaml`
 - `…/rule-sets/yaml/games-proxy-rules.yaml`
 - `…/rule-sets/yaml/ru-apps.yaml`
 - `…/rule-sets/yaml/ai.yaml`
@@ -154,7 +154,7 @@
 Исключения с фиксированной политикой (не попадают в 🎮 Игры) — отдельные YAML, подключаются в шаблоне **до** `games`:
 
 - `games-proxy-rules.yaml` — игровые домены и процессы → PROXY (в шаблоне **раньше** лаунчеров и MRS steam/epic)
-- `games-launchers-direct.yaml` — лаунчеры платформ → DIRECT (после proxy-rules; до MRS steam/epic)
+- `games-launchers.yaml` — лаунчеры платформ → DIRECT (после proxy-rules; до MRS steam/epic)
 
 После sync с upstream roscomvpn скрипт автоматически пересобирает блок GFN (`regenerate_gfn_block`). Вручную:
 

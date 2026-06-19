@@ -1,5 +1,5 @@
 payload:
-  # Исключения: games-launchers-direct.yaml, games-proxy-rules.yaml
+  # Исключения: games-launchers.yaml, games-proxy-rules.yaml
 
   # Unreal Engine games
   - PROCESS-NAME-REGEX,(?i).*Win64-Shipping.*
@@ -202,13 +202,13 @@ payload:
   - PROCESS-NAME,armoredwarfare.exe
 
   # BATTALION 1944 (Steam | Action, Massively Multiplayer Online, First-Person Shooter; match=gfn_title)
-  # battalionlauncher.exe → games-launchers-direct.yaml
+  # battalionlauncher.exe → games-launchers.yaml
 
   # Black Desert (Steam | Action, Adventure, Massively Multiplayer Online; match=substring)
   - PROCESS-NAME,blackdesertpatcher32.pae.exe
 
   # Black Squad (Steam | First-Person Shooter, Action, Free To Play; match=gfn_title)
-  # steamlauncher.exe → games-launchers-direct.yaml
+  # steamlauncher.exe → games-launchers.yaml
 
   # Conan Exiles (Steam | Action, Adventure, Massively Multiplayer Online; match=gfn_title)
   - PROCESS-NAME,conansandbox_be.exe
@@ -217,13 +217,13 @@ payload:
   - PROCESS-NAME,creativerse.exe
 
   # Crossout (Steam | Action, Massively Multiplayer Online, Racing; match=gfn_title)
-  # launcher.exe → games-launchers-direct.yaml
+  # launcher.exe → games-launchers.yaml
 
   # Crowfall ( | Massively Multiplayer Online, Role Playing; match=gfn_title)
   - PROCESS-NAME,CrowfallClient.exe
 
   # CRSED: F.O.A.D. (Steam | Action, Free To Play, Massively Multiplayer Online; match=steam_substring)
-  # slauncher.exe → games-launchers-direct.yaml
+  # slauncher.exe → games-launchers.yaml
 
   # Crusader Kings II (Steam | Free To Play, Role Playing, Simulation; match=gfn_title)
   - PROCESS-NAME,CK2game.exe
@@ -247,7 +247,7 @@ payload:
   - PROCESS-NAME,ShooterGame-Win32-Shipping.exe
 
   # Dungeon Defenders II (Steam | Action, Casual, Free To Play; match=gfn_title)
-  # dundeflauncher.exe → games-launchers-direct.yaml
+  # dundeflauncher.exe → games-launchers.yaml
 
   # Elite Dangerous (Steam | Action, Adventure, Massively Multiplayer Online; match=gfn_title)
   - PROCESS-NAME,elitedangerous64.exe
@@ -397,7 +397,7 @@ payload:
   - PROCESS-NAME,warrobots.exe
 
   # Warface ( | Action, Free To Play, Massively Multiplayer Online; match=gfn_title)
-  # mycomgames.exe → games-launchers-direct.yaml
+  # mycomgames.exe → games-launchers.yaml
 
   # Warframe (Epic | Action, Free To Play, Multiplayer Online Battle Arena; match=gfn_title)
   - PROCESS-NAME,Warframe.x64.exe
@@ -409,7 +409,7 @@ payload:
   - PROCESS-NAME,worldofwarplanes.exe
 
   # World of Warships (Epic | Action, Free To Play, Massively Multiplayer Online; match=gfn_title)
-  # WoWSLauncher.exe → games-launchers-direct.yaml
+  # WoWSLauncher.exe → games-launchers.yaml
 
   # Ylands (Steam | Adventure, Casual, Free To Play; match=gfn_title)
   - PROCESS-NAME,ylands.exe

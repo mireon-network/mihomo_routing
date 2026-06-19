@@ -513,7 +513,7 @@ rule-providers:
     type: http
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/games-launchers-direct.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/games-launchers.yaml
     path: ./ruleset/games-launchers.yaml
     proxy: ⚡️ Авто
     interval: 86400
