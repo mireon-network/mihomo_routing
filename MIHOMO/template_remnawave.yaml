@@ -10,8 +10,9 @@
 #              IPv6 в DNS отключён, весь IPv6-трафик ядра блокируется на уровне правил
 #
 # Группы прокси:
-#   🛡️ VPN       — основная группа (по умолчанию)
-#   ⚡️ Авто      — автовыбор по задержке (url-test, интервал 5 мин)
+#   🛡️ VPN       — единственная видимая группа: Автовыбор / Финляндия / Германия / Франция
+#   (скрытые)    — load-balance sticky-sessions (Beget/Selectel/Reg.ru); Автовыбор — url-test
+#                  lazy: false + expected-status: 204 — актуальный пинг и health-check
 #   📺 Youtube   — отдельный выбор узла для YouTube
 #   💬 Discord   — отдельный выбор узла для Discord / Vesktop
 #   🎮 Игры      — игровые сервисы (Steam, Epic, Origin, Riot, EfT, FaceIT…)
@@ -31,7 +32,13 @@
 #   • AI-сервисы                            → 🤖 ИИ (rule-sets/yaml/ai.yaml; выше google-play)
 #   • Остальное                             → PROXY
 #
-# UDP-порт 443/853 (QUIC/DoQ) блокируется глобально.
+# UDP-порт 443 (QUIC) блокируется глобально — принудительный fallback на TCP.
+#
+# TCP keep-alive: пробные пакеты до idle-timeout балансировщика (Beget/Selectel/Reg.ru gateway).
+#
+# Схема gateway (Remnawave hidden hosts gateway_beget_* / gateway_selectel_* / gateway_regru_*):
+#   ⚡️ Автовыбор     — url-test между странами; внутри страны — load-balance
+#   🇫🇮/🇩🇪/🇫🇷      — load-balance sticky-sessions (Beget ↔ Selectel ↔ Reg.ru)
 #
 # Разработка: ristavor
 # Благодарности: hydraponique & fatyzzz
@@ -41,6 +48,9 @@
 # USDT TRC20 — TMu3N2ZjK5omJ7n3WAj5MNCSM5querBXsR
 # ============================================================
 
+remnawave:
+  includeHiddenHosts: true
+
 mixed-port: 7890
 mode: rule
 log-level: silent
@@ -48,6 +58,9 @@ allow-lan: false
 ipv6: true # для перехвата ipv6 трафика в ядро
 unified-delay: true
 tcp-concurrent: true
+disable-keep-alive: false
+keep-alive-idle: 30 # сек до первого probe при простое (типичный LB idle ~60–120 с)
+keep-alive-interval: 15 # интервал probe-пакетов, сек
 tun:
   enable: true
   stack: system
@@ -131,56 +144,142 @@ proxy-groups:
   - name: 🛡️ VPN
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hijacking.png
     type: select
+    remnawave:
+      include-proxies: false
     proxies:
-      - ⚡️ Авто
+      - ⚡️ Автовыбор
+      - 🇫🇮 Финляндия
+      - 🇩🇪 Германия
+      - 🇫🇷 Франция
     # LEAVE THIS LINE!
     url: https://www.gstatic.com/generate_204
+    interval: 600
+    lazy: false
+    timeout: 3000
+    expected-status: 204
   - name: 📺 Youtube
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png
     type: select
     remnawave:
       include-proxies: false
-    include-all: true
-    # filter: '🇫🇮 Finland' # Filter connections containing this value (hosts should be named like 🇫🇮 Finland1, 🇫🇮 Finland2, etc.)
     proxies:
       - 🛡️ VPN
-      # Если хотите оставить на выбор только определенные узлы, воспользуйтесь filter
+      - 🇫🇮 Финляндия
+      - 🇩🇪 Германия
+      - 🇫🇷 Франция
   - name: 💬 Discord.exe
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png
     type: select
     remnawave:
       include-proxies: false
-    include-all: true
     proxies:
       - 🛡️ VPN
+      - 🇫🇮 Финляндия
+      - 🇩🇪 Германия
+      - 🇫🇷 Франция
   - name: 🎮 Игры
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png
     type: select
     remnawave:
       include-proxies: false
-    include-all: true
     proxies:
       - 🔓 Без VPN
       - 🛡️ VPN
+      - 🇫🇮 Финляндия
+      - 🇩🇪 Германия
+      - 🇫🇷 Франция
+  - name: 🎮 Лаунчеры
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png
+    type: select
+    remnawave:
+      include-proxies: false
+    proxies:
+      - 🔓 Без VPN
+      - 🛡️ VPN
+      - 🇫🇮 Финляндия
+      - 🇩🇪 Германия
+      - 🇫🇷 Франция
   - name: 🤖 ИИ
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bot.png
     type: select
     remnawave:
       include-proxies: false
-    include-all: true
     proxies:
       - 🛡️ VPN
-      - 🔓 Без VPN
-  - name: ⚡️ Авто
-    type: url-test
-    tolerance: 150
+      - 🇫🇮 Финляндия
+      - 🇩🇪 Германия
+      - 🇫🇷 Франция
+  - name: 🇫🇮 Финляндия
+    type: load-balance
+    hidden: true
+    lazy: false
+    strategy: sticky-sessions
     url: https://www.gstatic.com/generate_204
-    interval: 300
-    # exclude-filter: прокси, которые хотите исключить
+    interval: 600
+    expected-status: 204
+    max-failed-times: 3
+    timeout: 3000
     remnawave:
       include-proxies: false
     include-all: true
+    filter: "(?i)^gateway_[^_]+_101$"
+    proxies:
+      # LEAVE THIS LINE!
+  - name: 🇩🇪 Германия
+    type: load-balance
     hidden: true
+    lazy: false
+    strategy: sticky-sessions
+    url: https://www.gstatic.com/generate_204
+    interval: 600
+    expected-status: 204
+    max-failed-times: 3
+    timeout: 3000
+    remnawave:
+      include-proxies: false
+    include-all: true
+    filter: "(?i)^gateway_[^_]+_102$"
+    proxies:
+      # LEAVE THIS LINE!
+  - name: 🇫🇷 Франция
+    type: load-balance
+    hidden: true
+    lazy: false
+    strategy: sticky-sessions
+    url: https://www.gstatic.com/generate_204
+    interval: 600
+    expected-status: 204
+    max-failed-times: 3
+    timeout: 3000
+    remnawave:
+      include-proxies: false
+    include-all: true
+    filter: "(?i)^gateway_[^_]+_1004$"
+    proxies:
+      # LEAVE THIS LINE!
+  - name: ⚡️ Автовыбор
+    type: url-test
+    hidden: true
+    tolerance: 80
+    url: https://www.gstatic.com/generate_204
+    interval: 600
+    lazy: false
+    timeout: 3000
+    expected-status: 204
+    max-failed-times: 3
+    remnawave:
+      include-proxies: false
+    proxies:
+      - 🇫🇮 Финляндия
+      - 🇩🇪 Германия
+      - 🇫🇷 Франция
+  - name: ⚡️ Авто
+    type: select
+    hidden: true
+    remnawave:
+      include-proxies: false
+    proxies:
+      - ⚡️ Автовыбор
   - name: PROXY
     type: select
     hidden: true
@@ -410,12 +509,12 @@ rule-providers:
     path: ./ruleset/games-proxy-rules.yaml
     proxy: ⚡️ Авто
     interval: 86400
-  games-launchers-direct:
+  games-launchers:
     type: http
     behavior: classical
     format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/games-launchers-direct.yaml
-    path: ./ruleset/games-launchers-direct.yaml
+    path: ./ruleset/games-launchers.yaml
     proxy: ⚡️ Авто
     interval: 86400
   games:
@@ -470,8 +569,8 @@ rules:
   # --- Игры: домены и процессы → PROXY (раньше лаунчеров и MRS steam/epic) ---
   - RULE-SET,games-proxy-rules,PROXY
 
-  # --- Игровые лаунчеры → DIRECT (до MRS steam/epic; P2P-загрузки не через VPN) ---
-  - RULE-SET,games-launchers-direct,DIRECT
+  # --- Игровые лаунчеры → 🎮 Лаунчеры (по умолчанию DIRECT, можно переключить) ---
+  - RULE-SET,games-launchers,🎮 Лаунчеры
 
   # --- Игровые платформы и сервисы → 🎮 Игры (по умолчанию DIRECT, можно переключить) ---
   - RULE-SET,epicgames,🎮 Игры
