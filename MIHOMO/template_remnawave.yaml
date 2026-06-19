@@ -16,6 +16,7 @@
 #   📺 Youtube   — отдельный выбор узла для YouTube
 #   💬 Discord   — отдельный выбор узла для Discord / Vesktop
 #   🎮 Игры      — игровые сервисы (Steam, Epic, Origin, Riot, EfT, FaceIT…)
+#   🎮 Лаунчеры  — игровые лаунчеры (Win/macOS/Linux); по умолчанию DIRECT, можно переключить
 #   🤖 ИИ        — сервисы искусственного интеллекта (OpenAI, Claude, Gemini, Copilot…)
 #   🔓 Без VPN   — принудительный прямой доступ (DIRECT)
 #   ⛔ Блок      — блокировка (REJECT)
@@ -28,6 +29,7 @@
 #   • Российские домены (category-ru), ru-apps → DIRECT
 #   • Twitch, Pinterest                     → DIRECT
 #   • YouTube, Telegram, GitHub             → PROXY
+#   • Игровые лаунчеры (games-launchers)    → 🎮 Лаунчеры (по умолчанию DIRECT)
 #   • Игровые сервисы                       → 🎮 Игры
 #   • AI-сервисы                            → 🤖 ИИ (rule-sets/yaml/ai.yaml; выше google-play)
 #   • Остальное                             → PROXY
@@ -36,9 +38,10 @@
 #
 # TCP keep-alive: пробные пакеты до idle-timeout балансировщика (Beget/Selectel/Reg.ru gateway).
 #
-# Схема gateway (Remnawave hidden hosts gateway_beget_* / gateway_selectel_* / gateway_regru_*):
+# Схема gateway (Remnawave hidden hosts gateway_<provider>_<код страны>, напр. Beget/Selectel/Reg.ru):
+#   фильтр стран провайдер-независимый: gateway_<любой>_<код> → 🇫🇮 101, 🇩🇪 102, 🇫🇷 1004
 #   ⚡️ Автовыбор     — url-test между странами; внутри страны — load-balance
-#   🇫🇮/🇩🇪/🇫🇷      — load-balance sticky-sessions (Beget ↔ Selectel ↔ Reg.ru)
+#   🇫🇮/🇩🇪/🇫🇷      — load-balance sticky-sessions между всеми провайдерами страны
 #
 # Разработка: ristavor
 # Благодарности: hydraponique & fatyzzz
