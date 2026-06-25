@@ -181,6 +181,34 @@ payload:
   - PROCESS-NAME,Warthunder.exe
   - PROCESS-NAME,WorldOfTanks.exe
 
+  # =========================================================
+  # macOS / Linux — нативные сборки
+  # ВНИМАНИЕ: игры под Steam Proton / Wine / CrossOver видны mihomo
+  #           как Windows-процесс (game.exe) — их уже покрывают
+  #           .exe-правила выше. Здесь — только нативные порты,
+  #           где имя бинарника отличается от Windows.
+  # =========================================================
+
+  # --- Кроссплатформенные нативные бинарники (macOS + Linux) ---
+  - PROCESS-NAME,dota2                 # Dota 2 (Source 2)
+  - PROCESS-NAME,eurotrucks2           # Euro Truck Simulator 2
+  - PROCESS-NAME,amtrucks              # American Truck Simulator
+  - PROCESS-NAME,osu!                  # osu! (lazer)
+  - PROCESS-NAME,Albion-Online         # Albion Online
+
+  # --- macOS (бинарник внутри .app) ---
+  - PROCESS-NAME,League of Legends     # League of Legends
+  - PROCESS-NAME,Hearthstone           # Hearthstone
+  - PROCESS-NAME,World of Warcraft     # World of Warcraft
+  - PROCESS-NAME,SC2                   # StarCraft II
+  - PROCESS-NAME,Among Us              # Among Us
+
+  # --- Linux (нативные сборки) ---
+  - PROCESS-NAME,cs2                   # Counter-Strike 2 (Source 2)
+  - PROCESS-NAME,tf_linux64            # Team Fortress 2 (64-bit)
+  - PROCESS-NAME,hl2_linux             # Half-Life 2 (legacy 32-bit)
+  - PROCESS-NAME,hl2_linux64           # Half-Life 2 (64-bit)
+
   # --- GeForce NOW (только онлайн/MP по жанрам GFN) ---
   # JSON: https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json
   # exe:  https://gist.github.com/Gr3gorywolf/1757c79ce1152966bf77bf8c6d069161
@@ -416,8 +444,10 @@ payload:
 
   # --- Добавленно вручную (нет в GFN / не попали в фильтр жанров) ---
   # R.E.P.O. — co-op онлайн, Steam 3241660; в gfnpc-en-US.json отсутствует
+  # (REPO/Overwolf/Tanki — только Windows; на Linux Proton видит REPO.exe)
   - PROCESS-NAME,REPO.exe
   - PROCESS-NAME,REPO-Win64-Shipping.exe
   - PROCESS-NAME,Raft.exe
+  - PROCESS-NAME,Raft                  # Raft — нативный macOS
   - PROCESS-NAME,Tanki.exe
   - PROCESS-NAME,Overwolf.exe

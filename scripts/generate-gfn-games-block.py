@@ -149,8 +149,8 @@ def main() -> int:
 
     existing: set[str] = set()
     for m in re.finditer(r"PROCESS-NAME,([^\n]+)", base):
-        v = m.group(1).strip()
-        if not v.startswith("(?"):
+        v = m.group(1).split("#", 1)[0].strip()  # отсечь инлайн-комментарий
+        if v and not v.startswith("(?"):
             existing.add(v.lower())
 
     entries: list[tuple[str, str, str, str, list]] = []
@@ -198,9 +198,11 @@ def main() -> int:
     manual = (
         "\n  # --- Добавленно вручную (нет в GFN / не попали в фильтр жанров) ---\n"
         "  # R.E.P.O. — co-op онлайн, Steam 3241660; в gfnpc-en-US.json отсутствует\n"
+        "  # (REPO/Overwolf/Tanki — только Windows; на Linux Proton видит REPO.exe)\n"
         "  - PROCESS-NAME,REPO.exe\n"
         "  - PROCESS-NAME,REPO-Win64-Shipping.exe\n"
         "  - PROCESS-NAME,Raft.exe\n"
+        "  - PROCESS-NAME,Raft                  # Raft — нативный macOS\n"
         "  - PROCESS-NAME,Tanki.exe\n"
         "  - PROCESS-NAME,Overwolf.exe\n"
     )
