@@ -183,9 +183,11 @@ payload:
 
   # =========================================================
   # macOS / Linux — нативные сборки
-  # ВНИМАНИЕ: игры под Steam Proton / Wine / CrossOver видны mihomo
-  #           как Windows-процесс (game.exe) — их уже покрывают
-  #           .exe-правила выше. Здесь — только нативные порты,
+  # ВНИМАНИЕ: игры под Steam Proton / Wine / CrossOver НЕ видны как game.exe —
+  #           сетевым сокетом владеет общий процесс wineserver (или wine/wine64),
+  #           одинаковый для всех игр. Их .exe-правила выше под Proton не
+  #           срабатывают; этот трафик ловит отдельная категория «🍷 Wine»
+  #           (см. rule-sets/yaml/wine.yaml). Здесь — только НАТИВНЫЕ порты,
   #           где имя бинарника отличается от Windows.
   # =========================================================
 
@@ -208,6 +210,9 @@ payload:
   - PROCESS-NAME,tf_linux64            # Team Fortress 2 (64-bit)
   - PROCESS-NAME,hl2_linux             # Half-Life 2 (legacy 32-bit)
   - PROCESS-NAME,hl2_linux64           # Half-Life 2 (64-bit)
+
+  # Примечание: Wine/Proton (wineserver и т.п.) вынесены в отдельную
+  # категорию «🍷 Wine» → rule-sets/yaml/wine.yaml
 
   # --- GeForce NOW (только онлайн/MP по жанрам GFN) ---
   # JSON: https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json

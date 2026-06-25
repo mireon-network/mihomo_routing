@@ -17,6 +17,7 @@
 #   💬 Discord   — отдельный выбор узла для Discord / Vesktop
 #   🎮 Игры      — игровые сервисы (Steam, Epic, Origin, Riot, EfT, FaceIT…)
 #   🎮 Лаунчеры  — игровые лаунчеры (Win/macOS/Linux); по умолчанию DIRECT, можно переключить
+#   🍷 Wine      — Windows-софт/игры на Linux через Wine/Proton; по умолчанию DIRECT, можно переключить
 #   🤖 ИИ        — сервисы искусственного интеллекта (OpenAI, Claude, Gemini, Copilot…)
 #   🔓 Без VPN   — принудительный прямой доступ (DIRECT)
 #   ⛔ Блок      — блокировка (REJECT)
@@ -31,6 +32,7 @@
 #   • YouTube, Telegram, GitHub             → PROXY
 #   • Игровые лаунчеры (games-launchers)    → 🎮 Лаунчеры (по умолчанию DIRECT)
 #   • Игровые сервисы                       → 🎮 Игры
+#   • Wine/Proton (wine.yaml)               → 🍷 Wine (по умолчанию DIRECT)
 #   • AI-сервисы                            → 🤖 ИИ (rule-sets/yaml/ai.yaml; выше google-play)
 #   • Остальное                             → PROXY
 #
@@ -180,6 +182,16 @@ proxy-groups:
       - 🇫🇮 Финляндия
       - 🇩🇪 Германия
       - 🇫🇷 Франция
+  - name: 🤖 ИИ
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bot.png
+    type: select
+    remnawave:
+      include-proxies: false
+    proxies:
+      - 🛡️ VPN
+      - 🇫🇮 Финляндия
+      - 🇩🇪 Германия
+      - 🇫🇷 Франция
   - name: 🎮 Игры
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png
     type: select
@@ -202,12 +214,13 @@ proxy-groups:
       - 🇫🇮 Финляндия
       - 🇩🇪 Германия
       - 🇫🇷 Франция
-  - name: 🤖 ИИ
-    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bot.png
+  - name: 🍷 Wine
+    icon: https://api.iconify.design/mdi/glass-wine.svg?color=%23B11226&width=128&height=128
     type: select
     remnawave:
       include-proxies: false
     proxies:
+      - 🔓 Без VPN
       - 🛡️ VPN
       - 🇫🇮 Финляндия
       - 🇩🇪 Германия
@@ -528,6 +541,14 @@ rule-providers:
     path: ./ruleset/games.yaml
     proxy: ⚡️ Авто
     interval: 86400
+  wine:
+    type: http
+    behavior: classical
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/wine.yaml
+    path: ./ruleset/wine.yaml
+    proxy: ⚡️ Авто
+    interval: 86400
   ai:
     type: http
     behavior: classical
@@ -602,6 +623,7 @@ rules:
 
   # --- Широкие категории ---
   - RULE-SET,games,🎮 Игры                         # общая игровая категория
+  - RULE-SET,wine,🍷 Wine                          # Windows-софт/игры на Linux (Wine/Proton)
   - RULE-SET,ru-apps,DIRECT                        # RU-приложения Android
 
   # --- IP-адреса → DIRECT ---

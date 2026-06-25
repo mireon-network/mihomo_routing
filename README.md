@@ -15,6 +15,7 @@
 | `rule-sets/yaml/games-proxy-rules.yaml` | Игровые домены и процессы, требующие PROXY для доступа |
 | `rule-sets/yaml/ru-apps.yaml` | RU-приложения (тот же репозиторий) |
 | `rule-sets/yaml/ai.yaml` | AI / LLM — **только локально**, upstream не синхронизируется |
+| `rule-sets/yaml/wine.yaml` | Wine / Proton (Windows-софт и игры на Linux) → `🍷 Wine` — **только локально** |
 | `rule-sets/mrs/text/*.list` | Распакованные MRS-наборы (редактировать здесь) |
 | `rule-sets/mrs/bin/*.mrs` | Бинарные rule-set для Mihomo (собираются из `text/`) |
 | `scripts/upstream-sync.sh` | Обновление YAML из upstream-репозиториев |
@@ -34,6 +35,7 @@
 - `…/rule-sets/yaml/games-proxy-rules.yaml`
 - `…/rule-sets/yaml/ru-apps.yaml`
 - `…/rule-sets/yaml/ai.yaml`
+- `…/rule-sets/yaml/wine.yaml`
 - `…/rule-sets/mrs/bin/<имя>.mrs`
 
 Проверка URL для файла:
@@ -89,7 +91,7 @@
 | `games` | `rule-sets/yaml/games.yaml` | [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category) | **false** (форк + GFN) |
 | `ru_apps` | `rule-sets/yaml/ru-apps.yaml` | roscomvpn/custom-category | true |
 
-**Не синхронизируется:** `rule-sets/yaml/ai.yaml` — локальный набор.
+**Не синхронизируется:** `rule-sets/yaml/ai.yaml`, `rule-sets/yaml/wine.yaml` — локальные наборы.
 
 Добавить новый источник — запись в `scripts/upstream-manifest.yaml`.
 
