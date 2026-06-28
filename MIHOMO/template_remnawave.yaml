@@ -156,6 +156,8 @@ proxy-groups:
       - 🇫🇮 Финляндия
       - 🇩🇪 Германия
       - 🇫🇷 Франция
+      - 🇳🇱 Нидерланды
+      - 🇺🇸 США
     # LEAVE THIS LINE!
     url: https://www.gstatic.com/generate_204
     interval: 600
@@ -172,6 +174,8 @@ proxy-groups:
       - 🇫🇮 Финляндия
       - 🇩🇪 Германия
       - 🇫🇷 Франция
+      - 🇳🇱 Нидерланды
+      - 🇺🇸 США
   - name: 💬 Discord
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png
     type: select
@@ -182,6 +186,8 @@ proxy-groups:
       - 🇫🇮 Финляндия
       - 🇩🇪 Германия
       - 🇫🇷 Франция
+      - 🇳🇱 Нидерланды
+      - 🇺🇸 США
   - name: 🤖 ИИ
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bot.png
     type: select
@@ -192,6 +198,8 @@ proxy-groups:
       - 🇫🇮 Финляндия
       - 🇩🇪 Германия
       - 🇫🇷 Франция
+      - 🇳🇱 Нидерланды
+      - 🇺🇸 США
   - name: 🎮 Игры
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png
     type: select
@@ -203,6 +211,8 @@ proxy-groups:
       - 🇫🇮 Финляндия
       - 🇩🇪 Германия
       - 🇫🇷 Франция
+      - 🇳🇱 Нидерланды
+      - 🇺🇸 США
   - name: 🎮 Лаунчеры
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png
     type: select
@@ -214,6 +224,8 @@ proxy-groups:
       - 🇫🇮 Финляндия
       - 🇩🇪 Германия
       - 🇫🇷 Франция
+      - 🇳🇱 Нидерланды
+      - 🇺🇸 США
   - name: 🍷 Wine
     icon: https://api.iconify.design/mdi/glass-wine.svg?color=%23B11226&width=128&height=128
     type: select
@@ -225,6 +237,8 @@ proxy-groups:
       - 🇫🇮 Финляндия
       - 🇩🇪 Германия
       - 🇫🇷 Франция
+      - 🇳🇱 Нидерланды
+      - 🇺🇸 США
   - name: 🇫🇮 Финляндия
     type: load-balance
     hidden: true
@@ -270,7 +284,39 @@ proxy-groups:
     remnawave:
       include-proxies: false
     include-all: true
-    filter: "(?i)^gateway_[^_]+_1004$"
+    filter: "(?i)^gateway_[^_]+_103$"
+    proxies:
+      # LEAVE THIS LINE!
+  - name: 🇳🇱 Нидерланды
+    type: load-balance
+    hidden: true
+    lazy: false
+    strategy: sticky-sessions
+    url: https://www.gstatic.com/generate_204
+    interval: 600
+    expected-status: 204
+    max-failed-times: 3
+    timeout: 3000
+    remnawave:
+      include-proxies: false
+    include-all: true
+    filter: "(?i)^gateway_[^_]+_104$"
+    proxies:
+      # LEAVE THIS LINE!
+  - name: 🇺🇸 США
+    type: load-balance
+    hidden: true
+    lazy: false
+    strategy: sticky-sessions
+    url: https://www.gstatic.com/generate_204
+    interval: 600
+    expected-status: 204
+    max-failed-times: 3
+    timeout: 3000
+    remnawave:
+      include-proxies: false
+    include-all: true
+    filter: "(?i)^gateway_[^_]+_105$"
     proxies:
       # LEAVE THIS LINE!
   - name: ⚡️ Автовыбор
@@ -289,6 +335,8 @@ proxy-groups:
       - 🇫🇮 Финляндия
       - 🇩🇪 Германия
       - 🇫🇷 Франция
+      - 🇳🇱 Нидерланды
+      - 🇺🇸 США
   - name: ⚡️ Авто
     type: select
     hidden: true
