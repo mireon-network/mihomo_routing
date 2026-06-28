@@ -67,21 +67,54 @@ for line in open(path, encoding="utf-8"):
     elif cur is not None and ":" in s and not s.startswith("#"):
         k, v = s.split(":", 1)
         k, v = k.strip(), v.strip()
-        if k in ("id", "behavior", "file", "url"):
+        if k in ("id", "behavior", "file", "url", "src"):
             cur[k] = v
 if cur:
     sets.append(cur)
 for item in sets:
-    print("\t".join(item[k] for k in ("id", "behavior", "file", "url")))
+    print("\t".join(item.get(k, "") for k in ("id", "behavior", "file", "url", "src")))
 PY
+}
+
+# $1 — исходный .txt (формат V2Ray: domain:/full:), $2 — выходной mihomo domain .list
+v2ray_domain_to_list() {
+  awk '
+    { sub(/\r$/, ""); sub(/[[:space:]]+@.*$/, "") }   # CRLF и V2Ray-атрибуты (@...)
+    /^[[:space:]]*$/ || /^[[:space:]]*#/ { next }
+    /^domain:/  { sub(/^domain:/, "+."); print; next }
+    /^full:/    { sub(/^full:/, "");     print; next }
+    /^keyword:/ || /^regexp:/ { next }                # domain-behavior их не поддерживает
+    { print }                                          # голый домен — как есть
+  ' "$1" >"$2"
 }
 
 # $1 — каталог bin; $2 — force (1 = перезаписать)
 staging_download() {
   local dest="${1:-$BIN_DIR}"
   local force="${2:-0}"
+  local text_dest; text_dest="$(dirname "$dest")/text"   # bin/ и text/ — соседи
   mkdir -p "$dest"
-  while IFS=$'\t' read -r _ _ file url; do
+  while IFS=$'\t' read -r _ _ file url src; do
+    if [[ -n "$src" ]]; then
+      # Текстовый источник: url → .txt → преобразуем сразу в text/*.list.
+      # .mrs пакуется позже (cmd_pack). ponytail: только src=v2ray-domain.
+      local out_list="$text_dest/${file}.list"
+      mkdir -p "$text_dest"
+      if [[ "$force" != "1" && -f "$out_list" ]]; then
+        echo "→ $file.list (пропуск, уже есть; --force чтобы перезаписать)"
+        continue
+      fi
+      echo "→ $file.list (src=$src)"
+      local tmp; tmp="$(mktemp)"
+      curl -fsSL -o "$tmp" "$url"
+      case "$src" in
+        v2ray-domain) v2ray_domain_to_list "$tmp" "$out_list" ;;
+        mihomo-list)  sed 's/\r$//' "$tmp" >"$out_list" ;;   # уже формат mihomo, только CRLF→LF
+        *) rm -f "$tmp"; die "неизвестный src=$src для $file" ;;
+      esac
+      rm -f "$tmp"
+      continue
+    fi
     local out="$dest/${file}.mrs"
     if [[ "$force" != "1" && -f "$out" ]]; then
       echo "→ $file.mrs (пропуск, уже есть; --force чтобы перезаписать)"
@@ -98,7 +131,8 @@ staging_unpack() {
   local text_d="${2:-$TEXT_DIR}"
   ensure_mihomo
   mkdir -p "$text_d"
-  while IFS=$'\t' read -r _ behavior file _; do
+  while IFS=$'\t' read -r _ behavior file _ src; do
+    [[ -n "$src" ]] && continue   # текстовый источник: list уже готов в staging_download
     local bin="$bin_d/${file}.mrs"
     local txt="$text_d/${file}.list"
     [[ -f "$bin" ]] || die "нет $bin"
@@ -127,7 +161,7 @@ cmd_pack() {
   ensure_mihomo
   mkdir -p "$BIN_DIR"
   local changed=0
-  while IFS=$'\t' read -r _ behavior file _; do
+  while IFS=$'\t' read -r _ behavior file _ _; do
     local txt="$TEXT_DIR/${file}.list"
     local bin="$BIN_DIR/${file}.mrs"
     [[ -f "$txt" ]] || continue

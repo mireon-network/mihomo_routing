@@ -9,11 +9,14 @@
 | Путь | Описание |
 |------|----------|
 | `MIHOMO/template_remnawave.yaml` | Шаблон для Remnawave |
-| `rule-sets/yaml/torrent-clients.yaml` | Торрент-клиенты (форк [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets/blob/main/other/torrent-clients.yaml)) |
-| `rule-sets/yaml/games.yaml` | Игры ([roscomvpn/custom-category](https://github.com/roscomvpn/custom-category)) + [GeForce NOW](https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json) |
+| `rule-sets/yaml/torrent-clients.yaml` | Торрент-клиенты — **зеркало** [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets/blob/main/other/torrent-clients.yaml) (без правок) |
+| `rule-sets/yaml/torrent-clients-custom.yaml` | Локальные дополнения торрент-клиентов → DIRECT |
+| `rule-sets/yaml/games.yaml` | Игры — **зеркало** [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category) (без правок) |
+| `rule-sets/yaml/games-custom.yaml` | Локальные дополнения игр: [GeForce NOW](https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json), нативные macOS/Linux, ручные — **только локально** |
 | `rule-sets/yaml/games-launchers.yaml` | Игровые лаунчеры (Steam, Epic, VK Play…) — всегда DIRECT |
 | `rule-sets/yaml/games-proxy-rules.yaml` | Игровые домены и процессы, требующие PROXY для доступа |
-| `rule-sets/yaml/ru-apps.yaml` | RU-приложения (тот же репозиторий) |
+| `rule-sets/yaml/ru-apps.yaml` | RU-приложения — **зеркало** того же репозитория (без правок) |
+| `rule-sets/yaml/ru-apps-custom.yaml` | Локальные дополнения RU-приложений → DIRECT |
 | `rule-sets/yaml/ai.yaml` | AI / LLM — **только локально**, upstream не синхронизируется |
 | `rule-sets/yaml/wine.yaml` | Wine / Proton (Windows-софт и игры на Linux) → `🍷 Wine` — **только локально** |
 | `rule-sets/mrs/text/*.list` | Распакованные MRS-наборы (редактировать здесь) |
@@ -21,7 +24,8 @@
 | `scripts/upstream-sync.sh` | Обновление YAML из upstream-репозиториев |
 | `scripts/mrs-tool.sh` | Обновление MRS rule-sets |
 | `scripts/upstream-manifest.yaml` | Список upstream-источников для `upstream-sync.sh` |
-| `scripts/generate-gfn-games-block.py` | Пересборка блока GeForce NOW в `games.yaml` |
+| `scripts/generate-gfn-games-block.py` | Пересборка блока GeForce NOW в `games-custom.yaml` |
+| `scripts/generate-tun-exclude-package.py` | Пересборка `tun.exclude-package` (RU-приложения мимо TUN) в шаблоне |
 
 ## CDN
 
@@ -30,10 +34,13 @@
 База: `https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/`
 
 - `…/rule-sets/yaml/torrent-clients.yaml`
+- `…/rule-sets/yaml/torrent-clients-custom.yaml`
 - `…/rule-sets/yaml/games.yaml`
+- `…/rule-sets/yaml/games-custom.yaml`
 - `…/rule-sets/yaml/games-launchers.yaml`
 - `…/rule-sets/yaml/games-proxy-rules.yaml`
 - `…/rule-sets/yaml/ru-apps.yaml`
+- `…/rule-sets/yaml/ru-apps-custom.yaml`
 - `…/rule-sets/yaml/ai.yaml`
 - `…/rule-sets/yaml/wine.yaml`
 - `…/rule-sets/mrs/bin/<имя>.mrs`
@@ -87,11 +94,13 @@
 | id | Файл | Upstream | auto_apply |
 |----|------|----------|------------|
 | `template_remnawave` | `MIHOMO/template_remnawave.yaml` | [hydraponique/roscomvpn-routing](https://github.com/hydraponique/roscomvpn-routing) | **false** (форк) |
-| `torrent_clients` | `rule-sets/yaml/torrent-clients.yaml` | [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets) | true |
-| `games` | `rule-sets/yaml/games.yaml` | [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category) | **false** (форк + GFN) |
-| `ru_apps` | `rule-sets/yaml/ru-apps.yaml` | roscomvpn/custom-category | true |
+| `torrent_clients` | `rule-sets/yaml/torrent-clients.yaml` | [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets) | true (зеркало) |
+| `games` | `rule-sets/yaml/games.yaml` | [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category) | true (зеркало; post → GFN в `games-custom.yaml`) |
+| `ru_apps` | `rule-sets/yaml/ru-apps.yaml` | roscomvpn/custom-category | true (зеркало) |
 
-**Не синхронизируется:** `rule-sets/yaml/ai.yaml`, `rule-sets/yaml/wine.yaml` — локальные наборы.
+Синхронизируемые YAML — **зеркала апстрима без правок**. Локальные дополнения держим в отдельных `*-custom.yaml`, которые подключены в шаблоне рядом с оригиналом (см. ниже).
+
+**Не синхронизируется (только локально):** `rule-sets/yaml/ai.yaml`, `rule-sets/yaml/wine.yaml`, а также все `*-custom.yaml`.
 
 Добавить новый источник — запись в `scripts/upstream-manifest.yaml`.
 
@@ -151,14 +160,22 @@
 
 ## games.yaml и GeForce NOW
 
-`games.yaml` — гибрид: база roscomvpn + блок GeForce NOW + секция «Добавленно вручную».
+`games.yaml` — **зеркало roscomvpn без правок**. Все локальные дополнения вынесены в `games-custom.yaml`:
+
+- блок GeForce NOW (пересобирается скриптом);
+- нативные порты macOS/Linux;
+- секция «Добавленно вручную» (R.E.P.O. и т.п.).
+
+Правьте только часть `games-custom.yaml` **выше** маркера `# --- GeForce NOW` — всё ниже перезаписывает скрипт.
+
+Лаунчеры, которые апстрим держит в `games.yaml`, в шаблоне перехватываются **раньше** правилом `games-launchers` (→ 🎮 Лаунчеры / DIRECT), поэтому отдельно вырезать их из зеркала не нужно.
 
 Исключения с фиксированной политикой (не попадают в 🎮 Игры) — отдельные YAML, подключаются в шаблоне **до** `games`:
 
 - `games-proxy-rules.yaml` — игровые домены и процессы → PROXY (в шаблоне **раньше** лаунчеров и MRS steam/epic)
 - `games-launchers.yaml` — лаунчеры платформ → DIRECT (после proxy-rules; до MRS steam/epic)
 
-После sync с upstream roscomvpn скрипт автоматически пересобирает блок GFN (`regenerate_gfn_block`). Вручную:
+После sync с upstream roscomvpn скрипт автоматически пересобирает блок GFN в `games-custom.yaml` (`regenerate_gfn_block`), дедуплицируя против `games.yaml` и `games-launchers.yaml`. Вручную:
 
 ```bash
 python3 scripts/generate-gfn-games-block.py
@@ -172,7 +189,7 @@ python3 scripts/generate-gfn-games-block.py
 
 В блок попадают только игры с **явным онлайном в жанрах** GFN (Multiplayer, MMO, F2P online, Battle Royale, Co-op/PvP…). Офлайн-одиночки не включаются.
 
-Игры вне каталога GFN (например **R.E.P.O.**) — в секции «Добавленно вручную» внизу `games.yaml` и в `generate-gfn-games-block.py` (не перезаписываются при пересборке GFN).
+Игры вне каталога GFN (например **R.E.P.O.**) — в секции «Добавленно вручную» внизу `games-custom.yaml` (генерируется из `generate-gfn-games-block.py`, не перезаписывается данными GFN).
 
 ## Локальные дополнения в шаблоне
 
@@ -183,6 +200,14 @@ python3 scripts/generate-gfn-games-block.py
 1. **proxy-groups** — группа `🤖 ИИ` (как у `📺 Youtube`: `remnawave.include-proxies: false`, прокси `🛡️ VPN` + переопределение стран).
 2. **rule-providers** — провайдер `ai` → `rule-sets/yaml/ai.yaml`.
 3. **rules** — `RULE-SET,ai,🤖 ИИ` **выше** `RULE-SET,google-play`.
+
+### TUN exclude-package (RU-приложения мимо TUN)
+
+`tun.exclude-package` в шаблоне — список Android-пакетов RU-приложений, которые не заворачиваются в TUN (механизм как у [Davoyan/ultimate-mihomo-ru](https://github.com/Davoyan/mihomo-rule-sets/blob/main/remnawave-templates/ultimate-mihomo-ru.yaml)). Строка генерируется из `ru-app-list.yaml` + `ru-apps.yaml` + `ru-apps-custom.yaml` пост-хуком `regenerate_tun_exclude` (источник `ru_app_list`). Вручную:
+
+```bash
+python3 scripts/generate-tun-exclude-package.py
+```
 
 ### CDN URL в rule-providers
 

@@ -218,6 +218,13 @@ def run_post_hooks(root: Path, info: SourceInfo, result: str) -> None:
                 continue
             print(f"post {info.id}: regenerate_gfn_block…")
             subprocess.run([sys.executable, str(script)], cwd=root, check=True)
+        elif hook == "regenerate_tun_exclude":
+            script = root / "scripts/generate-tun-exclude-package.py"
+            if not script.is_file():
+                print(f"post {info.id}: нет {script}", file=sys.stderr)
+                continue
+            print(f"post {info.id}: regenerate_tun_exclude…")
+            subprocess.run([sys.executable, str(script)], cwd=root, check=True)
         else:
             print(f"post {info.id}: неизвестный hook {hook!r}", file=sys.stderr)
 

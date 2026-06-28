@@ -1,0 +1,266 @@
+payload:
+  # Локальные дополнения к games.yaml (апстрим: roscomvpn/custom-category).
+  # Оригинал не редактируем — он синхронизируется как есть. Здесь: игры вне
+  # каталога roscomvpn, нативные порты macOS/Linux, блок GeForce NOW и ручные игры.
+  # Блок «GeForce NOW» и «Добавленно вручную» ниже пересобирает
+  # scripts/generate-gfn-games-block.py — правьте только часть ВЫШЕ маркера GFN.
+
+  # TEKKEN (онлайн на PC: 7, 8; Tekken 6 / TTT2 / Revolution — консоли или RPCS3)
+  - PROCESS-NAME,TekkenGame-Win64-Shipping.exe # Tekken 7 — ranked, лобби (Steam 389730)
+  - PROCESS-NAME,Polaris-Win64-Shipping.exe # Tekken 8 — онлайн (Steam 1778820)
+
+  # =========================================================
+  # macOS / Linux — нативные сборки
+  # ВНИМАНИЕ: игры под Steam Proton / Wine / CrossOver НЕ видны как game.exe —
+  #           сетевым сокетом владеет общий процесс wineserver (или wine/wine64),
+  #           одинаковый для всех игр. Их .exe-правила в games.yaml под Proton не
+  #           срабатывают; этот трафик ловит отдельная категория «🍷 Wine»
+  #           (см. rule-sets/yaml/wine.yaml). Здесь — только НАТИВНЫЕ порты,
+  #           где имя бинарника отличается от Windows.
+  # =========================================================
+
+  # --- Кроссплатформенные нативные бинарники (macOS + Linux) ---
+  - PROCESS-NAME,dota2                 # Dota 2 (Source 2)
+  - PROCESS-NAME,eurotrucks2           # Euro Truck Simulator 2
+  - PROCESS-NAME,amtrucks              # American Truck Simulator
+  - PROCESS-NAME,osu!                  # osu! (lazer)
+  - PROCESS-NAME,Albion-Online         # Albion Online
+
+  # --- macOS (бинарник внутри .app) ---
+  - PROCESS-NAME,League of Legends     # League of Legends
+  - PROCESS-NAME,Hearthstone           # Hearthstone
+  - PROCESS-NAME,World of Warcraft     # World of Warcraft
+  - PROCESS-NAME,SC2                   # StarCraft II
+  - PROCESS-NAME,Among Us              # Among Us
+
+  # --- Linux (нативные сборки) ---
+  - PROCESS-NAME,cs2                   # Counter-Strike 2 (Source 2)
+  - PROCESS-NAME,tf_linux64            # Team Fortress 2 (64-bit)
+  - PROCESS-NAME,hl2_linux             # Half-Life 2 (legacy 32-bit)
+  - PROCESS-NAME,hl2_linux64           # Half-Life 2 (64-bit)
+
+  # Примечание: Wine/Proton (wineserver и т.п.) вынесены в отдельную
+  # категорию «🍷 Wine» → rule-sets/yaml/wine.yaml
+  # --- GeForce NOW (только онлайн/MP по жанрам GFN) ---
+  # JSON: https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json
+  # exe:  https://gist.github.com/Gr3gorywolf/1757c79ce1152966bf77bf8c6d069161
+  # Steam appid→name: https://github.com/jsnli/steamappidlist (games_appid.json)
+  # добавлено 69 PROCESS-NAME
+  # пропущено офлайн (нет MP/MMO/F2P online в жанрах): 1350
+  # пропущено без exe в gamedatabase: 79
+
+  # Albion Online ( | Free To Play, Massively Multiplayer Online, Role Playing; match=gfn_title)
+  - PROCESS-NAME,Albion-Online.exe
+
+  # ARK: Survival Evolved (Epic | Action, Adventure, Indie; match=gfn_title)
+  - PROCESS-NAME,ShooterGame.exe
+
+  # ARK: Survival Of The Fittest (Steam | Action, Adventure, Indie; match=gfn_title)
+  - PROCESS-NAME,shootergame_be.exe
+
+  # Armored Warfare ( | Simulation, Action, Free To Play; match=gfn_title)
+  - PROCESS-NAME,armoredwarfare.exe
+
+  # Black Desert (Steam | Action, Adventure, Massively Multiplayer Online; match=substring)
+  - PROCESS-NAME,blackdesertpatcher32.pae.exe
+
+  # Brawlhalla (Steam | Action, Free To Play, Indie; match=gfn_title)
+  - PROCESS-NAME,Brawlhalla.exe
+
+  # Conan Exiles (Steam | Action, Adventure, Massively Multiplayer Online; match=gfn_title)
+  - PROCESS-NAME,conansandbox_be.exe
+
+  # Creativerse (Steam | Action, Adventure, Casual; match=gfn_title)
+  - PROCESS-NAME,creativerse.exe
+
+  # Crowfall ( | Massively Multiplayer Online, Role Playing; match=gfn_title)
+  - PROCESS-NAME,CrowfallClient.exe
+
+  # Crusader Kings II (Steam | Free To Play, Role Playing, Simulation; match=gfn_title)
+  - PROCESS-NAME,CK2game.exe
+
+  # Darwin Project (Steam | Action, Free To Play, Indie; match=gfn_title)
+  - PROCESS-NAME,darwin.exe
+
+  # Dauntless (Epic | Action, Free To Play, Massively Multiplayer Online; match=gfn_title)
+  - PROCESS-NAME,dauntless-win64-shipping.exe
+
+  # DayZ (Steam | Action, Adventure, First-Person Shooter; match=gfn_title)
+  - PROCESS-NAME,dayz_x64.exe
+
+  # Deceit (Steam | Action, Free To Play, Indie; match=gfn_title)
+  - PROCESS-NAME,deceit.exe
+
+  # Destiny 2 (Steam | Action, Adventure, First-Person Shooter; match=gfn_title)
+  - PROCESS-NAME,destiny2.exe
+
+  # Dirty Bomb® (Steam | Action, Free To Play, First-Person Shooter; match=gfn_title)
+  - PROCESS-NAME,ShooterGame-Win32-Shipping.exe
+
+  # Elite Dangerous (Steam | Action, Adventure, Massively Multiplayer Online; match=gfn_title)
+  - PROCESS-NAME,elitedangerous64.exe
+
+  # EVE Online ( | Action, Free To Play, Massively Multiplayer Online; match=gfn_title)
+  - PROCESS-NAME,exefile.exe
+
+  # Fortnite (Epic | Action, Free To Play, Massively Multiplayer Online; match=gfn_title)
+  - PROCESS-NAME,FortniteClient-Win64-Shipping_BE.exe
+
+  # Granado Espada (Steam | Free To Play, Massively Multiplayer Online, Role Playing; match=gfn_title)
+  - PROCESS-NAME,ge.exe
+
+  # Guild Wars 2 ( | Massively Multiplayer Online, Role Playing; match=gfn_title)
+  - PROCESS-NAME,Gw2.exe
+
+  # Heroes & Generals (Steam | Action, First-Person Shooter, Free To Play; match=gfn_title)
+  - PROCESS-NAME,HeroesAndGeneralsDesktop.exe
+
+  # Hide and Shriek™ (Steam | Action, Free To Play; match=gfn_title)
+  - PROCESS-NAME,hideandshriek-win64-shipping.exe
+
+  # Holdfast: Nations At War (Steam | Action, Massively Multiplayer Online, Indie; match=gfn_title)
+  - PROCESS-NAME,holdfast naw.exe
+
+  # Idle Champions of the Forgotten Realms (Steam | Action, Adventure, Casual; match=gfn_title)
+  - PROCESS-NAME,idledragons.exe
+
+  # Insurgency: Sandstorm (Steam | Action, First-Person Shooter, Massively Multiplayer Online; match=gfn_title)
+  - PROCESS-NAME,insurgencyclient-win64-shipping.exe
+
+  # Killing Floor 2 (Epic | Action, First-Person Shooter, Massively Multiplayer Online; match=gfn_title)
+  - PROCESS-NAME,KFGame.exe
+
+  # Kingdom: Classic (Steam | Free To Play, Indie, Simulation; match=gfn_title)
+  - PROCESS-NAME,kingdom.exe
+
+  # League of Legends ( | Action, Free To Play, Multiplayer Online Battle Arena; match=gfn_title)
+  - PROCESS-NAME,LolClient.exe
+
+  # MapleStory (Steam | Action, Adventure, Free To Play; match=gfn_title)
+  - PROCESS-NAME,MapleStory.exe
+
+  # Minion Masters (Steam | Action, Free To Play, Indie; match=gfn_title)
+  - PROCESS-NAME,minionmasters.exe
+
+  # Miscreated (Steam | Massively Multiplayer Online, Action, Adventure; match=gfn_title)
+  - PROCESS-NAME,miscreated.exe
+
+  # Neverwinter (Steam | Action, Adventure, Free To Play; match=gfn_title)
+  - PROCESS-NAME,neverwinter.exe
+
+  # New World (Steam | Action, Adventure, Massively Multiplayer Online; match=substring)
+  - PROCESS-NAME,meridian - new world.exe
+
+  # Paladins® (Epic | Action, Free To Play, Indie; match=gfn_title)
+  - PROCESS-NAME,paladins.exe
+
+  # Path of Exile (Steam | Adventure, Free To Play, Massively Multiplayer Online; match=gfn_title)
+  - PROCESS-NAME,PathOfExileSteam.exe
+
+  # PixARK (Steam | Action, Adventure, Casual; match=gfn_title)
+  - PROCESS-NAME,pixark.exe
+
+  # PlanetSide 2 (Steam | Action, First-Person Shooter, Free To Play; match=gfn_title)
+  - PROCESS-NAME,planetside2_x86.exe
+
+  # Post Scriptum (Steam | Action, Indie, Massively Multiplayer Online; match=gfn_title)
+  - PROCESS-NAME,postscriptum.exe
+
+  # Realm Grinder (Steam | Casual, Free To Play, Indie; match=gfn_title)
+  - PROCESS-NAME,RealmGrinderDesktop.exe
+
+  # Realm Royale (Steam | Action, Free To Play, First-Person Shooter; match=gfn_title)
+  - PROCESS-NAME,realmeac.exe
+
+  # Rising Storm 2: Vietnam (Steam | Action, First-Person Shooter, Massively Multiplayer Online; match=gfn_title)
+  - PROCESS-NAME,vngame.exe
+
+  # Rocket League® (Steam | Action, Arcade, Casual; match=gfn_title)
+  - PROCESS-NAME,RocketLeague.exe
+
+  # RuneScape® (Steam | Free To Play, Massively Multiplayer Online, Role Playing; match=gfn_title)
+  - PROCESS-NAME,SwiftKit-RS.exe
+
+  # Russian Fishing 4 (Steam | Adventure, Casual, Free To Play; match=gfn_title)
+  - PROCESS-NAME,rf4_x64.exe
+
+  # SCP: Secret Laboratory (Steam | Action, First-Person Shooter, Free To Play; match=gfn_title)
+  - PROCESS-NAME,scpsl.exe
+
+  # SCUM (Steam | Action, Adventure, Indie; match=gfn_title)
+  - PROCESS-NAME,scum.exe
+
+  # Secret World Legends (Steam | Action, Adventure, Free To Play; match=gfn_title)
+  - PROCESS-NAME,clientpatcher.exe
+
+  # Skyforge ( | Free To Play, Indie, Massively Multiplayer Online; match=gfn_title)
+  - PROCESS-NAME,Skyforge.exe
+
+  # SMITE® (Epic | Action, Free To Play, Indie; match=gfn_title)
+  - PROCESS-NAME,smite.exe
+
+  # Splitgate (Steam | Action, First-Person Shooter, Free To Play; match=substring)
+  - PROCESS-NAME,PortalWars-Win64-Shipping.exe
+
+  # Star Trek Online (Steam | Free To Play, Massively Multiplayer Online, Role Playing; match=gfn_title)
+  - PROCESS-NAME,Star_Trek_Online.exe
+
+  # Team Fortress 2 (Steam | Action, Free To Play; match=gfn_title)
+  - PROCESS-NAME,hl2TF.exe
+
+  # TERA (Steam | Action, Adventure, Free To Play; match=gfn_title)
+  - PROCESS-NAME,TERA.exe
+
+  # The Awesome Adventures of Captain Spirit (Steam | Adventure, Casual, Free To Play; match=gfn_title)
+  - PROCESS-NAME,captainspirit-win64-shipping.exe
+
+  # The Crew® 2 (Steam | Action, Racing, Massively Multiplayer Online; match=substring)
+  - PROCESS-NAME,thecrew2.exe
+
+  # The Crew™ (Steam | Action, Massively Multiplayer Online, Racing; match=gfn_title)
+  - PROCESS-NAME,TheCrew.exe
+
+  # Tom Clancy's The Division™ (Steam | Action, Adventure, Role Playing; match=gfn_title)
+  - PROCESS-NAME,thedivision.exe
+
+  # Totally Accurate Battlegrounds (Steam | Action, Casual, Indie; match=gfn_title)
+  - PROCESS-NAME,TotallyAccurateBattlegrounds.exe
+
+  # Trackmania® (Ubisoft Connect | Arcade, Free To Play, Massively Multiplayer Online; match=substring)
+  - PROCESS-NAME,maniaplanet.exe
+
+  # Trackmania® Turbo (Ubisoft Connect | Massively Multiplayer Online, Racing, Action; match=gfn_title)
+  - PROCESS-NAME,trackmaniaturbo.exe
+
+  # Tree of Savior (Steam | Free To Play, Massively Multiplayer Online, Role Playing; match=gfn_title)
+  - PROCESS-NAME,Client_tos.exe
+
+  # Unturned (Steam | Action, Adventure, Free To Play; match=gfn_title)
+  - PROCESS-NAME,unturned_be.exe
+
+  # Verdun (Epic | Action, Indie, Massively Multiplayer Online; match=gfn_title)
+  - PROCESS-NAME,1914-1918 series.exe
+
+  # War Robots (Steam | Action, Free To Play; match=gfn_title)
+  - PROCESS-NAME,warrobots.exe
+
+  # Warframe (Epic | Action, Free To Play, Multiplayer Online Battle Arena; match=gfn_title)
+  - PROCESS-NAME,Warframe.x64.exe
+
+  # World of Tanks Blitz (Steam | Action, Free To Play, Massively Multiplayer Online; match=gfn_title)
+  - PROCESS-NAME,wotblitz.exe
+
+  # World of Warplanes ( | Action, Free To Play, Massively Multiplayer Online; match=gfn_title)
+  - PROCESS-NAME,worldofwarplanes.exe
+
+  # Ylands (Steam | Adventure, Casual, Free To Play; match=gfn_title)
+  - PROCESS-NAME,ylands.exe
+
+  # --- Добавленно вручную (нет в GFN / не попали в фильтр жанров) ---
+  # R.E.P.O. — co-op онлайн, Steam 3241660; в gfnpc-en-US.json отсутствует
+  # (REPO/Overwolf — только Windows; на Linux Proton видит REPO.exe)
+  # Raft.exe / Tanki.exe уже есть в апстримном games.yaml — не дублируем.
+  - PROCESS-NAME,REPO.exe
+  - PROCESS-NAME,REPO-Win64-Shipping.exe
+  - PROCESS-NAME,Raft                  # Raft — нативный macOS
+  - PROCESS-NAME,Overwolf.exe

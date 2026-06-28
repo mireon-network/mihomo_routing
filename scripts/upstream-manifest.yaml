@@ -16,10 +16,17 @@ sources:
   - id: games
     url: https://raw.githubusercontent.com/roscomvpn/custom-category/release/mihomo/games.yaml
     path: rule-sets/yaml/games.yaml
-    auto_apply: false
+    # Зеркало апстрима без правок. Локальные игры — rule-sets/yaml/games-custom.yaml,
+    # блок GFN/ручные пересобирает post-hook (пишет в games-custom.yaml).
     post:
       - regenerate_gfn_block
 
   - id: ru_apps
     url: https://raw.githubusercontent.com/roscomvpn/custom-category/release/mihomo/ru-apps.yaml
     path: rule-sets/yaml/ru-apps.yaml
+
+  - id: ru_app_list
+    url: https://raw.githubusercontent.com/legiz-ru/mihomo-rule-sets/main/other/ru-app-list.yaml
+    path: rule-sets/yaml/ru-app-list.yaml
+    post:
+      - regenerate_tun_exclude

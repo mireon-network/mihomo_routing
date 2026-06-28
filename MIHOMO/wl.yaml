@@ -127,5 +127,15 @@ rules:
   - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT-DROP # QUIC — принудительно через TCP
   - RULE-SET,private-domains,DIRECT                # локальные домены — напрямую
 
+  # --- Почтовые порты → DIRECT ---
+  - DST-PORT,25,DIRECT                             # SMTP
+  - DST-PORT,465,DIRECT                            # SMTPS (implicit TLS)
+  - DST-PORT,587,DIRECT                            # SMTP submission (STARTTLS)
+  - DST-PORT,2525,DIRECT                           # альтернативный SMTP
+  - DST-PORT,110,DIRECT                            # POP3
+  - DST-PORT,995,DIRECT                            # POP3S
+  - DST-PORT,143,DIRECT                            # IMAP
+  - DST-PORT,993,DIRECT                            # IMAPS
+
   # --- Весь остальной трафик → 🇷🇺 Белые списки ---
   - MATCH,🇷🇺 Белые списки

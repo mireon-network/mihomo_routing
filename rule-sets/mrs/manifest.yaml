@@ -1,5 +1,10 @@
 # Соответствует rule-providers с format: mrs в MIHOMO/template_remnawave.yaml
 # file — имя без расширения; bin/*.mrs и text/*.list
+# url по умолчанию указывает на готовый .mrs (скачивается → распаковывается в text/).
+# src: v2ray-domain — url указывает на .txt в формате V2Ray (domain:/full:),
+#   он преобразуется в text/*.list и пакуется в bin/*.mrs локально.
+# src: mihomo-list — url указывает на готовый .list (формат mihomo);
+#   берётся как есть в text/*.list и пакуется в bin/*.mrs локально.
 version: 1
 sets:
   - id: private-domains
@@ -90,7 +95,34 @@ sets:
     behavior: domain
     file: torrent-domains
     url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/torrent.mrs
+  - id: torrent-trackers
+    behavior: domain
+    file: torrent-trackers
+    url: https://cdn.jsdelivr.net/gh/legiz-ru/mihomo-rule-sets@main/other/torrent-trackers.mrs
+  - id: torrent-websites
+    behavior: domain
+    file: torrent-websites
+    url: https://cdn.jsdelivr.net/gh/legiz-ru/mihomo-rule-sets@main/other/torrent-websites.mrs
   - id: category-ads
     behavior: domain
     file: category-ads
     url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/category-ads.mrs
+  - id: category-ip-geo-detect
+    behavior: domain
+    file: category-ip-geo-detect
+    src: v2ray-domain
+    url: https://raw.githubusercontent.com/Davoyan/xray-routing/main/domains/category-ip-geo-detect.txt
+  - id: oisd-big
+    behavior: domain
+    file: oisd-big
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_based_by_davoyan@main/rules/legiz-ru/oisd/big.mrs
+  - id: private-domains-meta
+    behavior: domain
+    file: meta-geosite-private
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.list
+  - id: private-ips-meta
+    behavior: ipcidr
+    file: meta-geoip-private
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.list
