@@ -26,10 +26,11 @@
 # Rule-sets (репозитории hydraponique / RoscomVPN на GitHub):
 #   • Реклама и слежка Windows              → REJECT-DROP
 #   • Торренты (домены/клиенты)             → DIRECT
-#   • Microsoft, Apple                      → DIRECT
+#   • Microsoft: обновления Windows/ПО     → DIRECT; остальной Microsoft → PROXY
+#   • Apple: обновления ОС/ПО + OCSP/CRL    → DIRECT; остальной Apple → PROXY
 #   • Российские домены (category-ru), ru-apps → DIRECT
 #   • Twitch, Pinterest                     → DIRECT
-#   • YouTube, Telegram, GitHub             → PROXY
+#   • YouTube, Telegram, GitHub             → PROXY (GitHub — через финальный MATCH,PROXY)
 #   • Игровые лаунчеры (games-launchers)    → 🎮 Лаунчеры (по умолчанию DIRECT)
 #   • Игровые сервисы                       → 🎮 Игры
 #   • Wine/Proton (wine.yaml)               → 🍷 Wine (по умолчанию DIRECT)
@@ -544,12 +545,12 @@ rule-providers:
     path: ./ruleset/microsoft-domains-custom.yaml
     proxy: ⚡️ Авто
     interval: 86400
-  microsoft-meta:
+  win-update-meta:
     type: http
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-microsoft.mrs
-    path: ./ruleset/meta-microsoft.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-win-update.mrs
+    path: ./ruleset/meta-win-update.mrs
     proxy: ⚡️ Авто
     interval: 86400
   apple-domains-custom:
@@ -560,12 +561,92 @@ rule-providers:
     path: ./ruleset/apple-domains-custom.yaml
     proxy: ⚡️ Авто
     interval: 86400
-  apple-meta:
+  apple-update-meta:
     type: http
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-apple.mrs
-    path: ./ruleset/meta-apple.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-apple-update.mrs
+    path: ./ruleset/meta-apple-update.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  nvidia-meta:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-nvidia.mrs
+    path: ./ruleset/meta-nvidia.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  amd-meta:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-amd.mrs
+    path: ./ruleset/meta-amd.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  intel-meta:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-intel.mrs
+    path: ./ruleset/meta-intel.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  archlinux-meta:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-archlinux.mrs
+    path: ./ruleset/meta-archlinux.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  ubuntu-meta:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-ubuntu.mrs
+    path: ./ruleset/meta-ubuntu.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  debian-meta:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-debian.mrs
+    path: ./ruleset/meta-debian.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  fedora-meta:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-fedora.mrs
+    path: ./ruleset/meta-fedora.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  docker-meta:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-docker.mrs
+    path: ./ruleset/meta-docker.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  category-android-app-download:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-android-app-download.mrs
+    path: ./ruleset/meta-category-android-app-download.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  category-game-platforms-download:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-game-platforms-download.mrs
+    path: ./ruleset/meta-category-game-platforms-download.mrs
     proxy: ⚡️ Авто
     interval: 86400
   category-games-meta:
@@ -622,14 +703,6 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geoip-ru.mrs
     path: ./ruleset/meta-geoip-ru.mrs
-    proxy: ⚡️ Авто
-    interval: 86400
-  github-meta:
-    type: http
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-github.mrs
-    path: ./ruleset/meta-github.mrs
     proxy: ⚡️ Авто
     interval: 86400
   youtube-meta:
@@ -823,7 +896,7 @@ rules:
   # --- Сервисы через PROXY ---
   # google-play / telegram убраны: их домены и так попадают в финальный MATCH,PROXY
   - RULE-SET,youtube-meta,📺 Youtube               # YouTube-домены (MetaCubeX; покрывает удалённый roscomvpn youtube)
-  - RULE-SET,github-meta,PROXY                     # GitHub-домены (MetaCubeX, покрывает roscomvpn/github; выше microsoft-meta — иначе Copilot/atom.io уйдут в DIRECT)
+  # github-meta убран: GitHub-домены уходят в финальный MATCH,PROXY (проверено scripts/dedup-proxy-check.py)
 
     # --- Приложения по имени процесса ---
   - RULE-SET,discord,💬 Discord                    # Discord-домены (MetaCubeX)
@@ -832,6 +905,9 @@ rules:
 
   # --- Игры: домены и процессы → PROXY (раньше лаунчеров и MRS steam/epic) ---
   - RULE-SET,games-proxy-rules,PROXY
+
+  # --- Загрузочные CDN игровых платформ → DIRECT (выше 🎮 Игры/Лаунчеров: тяжёлые загрузки всегда напрямую, мимо VPN) ---
+  - RULE-SET,category-game-platforms-download,DIRECT # загрузочные CDN игровых платформ (MetaCubeX) — напрямую
 
   # --- Игровые лаунчеры → 🎮 Лаунчеры (по умолчанию DIRECT, можно переключить) ---
   - RULE-SET,games-launchers,🎮 Лаунчеры
@@ -845,10 +921,23 @@ rules:
 
   # --- Конкретные сервисы → DIRECT (выше широких catch-all внизу) ---
   - RULE-SET,category-ip-geo-detect-meta,DIRECT    # сервисы определения IP/гео (MetaCubeX) — напрямую
-  - RULE-SET,microsoft-meta,DIRECT                 # Microsoft-домены (MetaCubeX, покрывает roscomvpn/microsoft) — напрямую
-  - RULE-SET,microsoft-domains-custom,DIRECT       # MS/OneDrive-домены не из MetaCubeX (1drv.ms, onedrive ccTLD, akadns) — напрямую
-  - RULE-SET,apple-meta,DIRECT                     # Apple-домены (MetaCubeX, покрывает roscomvpn/apple) — напрямую
-  - RULE-SET,apple-domains-custom,DIRECT           # Apple OCSP/CRL не из MetaCubeX (digicert, akadns) — напрямую
+  - RULE-SET,win-update-meta,DIRECT                # Windows: загрузка обновлений ОС/ПО (MetaCubeX win-update) — напрямую, мимо VPN
+  - RULE-SET,microsoft-domains-custom,DIRECT       # MS update-алиасы (akadns/nsatc) + OneDrive не из MetaCubeX — напрямую
+  - RULE-SET,apple-update-meta,DIRECT              # Apple: загрузка обновлений ОС/ПО (MetaCubeX apple-update) — напрямую, мимо VPN
+  - RULE-SET,apple-domains-custom,DIRECT           # Apple OCSP/CRL не из MetaCubeX (digicert, akadns) — напрямую (мелкий трафик проверки сертификатов)
+  # остальной Apple/Microsoft (iCloud/App Store/Office/Teams/Store/Xbox…) уходит в финальный MATCH,PROXY (apple-meta/microsoft-meta убраны как избыточные, проверено scripts/dedup-proxy-check.py)
+
+  # --- Тяжёлый трафик: драйверы / дистрибутивы / загрузки → DIRECT (мимо VPN, экономия трафика) ---
+  - RULE-SET,nvidia-meta,DIRECT                    # драйверы/ПО NVIDIA (MetaCubeX) — напрямую
+  - RULE-SET,amd-meta,DIRECT                       # драйверы/ПО AMD (MetaCubeX) — напрямую
+  - RULE-SET,intel-meta,DIRECT                     # драйверы/ПО Intel (MetaCubeX) — напрямую
+  - RULE-SET,archlinux-meta,DIRECT                 # репозитории Arch Linux (MetaCubeX) — напрямую
+  - RULE-SET,ubuntu-meta,DIRECT                    # репозитории/ISO Ubuntu (MetaCubeX) — напрямую
+  - RULE-SET,debian-meta,DIRECT                    # репозитории/ISO Debian (MetaCubeX) — напрямую
+  - RULE-SET,fedora-meta,DIRECT                    # репозитории/ISO Fedora (MetaCubeX) — напрямую
+  - RULE-SET,docker-meta,DIRECT                    # образы Docker Hub (MetaCubeX) — напрямую
+  - RULE-SET,category-android-app-download,DIRECT  # загрузка APK/магазины приложений (MetaCubeX) — напрямую
+
   - RULE-SET,pinterest,DIRECT
   - RULE-SET,category-ecommerce-ru,DIRECT          # российский e-commerce (MetaCubeX) — напрямую
   - RULE-SET,category-entertainment-ru,DIRECT      # российские медиа/стриминги (MetaCubeX) — напрямую

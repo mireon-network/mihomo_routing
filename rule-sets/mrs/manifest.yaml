@@ -71,11 +71,6 @@ sets:
     file: meta-category-games
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-games.list
-  - id: github-meta
-    behavior: domain
-    file: meta-github
-    src: mihomo-list
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/github.list
   - id: youtube-meta
     behavior: domain
     file: meta-youtube
@@ -146,16 +141,67 @@ sets:
     file: meta-category-ip-geo-detect
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ip-geo-detect.list
-  - id: microsoft-meta
+  - id: win-update-meta
     behavior: domain
-    file: meta-microsoft
+    file: meta-win-update
     src: mihomo-list
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.list
-  - id: apple-meta
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/win-update.list
+  - id: apple-update-meta
     behavior: domain
-    file: meta-apple
+    file: meta-apple-update
     src: mihomo-list
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple.list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple-update.list
+  # --- Тяжёлый трафик (драйверы/дистрибутивы/загрузки) → DIRECT ---
+  - id: nvidia-meta
+    behavior: domain
+    file: meta-nvidia
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/nvidia.list
+  - id: amd-meta
+    behavior: domain
+    file: meta-amd
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/amd.list
+  - id: intel-meta
+    behavior: domain
+    file: meta-intel
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/intel.list
+  - id: archlinux-meta
+    behavior: domain
+    file: meta-archlinux
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/archlinux.list
+  - id: ubuntu-meta
+    behavior: domain
+    file: meta-ubuntu
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/ubuntu.list
+  - id: debian-meta
+    behavior: domain
+    file: meta-debian
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/debian.list
+  - id: fedora-meta
+    behavior: domain
+    file: meta-fedora
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/fedora.list
+  - id: docker-meta
+    behavior: domain
+    file: meta-docker
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/docker.list
+  - id: category-android-app-download
+    behavior: domain
+    file: meta-category-android-app-download
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-android-app-download.list
+  - id: category-game-platforms-download
+    behavior: domain
+    file: meta-category-game-platforms-download
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-game-platforms-download.list
   - id: private-domains-meta
     behavior: domain
     file: meta-geosite-private
