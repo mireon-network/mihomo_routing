@@ -537,14 +537,6 @@ rule-providers:
     path: ./ruleset/wld.mrs
     proxy: ⚡️ Авто
     interval: 86400
-  microsoft-domains-custom:
-    type: http
-    behavior: domain
-    format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/microsoft-domains-custom.yaml
-    path: ./ruleset/microsoft-domains-custom.yaml
-    proxy: ⚡️ Авто
-    interval: 86400
   win-update-meta:
     type: http
     behavior: domain
@@ -553,20 +545,28 @@ rule-providers:
     path: ./ruleset/meta-win-update.mrs
     proxy: ⚡️ Авто
     interval: 86400
-  apple-domains-custom:
-    type: http
-    behavior: domain
-    format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/apple-domains-custom.yaml
-    path: ./ruleset/apple-domains-custom.yaml
-    proxy: ⚡️ Авто
-    interval: 86400
   apple-update-meta:
     type: http
     behavior: domain
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-apple-update.mrs
     path: ./ruleset/meta-apple-update.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  icloud-meta:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-icloud.mrs
+    path: ./ruleset/meta-icloud.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  category-netdisk-meta:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-netdisk.mrs
+    path: ./ruleset/meta-category-netdisk.mrs
     proxy: ⚡️ Авто
     interval: 86400
   nvidia-meta:
@@ -922,10 +922,16 @@ rules:
   # --- Конкретные сервисы → DIRECT (выше широких catch-all внизу) ---
   - RULE-SET,category-ip-geo-detect-meta,DIRECT    # сервисы определения IP/гео (MetaCubeX) — напрямую
   - RULE-SET,win-update-meta,DIRECT                # Windows: загрузка обновлений ОС/ПО (MetaCubeX win-update) — напрямую, мимо VPN
-  - RULE-SET,microsoft-domains-custom,DIRECT       # MS update-алиасы (akadns/nsatc) + OneDrive не из MetaCubeX — напрямую
   - RULE-SET,apple-update-meta,DIRECT              # Apple: загрузка обновлений ОС/ПО (MetaCubeX apple-update) — напрямую, мимо VPN
-  - RULE-SET,apple-domains-custom,DIRECT           # Apple OCSP/CRL не из MetaCubeX (digicert, akadns) — напрямую (мелкий трафик проверки сертификатов)
-  # остальной Apple/Microsoft (iCloud/App Store/Office/Teams/Store/Xbox…) уходит в финальный MATCH,PROXY (apple-meta/microsoft-meta убраны как избыточные, проверено scripts/dedup-proxy-check.py)
+  - RULE-SET,icloud-meta,DIRECT                    # iCloud: бэкапы/Фото/iCloud Drive (MetaCubeX) — напрямую, тяжёлый синк мимо VPN
+  - RULE-SET,category-netdisk-meta,DIRECT          # Облачные хранилища не-CN (MetaCubeX: OneDrive/SharePoint/Dropbox/Mega/Terabox/PikPak/UsersDrive) — напрямую, тяжёлый синк мимо VPN
+  # Google Drive → DIRECT (отдельного geosite нет; точечно — основной «вес» Drive: веб + контент/загрузки, без общего googleapis/googleusercontent)
+  - DOMAIN-SUFFIX,drive.google.com,DIRECT
+  - DOMAIN-SUFFIX,docs.google.com,DIRECT
+  - DOMAIN-SUFFIX,drive.usercontent.google.com,DIRECT
+  - DOMAIN-SUFFIX,docs.googleusercontent.com,DIRECT
+  - DOMAIN-SUFFIX,drive-thirdparty.googleusercontent.com,DIRECT
+  # остальной Apple/Microsoft (iCloud/App Store/Office/Teams/Store/Xbox/OneDrive/OCSP…) уходит в финальный MATCH,PROXY (apple-meta/microsoft-meta/*-domains-custom убраны — цель: мимо VPN только большие загрузки)
 
   # --- Тяжёлый трафик: драйверы / дистрибутивы / загрузки → DIRECT (мимо VPN, экономия трафика) ---
   - RULE-SET,nvidia-meta,DIRECT                    # драйверы/ПО NVIDIA (MetaCubeX) — напрямую

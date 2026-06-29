@@ -151,6 +151,16 @@ sets:
     file: meta-apple-update
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple-update.list
+  - id: icloud-meta
+    behavior: domain
+    file: meta-icloud
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/icloud.list
+  - id: category-netdisk-meta
+    behavior: domain
+    file: meta-category-netdisk
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-netdisk-!cn.list
   # --- Тяжёлый трафик (драйверы/дистрибутивы/загрузки) → DIRECT ---
   - id: nvidia-meta
     behavior: domain
