@@ -528,6 +528,14 @@ rule-providers:
     path: ./ruleset/whitelist.mrs
     proxy: ⚡️ Авто
     interval: 86400
+  wld:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/wld.mrs
+    path: ./ruleset/wld.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
   microsoft-domains-custom:
     type: http
     behavior: domain
@@ -856,6 +864,7 @@ rules:
   - RULE-SET,category-ru-meta,DIRECT               # RU-сайты (MetaCubeX, без широких +.ru/+.su) — напрямую
   - RULE-SET,category-ru-custom,DIRECT             # курируемые RU-домены вне MetaCubeX (иностр. банки .ru, IP-чек) — напрямую
   - RULE-SET,whitelist,DIRECT                      # RU-белосписочный
+  - RULE-SET,wld,DIRECT                            # RU-белосписочный (legiz wld; пока рядом, дедуп позже)
 
   # --- RU-приложения и IP → DIRECT (низкий приоритет) ---
   - RULE-SET,ru-app-list,DIRECT                    # RU-приложения Android (legiz-ru, покрывает roscomvpn/ru-apps) — напрямую

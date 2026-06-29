@@ -17,6 +17,11 @@ sets:
     behavior: domain
     file: whitelist
     url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/whitelist.mrs
+  - id: wld
+    behavior: domain
+    file: wld
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/legiz-ru/mihomo-rule-sets/main/other/wld.list
   - id: twitch
     behavior: domain
     file: twitch

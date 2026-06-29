@@ -163,12 +163,60 @@ rule-providers:
     path: ./ruleset/meta-category-medicine-ru.mrs
     proxy: PROXY
     interval: 86400
+  wld:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/wld.mrs
+    path: ./ruleset/wld.mrs
+    proxy: PROXY
+    interval: 86400
   mail-ports:
     type: http
     behavior: classical
     format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/mail-ports.yaml
     path: ./ruleset/mail-ports.yaml
+    proxy: PROXY
+    interval: 86400
+  torrent-trackers:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-trackers.mrs
+    path: ./ruleset/torrent-trackers.mrs
+    proxy: PROXY
+    interval: 86400
+  torrent-websites:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-websites.mrs
+    path: ./ruleset/torrent-websites.mrs
+    proxy: PROXY
+    interval: 86400
+  torrent-domains-custom:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-domains-custom.yaml
+    path: ./ruleset/torrent-domains-custom.yaml
+    proxy: PROXY
+    interval: 86400
+  torrent-clients:
+    type: http
+    behavior: classical
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-clients.yaml
+    path: ./ruleset/torrent-clients.yaml
+    proxy: PROXY
+    interval: 86400
+  torrent-clients-custom:
+    type: http
+    behavior: classical
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-clients-custom.yaml
+    path: ./ruleset/torrent-clients-custom.yaml
     proxy: PROXY
     interval: 86400
 
@@ -187,6 +235,14 @@ rules:
   # --- Госуслуги/госсайты и медицина РФ → DIRECT (MetaCubeX) ---
   - RULE-SET,category-gov-ru,DIRECT
   - RULE-SET,category-medicine-ru,DIRECT
+  - RULE-SET,wld,DIRECT                            # RU-белосписочный (legiz wld)
+
+  # --- Торренты → DIRECT (мимо прокси) ---
+  - RULE-SET,torrent-trackers,DIRECT               # торрент-трекеры (legiz-ru)
+  - RULE-SET,torrent-websites,DIRECT               # торрент-сайты (legiz-ru)
+  - RULE-SET,torrent-domains-custom,DIRECT         # торрент-домены не из legiz (DHT-ноды и пр.)
+  - RULE-SET,torrent-clients,DIRECT                # торрент-клиенты по процессу
+  - RULE-SET,torrent-clients-custom,DIRECT         # локальные дополнения торрент-клиентов
 
   # --- Весь остальной трафик → PROXY (алиас → 🇷🇺 Белые списки) ---
   - MATCH,PROXY
