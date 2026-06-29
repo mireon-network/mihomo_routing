@@ -14,12 +14,14 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / "MIHOMO/template_remnawave.yaml"
+TEMPLATES = (
+    ROOT / "MIHOMO/template_remnawave.yaml",
+    ROOT / "MIHOMO/wl.yaml",
+)
 
 SOURCES = (
     ROOT / "rule-sets/yaml/ru-app-list.yaml",   # legiz-ru (источник Davoyan)
-    ROOT / "rule-sets/yaml/ru-apps.yaml",        # roscomvpn (зеркало)
-    ROOT / "rule-sets/yaml/ru-apps-custom.yaml", # локальные дополнения
+    ROOT / "rule-sets/yaml/ru-apps-custom.yaml", # локальные дополнения (вне legiz)
 )
 
 # Android package-name: токены через точку, без пробелов/слешей; .exe — это десктоп.
@@ -49,18 +51,21 @@ def main() -> int:
     arr = "[" + ", ".join(json.dumps(p) for p in pkgs) + "]"
     line = f"  exclude-package: {arr}"
 
-    text = TEMPLATE.read_text(encoding="utf-8")
-    new, n = re.subn(r"^  exclude-package:.*$", lambda _: line, text, count=1, flags=re.M)
-    if n == 0:
-        print(
-            "generate-tun-exclude-package: в шаблоне нет строки 'exclude-package:'",
-            file=sys.stderr,
-        )
-        return 1
-    if new != text:
-        TEMPLATE.write_text(new, encoding="utf-8")
-    print(f"generate-tun-exclude-package: {len(pkgs)} пакетов → {TEMPLATE}")
-    return 0
+    rc = 0
+    for tpl in TEMPLATES:
+        text = tpl.read_text(encoding="utf-8")
+        new, n = re.subn(r"^  exclude-package:.*$", lambda _: line, text, count=1, flags=re.M)
+        if n == 0:
+            print(
+                f"generate-tun-exclude-package: в {tpl} нет строки 'exclude-package:'",
+                file=sys.stderr,
+            )
+            rc = 1
+            continue
+        if new != text:
+            tpl.write_text(new, encoding="utf-8")
+        print(f"generate-tun-exclude-package: {len(pkgs)} пакетов → {tpl}")
+    return rc
 
 
 if __name__ == "__main__":

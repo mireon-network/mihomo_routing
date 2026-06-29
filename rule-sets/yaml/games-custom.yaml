@@ -5,6 +5,9 @@ payload:
   # Блок «GeForce NOW» и «Добавленно вручную» ниже пересобирает
   # scripts/generate-gfn-games-block.py — правьте только часть ВЫШЕ маркера GFN.
 
+  # --- Игровые домены вне MetaCubeX category-games (classical: можно и DOMAIN, и PROCESS) ---
+  - DOMAIN-SUFFIX,eft-project.com # Escape from Tarkov (из roscomvpn; нет в category-games)
+
   # TEKKEN (онлайн на PC: 7, 8; Tekken 6 / TTT2 / Revolution — консоли или RPCS3)
   - PROCESS-NAME,TekkenGame-Win64-Shipping.exe # Tekken 7 — ranked, лобби (Steam 389730)
   - PROCESS-NAME,Polaris-Win64-Shipping.exe # Tekken 8 — онлайн (Steam 1778820)

@@ -1,0 +1,10 @@
+payload:
+  # Локальные/рабочие домены, которым нужен реальный DNS (исключены из fake-ip)
+  # и прямой маршрут (DIRECT). НЕ синхронизируется с upstream — добавляй сюда.
+  # +.domain покрывает и сам домен, и все поддомены.
+  - "+.fonmix.ru"
+  - "+.sonicpro.ru"
+  - "+.d-net.pro"
+  - "+.id-network.ru"
+  # Из roscomvpn private (его удалили как дубль MetaCubeX) — нет в MetaCubeX-варианте
+  - "+.test.steampowered.com"

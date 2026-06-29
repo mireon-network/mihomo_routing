@@ -28,22 +28,12 @@ CDN_REPLACEMENTS: list[tuple[re.Pattern[str], str]] = [
         f"{CDN_BASE}/rule-sets/yaml/games.yaml",
     ),
     (
-        re.compile(
-            r"https://raw\.githubusercontent\.com/roscomvpn/custom-category/[^/]+/mihomo/ru-apps\.yaml"
-        ),
-        f"{CDN_BASE}/rule-sets/yaml/ru-apps.yaml",
-    ),
-    (
         re.compile(r"https://github\.com/legiz-ru/mihomo-rule-sets/[^ \n]+torrent-clients\.yaml"),
         f"{CDN_BASE}/rule-sets/yaml/torrent-clients.yaml",
     ),
     (
         re.compile(r"https://github\.com/roscomvpn/custom-category/[^ \n]+/games\.yaml"),
         f"{CDN_BASE}/rule-sets/yaml/games.yaml",
-    ),
-    (
-        re.compile(r"https://github\.com/roscomvpn/custom-category/[^ \n]+/ru-apps\.yaml"),
-        f"{CDN_BASE}/rule-sets/yaml/ru-apps.yaml",
     ),
 ]
 

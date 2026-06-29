@@ -15,10 +15,12 @@
 | `rule-sets/yaml/games-custom.yaml` | Локальные дополнения игр: [GeForce NOW](https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json), нативные macOS/Linux, ручные — **только локально** |
 | `rule-sets/yaml/games-launchers.yaml` | Игровые лаунчеры (Steam, Epic, VK Play…) — всегда DIRECT |
 | `rule-sets/yaml/games-proxy-rules.yaml` | Игровые домены и процессы, требующие PROXY для доступа |
-| `rule-sets/yaml/ru-apps.yaml` | RU-приложения — **зеркало** того же репозитория (без правок) |
-| `rule-sets/yaml/ru-apps-custom.yaml` | Локальные дополнения RU-приложений → DIRECT |
+| `rule-sets/yaml/ru-apps-custom.yaml` | Локальные дополнения RU-приложений (вне legiz `ru-app-list`) → DIRECT |
 | `rule-sets/yaml/ai.yaml` | AI / LLM — **только локально**, upstream не синхронизируется |
 | `rule-sets/yaml/wine.yaml` | Wine / Proton (Windows-софт и игры на Linux) → `🍷 Wine` — **только локально** |
+| `rule-sets/yaml/mail-ports.yaml` | Почтовые порты (SMTP/POP3/IMAP +TLS) → DIRECT — **только локально** |
+| `rule-sets/yaml/private-domains-custom.yaml` | Локальные домены → DIRECT + исключение из fake-ip (реальный DNS) — **только локально** |
+| `rule-sets/yaml/private-ips-custom.yaml` | Локальные IP-подсети → DIRECT (no-resolve) — **только локально** |
 | `rule-sets/mrs/text/*.list` | Распакованные MRS-наборы (редактировать здесь) |
 | `rule-sets/mrs/bin/*.mrs` | Бинарные rule-set для Mihomo (собираются из `text/`) |
 | `scripts/upstream-sync.sh` | Обновление YAML из upstream-репозиториев |
@@ -39,10 +41,12 @@
 - `…/rule-sets/yaml/games-custom.yaml`
 - `…/rule-sets/yaml/games-launchers.yaml`
 - `…/rule-sets/yaml/games-proxy-rules.yaml`
-- `…/rule-sets/yaml/ru-apps.yaml`
 - `…/rule-sets/yaml/ru-apps-custom.yaml`
 - `…/rule-sets/yaml/ai.yaml`
 - `…/rule-sets/yaml/wine.yaml`
+- `…/rule-sets/yaml/mail-ports.yaml`
+- `…/rule-sets/yaml/private-domains-custom.yaml`
+- `…/rule-sets/yaml/private-ips-custom.yaml`
 - `…/rule-sets/mrs/bin/<имя>.mrs`
 
 Проверка URL для файла:
@@ -96,7 +100,6 @@
 | `template_remnawave` | `MIHOMO/template_remnawave.yaml` | [hydraponique/roscomvpn-routing](https://github.com/hydraponique/roscomvpn-routing) | **false** (форк) |
 | `torrent_clients` | `rule-sets/yaml/torrent-clients.yaml` | [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets) | true (зеркало) |
 | `games` | `rule-sets/yaml/games.yaml` | [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category) | true (зеркало; post → GFN в `games-custom.yaml`) |
-| `ru_apps` | `rule-sets/yaml/ru-apps.yaml` | roscomvpn/custom-category | true (зеркало) |
 
 Синхронизируемые YAML — **зеркала апстрима без правок**. Локальные дополнения держим в отдельных `*-custom.yaml`, которые подключены в шаблоне рядом с оригиналом (см. ниже).
 
@@ -199,11 +202,11 @@ python3 scripts/generate-gfn-games-block.py
 
 1. **proxy-groups** — группа `🤖 ИИ` (как у `📺 Youtube`: `remnawave.include-proxies: false`, прокси `🛡️ VPN` + переопределение стран).
 2. **rule-providers** — провайдер `ai` → `rule-sets/yaml/ai.yaml`.
-3. **rules** — `RULE-SET,ai,🤖 ИИ` **выше** `RULE-SET,google-play`.
+3. **rules** — `RULE-SET,ai,🤖 ИИ` и `RULE-SET,ai-meta,🤖 ИИ` **выше** финального `MATCH,PROXY` (иначе `*.googleapis.com` и пр. уходят в PROXY мимо группы ИИ).
 
 ### TUN exclude-package (RU-приложения мимо TUN)
 
-`tun.exclude-package` в шаблоне — список Android-пакетов RU-приложений, которые не заворачиваются в TUN (механизм как у [Davoyan/ultimate-mihomo-ru](https://github.com/Davoyan/mihomo-rule-sets/blob/main/remnawave-templates/ultimate-mihomo-ru.yaml)). Строка генерируется из `ru-app-list.yaml` + `ru-apps.yaml` + `ru-apps-custom.yaml` пост-хуком `regenerate_tun_exclude` (источник `ru_app_list`). Вручную:
+`tun.exclude-package` в шаблоне — список Android-пакетов RU-приложений, которые не заворачиваются в TUN (механизм как у [Davoyan/ultimate-mihomo-ru](https://github.com/Davoyan/mihomo-rule-sets/blob/main/remnawave-templates/ultimate-mihomo-ru.yaml)). Строка генерируется из `ru-app-list.yaml` + `ru-apps-custom.yaml` пост-хуком `regenerate_tun_exclude` (источник `ru_app_list`). Вручную:
 
 ```bash
 python3 scripts/generate-tun-exclude-package.py

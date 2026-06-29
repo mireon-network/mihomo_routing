@@ -1,0 +1,16 @@
+payload:
+  # RU-домены из roscomvpn category-ru, которых нет НИ в одном MetaCubeX-наборе
+  # (category-ru/finance/ip-geo-detect/ecommerce/entertainment/media/retail/travel/
+  #  medicine/gov/t2/mts/nic). Маршрут DIRECT. НЕ синхронизируется — правь здесь.
+  - "+.animego.me"
+  - "+.autobahn.db.com"
+  - "+.avtoto.ru"
+  - "+.checkip.amazonaws.com"
+  - "+.kinescope.io"
+  - "+.mangalib.me"
+  - "+.mizuhogroup.com"
+  - "+.redheadsound.studio"
+  - "+.rkbank.ru"
+  - "+.sber.world"
+  - "+.sber.ws"
+  - "+.sbercoin.com"

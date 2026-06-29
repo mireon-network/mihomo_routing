@@ -4,7 +4,7 @@
 # Набор правил RoscomVPN, адаптированный для Mihomo
 #
 # Режим:       rule
-# Инбаунды:    TUN (system, strict-route), mixed-port 7890
+# Инбаунды:    TUN (gvisor, strict-route), mixed-port 7890
 #              Приватные и зарезервированные IP исключены из TUN и сниффера
 # DNS:         fake-ip, Yandex DNS (direct) + Google DNS (proxy)
 #              IPv6 в DNS отключён, весь IPv6-трафик ядра блокируется на уровне правил
@@ -33,7 +33,7 @@
 #   • Игровые лаунчеры (games-launchers)    → 🎮 Лаунчеры (по умолчанию DIRECT)
 #   • Игровые сервисы                       → 🎮 Игры
 #   • Wine/Proton (wine.yaml)               → 🍷 Wine (по умолчанию DIRECT)
-#   • AI-сервисы                            → 🤖 ИИ (rule-sets/yaml/ai.yaml; выше google-play)
+#   • AI-сервисы                            → 🤖 ИИ (rule-sets/yaml/ai.yaml; выше прочих, чтобы *.googleapis.com не ушёл в PROXY)
 #   • Остальное                             → PROXY
 #
 # UDP-порт 443 (QUIC) блокируется глобально — принудительный fallback на TCP.
@@ -68,7 +68,7 @@ keep-alive-idle: 30 # сек до первого probe при простое (т
 keep-alive-interval: 15 # интервал probe-пакетов, сек
 tun:
   enable: true
-  stack: system
+  stack: gvisor
   auto-route: true
   auto-detect-interface: true
   dns-hijack:
@@ -92,7 +92,7 @@ tun:
     - fe80::/10
     - ::/127
   # Российские приложения исключены из TUN (как у Davoyan/ultimate-mihomo-ru).
-  # Источники: rule-sets/yaml/ru-app-list.yaml + ru-apps.yaml + ru-apps-custom.yaml.
+  # Источники: rule-sets/yaml/ru-app-list.yaml + ru-apps-custom.yaml.
   # Строка генерируется scripts/generate-tun-exclude-package.py — править вручную не нужно.
   exclude-package: ["az.vtb.android", "business.gid.hero", "business.gid.universe", "chat.strelka", "com.allgoritm.youla", "com.asmo.infometeos", "com.birzha_rt", "com.bogg.art.vkt", "com.dartit.mobileagent", "com.dartit.rtcabinet", "com.equeo.megafondraiv", "com.gmeteos.infometeos", "com.goodok.mts", "com.grotem.match", "com.horosho.tips", "com.indygomobi.detifm", "com.indygomobi.relaxfm", "com.indygomobi.zenit", "com.iwedia.ui.beeline.atv", "com.kazanexpress.ke_app", "com.lamoda.lite", "com.lenta.employee", "com.lenta.lentochka_service", "com.magnit.delivery.courier", "com.match.club", "com.matchtv.rustore", "com.mcd.superapp", "com.mcptt", "com.megafon.kk", "com.megafon.maps", "com.megafon.mcca.android.store", "com.megafon.rk", "com.mts.who_calls", "com.my.mygamesapp", "com.navplatform.navigator.public", "com.pobeda.anniversary", "com.pogoda.infometeos", "com.programmisty.emiasapp", "com.rostelecom.printservice", "com.rzd.eventsrzd", "com.sdkit.search.app", "com.spbtv.rosing", "com.vk.admin", "com.vk.calls", "com.vk.love", "com.vk.mail", "com.vk.tv", "com.vkusvill.courier", "com.vkusvill.vacancy", "com.wbextdelivery", "com.wbpoint.android.prod.release", "com.wbstream_app", "com.wildberries.consultations", "com.wildberries.wbkey", "com.wms_mm_point.mm_delivery_point", "com.yandex.aliceapp", "com.yandex.browser.lite", "com.yandex.shedevrus", "games.my.cloud", "games.my.cloud.tv", "intech.global.com.beeline", "me.membrana.kids.parent.app", "megafon.transport.mobile", "org.rtk.cleaning", "ru.beeline.beebookreader", "ru.beeline.dol", "ru.beeline.messengerx", "ru.beeline.mwpsapp", "ru.beeline.pro", "ru.cdek.courier", "ru.cdek.ek5", "ru.compass.tag", "ru.gazprompay.android", "ru.gid.app", "ru.gid.eventsapp", "ru.gid.most", "ru.gosuslugi.migrant", "ru.gosuslugi.volunteer", "ru.hh.android", "ru.hh.employer.android", "ru.ideast.championat", "ru.ideast.humor", "ru.ideast.nrj", "ru.ideast.romantika", "ru.ideast.ru101.rustore", "ru.imteleport.plp2", "ru.intech.lki", "ru.leroymerlin.employee", "ru.lifepay.pos.alfapos", "ru.lifepay.pos.vtb", "ru.litres.android", "ru.litres.android.readfree", "ru.litres.androidtv", "ru.livelib.client", "ru.m4bank.softpos.alfaru", "ru.m4bank.softpos.rshb", "ru.m4bank.softpos.vtbpos", "ru.magnit.hrtest.android", "ru.magnit.mesmag", "ru.magnit.tag", "ru.magnit.tms.armhde", "ru.magnit.vendorapp", "ru.mail.biz.avocado", "ru.mail.cloud", "ru.mail.horo.android", "ru.mail.intranet", "ru.mail.my", "ru.mail.search.electroscope", "ru.megafon.vn.client", "ru.megalabs.multifon", "ru.mgfoms.pandora", "ru.mntk.dostavka.prod", "ru.mts.books.droid", "ru.mts.live.app", "ru.mts.mtscode", "ru.mts.music.android", "ru.mts.pay", "ru.mts.twomem", "ru.mts.vdome.resident", "ru.mybook", "ru.netbynet.app.personal_cabinet", "ru.ntv.client", "ru.ntv.client.tv", "ru.ntv.today", "ru.ntvplus.service", "ru.ok.dating", "ru.onlime.my.app", "ru.ozon.chatzone", "ru.ozon.fintech.apvz", "ru.ozon.fintech.sme", "ru.ozon.flex", "ru.ozon.fresh", "ru.ozon.hire", "ru.ozon.magistral", "ru.ozon.maple_app", "ru.ozon.ozon_pvz", "ru.ozon.profit", "ru.ozon.select", "ru.ozon.seller_app", "ru.ozon.tv", "ru.pikabu.android", "ru.profmedia.avtoradio", "ru.profmedia.likefm", "ru.rambler.horoscopes.twa", "ru.ritmmedia.yappy", "ru.rostelecom.ideas", "ru.rostelecom.vatsmobilelk", "ru.rshb.dboul", "ru.rshb.digitalcoworkeroffice", "ru.rshb.ips_qr", "ru.rshb.privatebusiness", "ru.rshb.svoe_rodnoe", "ru.rshb.svoedom_android", "ru.rshb.svojfermer", "ru.rt.key", "ru.rt.life", "ru.rt.masterkey", "ru.rt.mb_installer", "ru.rt.mobileoffice", "ru.rt.ritm", "ru.rt.smarthome", "ru.rt.video.app.mobile", "ru.rt.video.app.mobile.b2b", "ru.rt.video.app.tv", "ru.rt.videocomfort", "ru.rt.wfm", "ru.rtdc.kakdela", "ru.russianpost.pechkin", "ru.rzd.cargolk", "ru.rzd.newsdo.skills", "ru.setka", "ru.systtech.megafon.mobile", "ru.tander.mobile_scout_flutter", "ru.tntmusic.tv", "ru.tutu.etrains", "ru.tutu.tutu_emp", "ru.utk.dostavka", "ru.vk.hrtek", "ru.vkpm.comedy", "ru.vtb.corporate.android.main_application", "ru.vtb.invest", "ru.vtb.smb", "ru.wb.courier", "ru.wb.go", "ru.wb.guru", "ru.wb.wband", "ru.wildberries.books", "ru.wildberries.manager", "ru.wildberries.team", "ru.wildberries.team2", "ru.wildberries.wbpayclient", "ru.wink.music", "ru.wink.music.tv", "ru.x5.foodru.rs", "ru.x5.key", "ru.x5.mfpnew", "ru.x5.mrm_android.personaldevice", "ru.x5.opermax.aura", "ru.x5.rooms", "ru.x5.wl.slata", "ru.x5.wrs2", "ru.x5.x5job", "ru.yandex.mobile.fmradio", "ru.yandex.searchplugin", "ru.yandex.telemost", "ru.yozhka", "ruagro.start.tech", "tech.clink.emias.emiasqrcode", "travel.ozon.mobile", "tv.ntvplus.app", "tv.ntvplus.app.tv", "wb.partners", "wildberries.business", "club.skllzz.fitness", "com.apegroup.mcdonaldsrussia", "com.bankffin.portfolio", "com.bastion", "com.bifit.rncbbeta", "ru.spb.parking", "com.whsd.whsdapp", "com.orgp.spbpodorozhnik", "ru.ftc.tc", "com.carshering", "com.citymobil", "com.taxsee.taxsee", "ru.yandex.uber", "ru.taxovichkof.android", "ru.rolf.rolf", "ru.russianhighways.mobile", "ru.mosparking.appnew", "centrida.neftmagistral", "ru.pichesky.rosneft", "ru.serebryakovas.lukoilmobileapp", "ru.tatneft.gasstations", "com.gpn.azs", "com.coolclever.app", "com.deliveryclub", "com.discover.moscow.lite", "com.edadeal.android", "com.gnivts.ausn", "com.gnivts.selfemployed", "com.icemobile.lenta.prod", "com.idamob.tinkoff.android", "com.keenetic.kn", "ru.netcraze.app", "com.moscowsport", "com.premiumbonus.jamm.ramen", "pro.arora.mobile.pizza_milana", "pro.arora.mobile.maradi", "com.punicapp.whoosh", "com.ru.dixy", "com.salute.smarthome.prod", "com.sberauto.mobile", "com.sberbank.sberpravo", "com.tdm.messenger", "com.tjuraniaapp", "com.uip.gosuslugi2", "com.vk.clips", "live.vkplay.app", "ru.mail.mailapp", "com.vk.im", "com.vk.vkvideo", "com.uma.musicvk", "com.wildberries.ru", "ru.zen.android", "com.yandex.browser", "com.yandex.bank", "com.yandex.bluecollars", "com.yandex.iot", "com.yandex.lavka", "com.yandex.mobile.drive", "com.yandex.mobile.realty", "com.yandex.plus.game.city", "com.yandex.searchapp", "com.yandex.shedevrus2", "com.yandex.tasks.androidapp", "com.yandex.yamb", "com.zvooq.openplay", "es.hol.ing.zagsr", "im.dlg.dialogx", "im.dlg.enterprise", "io.github.dovecoteescapee.byedpi", "io.itforces.android.timetable", "logo.com.mbanking", "org.orange.mobile", "pro.sber_zvuk", "ru.akbars.mobile", "ru.alfabank.mobile.android", "ru.alfabank.oavdo.amc", "ru.alfadirect.app", "ru.alfastrah.app", "ru.aliexpress.buyer", "ru.altarix.mos.pgu", "ru.auto.ara", "ru.aviasales", "ru.beru.android", "ru.bspb", "ru.burgerking", "ru.cardsmobile.mw3", "ru.crptech.b2bmark", "ru.crptech.mark", "ru.datapax.mosobl", "ru.diftechsvc", "ru.dit.smartstaff", "ru.dodopizza.app", "ru.domclick.mortgage", "ru.drclinics.app.sovcom", "ru.dublgis.dgismobile", "ru.dublgis.dgismobile4preview", "otello.dgis.ru", "ru.fanid", "ru.filit.mvideo.b2c", "ru.finassist", "ru.fns.billchecker", "ru.fns.billchecker.mobile.android", "ru.fns.lkfl", "ru.foodfox.client", "ru.gazprombank.android.mobilebank.app", "ru.getpharma.eapteka", "ru.gnivc.lkip", "ru.goods.marketplace", "ru.gosuslugi.auto", "ru.gosuslugi.culture", "ru.gosuslugi.goskey", "ru.gosuslugi.pos", "ru.gosuslugi.pos.executor", "ru.instamart", "ru.kfc.kfc_delivery", "ru.kinopoisk", "ru.letobank.prometheus", "ru.megafon.mlk", "ru.megamarket.marketplace", "ru.mes.sputnik", "ru.mes.dnevnik", "ru.more.play", "ru.mos.app", "ru.mos.ed", "ru.mos.gz", "ru.mos.myid", "ru.mos.ourcity", "ru.mos.polls", "ru.mos.um", "ru.mos.zaryadye", "ru.mosgorpass", "ru.mosmetro.metro", "ru.mosoblgaz", "ru.mosreg.easuz.portal", "ru.mosreg.ekjp", "ru.mosreg.mingos.mdp.app", "ru.mosreg.mo112", "ru.mosreg.uslugi.mobile.beta", "ru.mts.bank", "ru.mts.mtstv", "ru.mts.mymts", "ru.mvm.eldo", "ru.sportmaster.app", "ru.myspar", "ru.nalog.rmr.client", "ru.nspk.mir.loyalty", "ru.nspk.mirpay", "ru.okbmei.gosservice", "ru.ostrovok.android", "ru.ozon.app.android", "ru.ozon.fintech.finance", "ru.perekrestok.app", "club.chizhik", "ru.plus.bookmate", "ru.pyaterochka.app.browser", "ru.raiffeisennews", "ru.rambler.mail", "com.dartit.RTcabinet", "ru.rostel", "ru.rutube.app", "ru.rutube.RutubeKids", "ru.rutube.studio", "ru.rutube.app.tv", "gpm.tnt_premier", "one.premier.rustoretv", "ru.rzd.pass", "ru.salute.b2b.prod", "ru.sbcs.store", "ru.sber.csradar", "ru.sber.telecom", "ru.sberbank.investor", "ru.sberbank.onlineencashment", "ru.sberbank.sberkids", "ru.sberbank.sbersign", "ru.sberbank_sbbol", "ru.sberbankmobile", "ru.sberins.insureapp.android", "ru.sbermegamarket.pro", "ru.bankuralsib.mb.android", "ru.sovcombank.dms", "ru.sovcombank.investor", "ru.sovcomcard.halva.v1", "pro.rocketTech.rocket.rocketapp", "ru.oneme.app", "ru.start.androidmobile", "ru.bristol.bristol_app", "www.metro.com", "ru.tander.magnit", "ru.technokad.digitalkey", "ru.tii.lkcomu", "ru.tinkoff.bnpl", "ru.tinkoff.invest.course", "ru.tinkoff.investing", "ru.tinkoff.magent", "ru.tinkoff.mvno", "ru.tinkoff.posterminal", "ru.tinkoff.sme", "ru.troika.regional", "ru.urentbike.app", "com.vkontakte.android", "ru.vk.store", "ru.vk.video", "ru.vkmusic.audio", "ru.tbank.online", "ru.amina.moscow", "ru.lewis.dbo", "ru.gibdd_pay.app", "com.moex.finuslugi", "su.azure.paymaster", "ru.nspk.sbpay", "ru.gosuslugi.school", "ru.sigma.gisgkh", "ru.rshb.dbo", "ru.spb.iac.dnevnikspb_new", "ru.ues.users_personal_account", "com.leroymerlin.mobile", "ru.kari.android", "ru.sunlight.sunlight", "level.travel", "ru.abrr.gas", "com.maxxt.recordradio", "com.uchi.app", "ru.chitaigorod.mobile", "ru.usetech.velobike.v2", "ru.zolotoy585.customer", "com.onecwearable.keyboard.rustore", "com.gloriajeans.mobile", "ru.rabota.app2", "ru.domopult.mosobleirc.android", "ru.rgs.lk", "ru.dikidi", "ru.citilink", "ru.spb.dnevnik", "ru.sima_land.spb.market", "ru.ufanet.myufanet", "ru.bcs.bcsbank", "com.svoi.bank", "ru.vkusvill", "ru.detmir.dmbonus", "ru.lenta.lentochka", "goldapple.ru.goldapple.customers", "com.notissimus.allinstruments.android", "ru.vseapteki", "ru.leonardo.leonardoshop", "ru.leroymerlin.mobile", "ru.maxidom.ecomm", "air.ru.obi.mobile", "com.logistic.sdek", "ru.vtb24.mobilebanking.android", "ru.yandex.androidkeyboard", "ru.yandex.disk", "ru.yandex.games", "ru.yandex.key", "ru.yandex.mail", "ru.yandex.market.partner", "ru.yandex.metro", "ru.yandex.mobile.gasstations", "ru.yandex.music", "ru.yandex.practicum.flutter_practicum", "ru.yandex.subtitles", "ru.yandex.taxi", "ru.yandex.taximeter", "ru.yandex.translate", "ru.yandex.travel", "ru.yandex.weatherplugin", "ru.yandex.yandexmaps", "ru.yandex.yandexnavi", "ru.yandex_team.calendar_app", "ru.yoo.business", "ru.yoo.kassa", "ru.yoo.money", "ru.yoo.sdk.kassa.payments.example.release", "ru.yota.android", "ru.zhuck.webapp", "ru.ok.android", "team.rtds.checkcontrol", "tv.lfstrm.smotreshka", "com.apteka.sklad", "com.platfomni.gorzdrav", "com.invitro.app", "youdrive.today", "com.kms.free", "ru.paribet", "ru.rosbank.android.beta", "ru.beeline.services", "ru.beeline.cloud", "ru.beeline.tve.android", "ru.otpbank.mobile", "biz.growapp.winline", "com.national.lottery", "ru.stoloto.mobile", "ru.bkfon", "ru.cian.main", "ru.m2.squaremeter", "ru.winelab", "ru.smmd.superdelivery", "ru.aisa.android.ekpv2", "com.mobium12580.app", "ru.smclinic.app.lk", "com.teremok.keys", "ru.tokyocity.tokyocity", "com.tseh85", "ru.plazius.cofix", "com.avito.android", "ru.x5.omni", "ru.tele2.mytele2", "by.advasoft.android.troika.app", "com.octopod.russianpost.client.android", "ru.dahl.messenger", "ru.dns.shop.android", "com.evrasiar", "com.loyaltyplant.partner.subway", "ru.reksoft.okey", "ru.ivi.client", "ru.napopravku", "ru.profi.client", "ru.sravni.android.bankproduct"]
 dns:
@@ -101,7 +101,8 @@ dns:
   enhanced-mode: fake-ip # fake-ip/redir-host
   fake-ip-range: 198.18.0.1/16
   fake-ip-filter:
-    - rule-set:private-domains # исключить из fake-ip приватные домены
+    - rule-set:private-domains-meta # исключить из fake-ip приватные домены (MetaCubeX)
+    - rule-set:private-domains-custom # локальные/рабочие домены — реальный DNS
   default-nameserver:
     - https://77.88.8.8/dns-query
     - https://8.8.8.8/dns-query
@@ -387,6 +388,7 @@ proxy-groups:
     remnawave:
       include-proxies: false
     type: select
+    flclashx-override: true
     include-all-proxies: false
     include-all-providers: false
     proxies:
@@ -398,14 +400,6 @@ proxy-groups:
       - 🇺🇸 США
       - 🔓 Без VPN
 rule-providers:
-  private-domains:
-    type: http
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/geosite-private.mrs
-    path: ./ruleset/geosite-private.mrs
-    proxy: ⚡️ Авто
-    interval: 2592000
   private-domains-meta:
     type: http
     behavior: domain
@@ -414,12 +408,116 @@ rule-providers:
     path: ./ruleset/meta-geosite-private.mrs
     proxy: ⚡️ Авто
     interval: 2592000
-  category-ru:
+  private-domains-custom:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/private-domains-custom.yaml
+    path: ./ruleset/private-domains-custom.yaml
+    proxy: ⚡️ Авто
+    interval: 86400
+  category-ru-custom:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/category-ru-custom.yaml
+    path: ./ruleset/category-ru-custom.yaml
+    proxy: ⚡️ Авто
+    interval: 86400
+  category-ru-meta:
     type: http
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/category-ru.mrs
-    path: ./ruleset/category-ru.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-ru.mrs
+    path: ./ruleset/meta-category-ru.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  category-ecommerce-ru:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-ecommerce-ru.mrs
+    path: ./ruleset/meta-category-ecommerce-ru.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  category-entertainment-ru:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-entertainment-ru.mrs
+    path: ./ruleset/meta-category-entertainment-ru.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  category-finance:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-finance.mrs
+    path: ./ruleset/meta-category-finance.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  t2-ru:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-t2-ru.mrs
+    path: ./ruleset/meta-t2-ru.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  mts-ru:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-mts-ru.mrs
+    path: ./ruleset/meta-mts-ru.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  nic-ru:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-nic-ru.mrs
+    path: ./ruleset/meta-nic-ru.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  category-gov-ru:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-gov-ru.mrs
+    path: ./ruleset/meta-category-gov-ru.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  category-media-ru:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-media-ru.mrs
+    path: ./ruleset/meta-category-media-ru.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  category-retail-ru:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-retail-ru.mrs
+    path: ./ruleset/meta-category-retail-ru.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  category-travel-ru:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-travel-ru.mrs
+    path: ./ruleset/meta-category-travel-ru.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  category-medicine-ru:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-medicine-ru.mrs
+    path: ./ruleset/meta-category-medicine-ru.mrs
     proxy: ⚡️ Авто
     interval: 86400
   whitelist:
@@ -430,76 +528,52 @@ rule-providers:
     path: ./ruleset/whitelist.mrs
     proxy: ⚡️ Авто
     interval: 86400
-  microsoft:
+  microsoft-domains-custom:
     type: http
     behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/microsoft.mrs
-    path: ./ruleset/microsoft.mrs
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/microsoft-domains-custom.yaml
+    path: ./ruleset/microsoft-domains-custom.yaml
     proxy: ⚡️ Авто
     interval: 86400
-  apple:
+  microsoft-meta:
     type: http
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/apple.mrs
-    path: ./ruleset/apple.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-microsoft.mrs
+    path: ./ruleset/meta-microsoft.mrs
     proxy: ⚡️ Авто
     interval: 86400
-  google-play:
+  apple-domains-custom:
     type: http
     behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/google-play.mrs
-    path: ./ruleset/google-play.mrs
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/apple-domains-custom.yaml
+    path: ./ruleset/apple-domains-custom.yaml
     proxy: ⚡️ Авто
     interval: 86400
-  epicgames:
+  apple-meta:
     type: http
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/epicgames.mrs
-    path: ./ruleset/epicgames.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-apple.mrs
+    path: ./ruleset/meta-apple.mrs
     proxy: ⚡️ Авто
     interval: 86400
-  origin:
+  category-games-meta:
     type: http
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/origin.mrs
-    path: ./ruleset/origin.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-games.mrs
+    path: ./ruleset/meta-category-games.mrs
     proxy: ⚡️ Авто
     interval: 86400
-  riot:
+  discord:
     type: http
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/riot.mrs
-    path: ./ruleset/riot.mrs
-    proxy: ⚡️ Авто
-    interval: 86400
-  escapefromtarkov:
-    type: http
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/escapefromtarkov.mrs
-    path: ./ruleset/escapefromtarkov.mrs
-    proxy: ⚡️ Авто
-    interval: 86400
-  steam:
-    type: http
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/steam.mrs
-    path: ./ruleset/steam.mrs
-    proxy: ⚡️ Авто
-    interval: 86400
-  twitch:
-    type: http
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/twitch.mrs
-    path: ./ruleset/twitch.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-discord.mrs
+    path: ./ruleset/meta-discord.mrs
     proxy: ⚡️ Авто
     interval: 86400
   pinterest:
@@ -510,22 +584,22 @@ rule-providers:
     path: ./ruleset/pinterest.mrs
     proxy: ⚡️ Авто
     interval: 86400
-  faceit:
+  category-enhance-gaming:
     type: http
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/faceit.mrs
-    path: ./ruleset/faceit.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-enhance-gaming.mrs
+    path: ./ruleset/meta-category-enhance-gaming.mrs
     proxy: ⚡️ Авто
     interval: 86400
-  private-ips:
+  private-ips-custom:
     type: http
     behavior: ipcidr
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/geoip-private.mrs
-    path: ./ruleset/geoip-private.mrs
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/private-ips-custom.yaml
+    path: ./ruleset/private-ips-custom.yaml
     proxy: ⚡️ Авто
-    interval: 2592000
+    interval: 86400
   private-ips-meta:
     type: http
     behavior: ipcidr
@@ -534,28 +608,20 @@ rule-providers:
     path: ./ruleset/meta-geoip-private.mrs
     proxy: ⚡️ Авто
     interval: 2592000
-  direct-ips:
+  ru-ips:
     type: http
     behavior: ipcidr
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/direct-ips.mrs
-    path: ./ruleset/direct-ips.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geoip-ru.mrs
+    path: ./ruleset/meta-geoip-ru.mrs
     proxy: ⚡️ Авто
     interval: 86400
-  github:
+  github-meta:
     type: http
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/github.mrs
-    path: ./ruleset/github.mrs
-    proxy: ⚡️ Авто
-    interval: 86400
-  twitch-ads:
-    type: http
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/twitch-ads.mrs
-    path: ./ruleset/twitch-ads.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-github.mrs
+    path: ./ruleset/meta-github.mrs
     proxy: ⚡️ Авто
     interval: 86400
   youtube:
@@ -566,12 +632,12 @@ rule-providers:
     path: ./ruleset/youtube.mrs
     proxy: ⚡️ Авто
     interval: 86400
-  telegram:
+  youtube-meta:
     type: http
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/telegram.mrs
-    path: ./ruleset/telegram.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-youtube.mrs
+    path: ./ruleset/meta-youtube.mrs
     proxy: ⚡️ Авто
     interval: 86400
   win-spy:
@@ -582,12 +648,20 @@ rule-providers:
     path: ./ruleset/win-spy.mrs
     proxy: ⚡️ Авто
     interval: 86400
-  torrent-domains:
+  win-spy-meta:
     type: http
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-domains.mrs
-    path: ./ruleset/torrent-domains.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-win-spy.mrs
+    path: ./ruleset/meta-win-spy.mrs
+    proxy: ⚡️ Авто
+    interval: 86400
+  torrent-domains-custom:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-domains-custom.yaml
+    path: ./ruleset/torrent-domains-custom.yaml
     proxy: ⚡️ Авто
     interval: 86400
   torrent-trackers:
@@ -606,28 +680,20 @@ rule-providers:
     path: ./ruleset/torrent-websites.mrs
     proxy: ⚡️ Авто
     interval: 86400
-  category-ads:
+  category-ads-all-meta:
     type: http
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/category-ads.mrs
-    path: ./ruleset/category-ads.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-ads-all.mrs
+    path: ./ruleset/meta-category-ads-all.mrs
     proxy: ⚡️ Авто
     interval: 86400
-  category-ip-geo-detect:
+  category-ip-geo-detect-meta:
     type: http
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/category-ip-geo-detect.mrs
-    path: ./ruleset/category-ip-geo-detect.mrs
-    proxy: ⚡️ Авто
-    interval: 86400
-  oisd-big:
-    type: http
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/oisd-big.mrs
-    path: ./ruleset/oisd-big.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-ip-geo-detect.mrs
+    path: ./ruleset/meta-category-ip-geo-detect.mrs
     proxy: ⚡️ Авто
     interval: 86400
   torrent-clients:
@@ -694,12 +760,12 @@ rule-providers:
     path: ./ruleset/ai.yaml
     proxy: ⚡️ Авто
     interval: 86400
-  ru-apps:
+  ai-meta:
     type: http
-    behavior: classical
-    format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/ru-apps.yaml
-    path: ./ruleset/ru-apps.yaml
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-ai.mrs
+    path: ./ruleset/meta-ai.mrs
     proxy: ⚡️ Авто
     interval: 86400
   ru-apps-custom:
@@ -718,46 +784,52 @@ rule-providers:
     path: ./ruleset/ru-app-list.yaml
     proxy: ⚡️ Авто
     interval: 86400
+  mail-ports:
+    type: http
+    behavior: classical
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/mail-ports.yaml
+    path: ./ruleset/mail-ports.yaml
+    proxy: ⚡️ Авто
+    interval: 86400
 
 rules:
   # --- Системные / приватные адреса ---
-  - RULE-SET,private-ips,DIRECT,no-resolve         # приватные IP — всегда напрямую, без DNS
   - RULE-SET,private-ips-meta,DIRECT,no-resolve    # приватные IP (MetaCubeX) — без DNS
+  - RULE-SET,private-ips-custom,DIRECT,no-resolve  # локальные IP — напрямую (вне upstream)
   - IP-CIDR,::/0,REJECT-DROP,no-resolve            # весь IPv6-трафик, не попавший в fake-ip — блок
   - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT-DROP # QUIC — принудительно через TCP
-  - RULE-SET,private-domains,DIRECT                # локальные домены — напрямую
   - RULE-SET,private-domains-meta,DIRECT           # локальные домены (MetaCubeX) — напрямую
+  - RULE-SET,private-domains-custom,DIRECT         # локальные домены — напрямую (вне upstream)
 
   # --- Почтовые порты → DIRECT ---
-  - DST-PORT,25,DIRECT                             # SMTP
-  - DST-PORT,465,DIRECT                            # SMTPS (implicit TLS)
-  - DST-PORT,587,DIRECT                            # SMTP submission (STARTTLS)
-  - DST-PORT,2525,DIRECT                           # альтернативный SMTP
-  - DST-PORT,110,DIRECT                            # POP3
-  - DST-PORT,995,DIRECT                            # POP3S
-  - DST-PORT,143,DIRECT                            # IMAP
-  - DST-PORT,993,DIRECT                            # IMAPS
+  - RULE-SET,mail-ports,DIRECT                     # SMTP/POP3/IMAP (+TLS) — см. rule-sets/yaml/mail-ports.yaml
 
   # --- Блокировки ---
-  - RULE-SET,category-ads,REJECT-DROP              # реклама
+  - RULE-SET,category-ads-all-meta,REJECT-DROP     # реклама и трекеры (MetaCubeX, покрывает roscomvpn/category-ads)
   - RULE-SET,win-spy,REJECT-DROP                   # телеметрия Windows
+  - RULE-SET,win-spy-meta,REJECT-DROP              # телеметрия Windows (MetaCubeX)
 
   # --- Торренты ---
-  - RULE-SET,torrent-domains,DIRECT                # торрент-домены (roscomvpn) — напрямую
   - RULE-SET,torrent-trackers,DIRECT               # торрент-трекеры (legiz-ru) — напрямую
   - RULE-SET,torrent-websites,DIRECT               # торрент-сайты (legiz-ru) — напрямую
+  - RULE-SET,torrent-domains-custom,DIRECT         # торрент-домены не из legiz (DHT-ноды и пр.) — напрямую
   - RULE-SET,torrent-clients,DIRECT                # торрент-клиенты по процессу
   - RULE-SET,torrent-clients-custom,DIRECT         # локальные дополнения торрент-клиентов
 
-  # --- AI / LLM → 🤖 ИИ (раньше google-play: иначе *.googleapis.com уходит в PROXY) ---
+  # --- AI / LLM → 🤖 ИИ (выше MATCH,PROXY: иначе *.googleapis.com уходит в PROXY) ---
   - RULE-SET,ai,🤖 ИИ
-
+  - RULE-SET,ai-meta,🤖 ИИ                          # AI/LLM-домены (MetaCubeX, !cn)
   # --- Сервисы через PROXY ---
-  - RULE-SET,google-play,PROXY
-  - RULE-SET,twitch-ads,PROXY                      # домены Twitch Ads — через PROXY (фикс качества)
+  # google-play / telegram убраны: их домены и так попадают в финальный MATCH,PROXY
   - RULE-SET,youtube,📺 Youtube
-  - RULE-SET,telegram,PROXY
-  - RULE-SET,github,PROXY
+  - RULE-SET,youtube-meta,📺 Youtube               # YouTube-домены (MetaCubeX)
+  - RULE-SET,github-meta,PROXY                     # GitHub-домены (MetaCubeX, покрывает roscomvpn/github; выше microsoft-meta — иначе Copilot/atom.io уйдут в DIRECT)
+
+    # --- Приложения по имени процесса ---
+  - RULE-SET,discord,💬 Discord                    # Discord-домены (MetaCubeX)
+  - PROCESS-NAME-REGEX,discord,💬 Discord
+  - PROCESS-NAME-REGEX,vesktop,💬 Discord
 
   # --- Игры: домены и процессы → PROXY (раньше лаунчеров и MRS steam/epic) ---
   - RULE-SET,games-proxy-rules,PROXY
@@ -766,40 +838,38 @@ rules:
   - RULE-SET,games-launchers,🎮 Лаунчеры
 
   # --- Игровые платформы и сервисы → 🎮 Игры (по умолчанию DIRECT, можно переключить) ---
-  - RULE-SET,epicgames,🎮 Игры
-  - RULE-SET,origin,🎮 Игры
-  - RULE-SET,riot,🎮 Игры
-  - RULE-SET,escapefromtarkov,🎮 Игры
-  - RULE-SET,steam,🎮 Игры
-  - RULE-SET,faceit,🎮 Игры
+  - RULE-SET,wine,🍷 Wine                          # Windows-софт/игры на Linux (Wine/Proton) — выше DIRECT
+  - RULE-SET,games-custom,🎮 Игры                  # локальные дополнения игр (процессы: GFN/нативные/ручные + домены вне category-games)
+  - RULE-SET,category-enhance-gaming,🎮 Игры       # игровые сервисы, расширенный (MetaCubeX)
+  - RULE-SET,games,🎮 Игры                         # игры по имени процесса (roscomvpn) — выше DIRECT: селектор игр приоритетнее
+  - RULE-SET,category-games-meta,🎮 Игры           # игровые домены (MetaCubeX category-games: Steam/Epic/EA/Riot/Ubisoft/Blizzard/Rockstar/GOG/EfT/FACEIT/2K… — покрывает все roscomvpn/meta-подсписки)
 
-  # --- Сервисы в DIRECT ---
-  - RULE-SET,category-ip-geo-detect,DIRECT         # сервисы определения IP/гео (Davoyan) — напрямую
-  - RULE-SET,oisd-big,DIRECT                       # oisd big (legiz-ru) — напрямую
-  - RULE-SET,twitch,DIRECT
-  - RULE-SET,microsoft,DIRECT
-  - RULE-SET,apple,DIRECT
+  # --- Конкретные сервисы → DIRECT (выше широких catch-all внизу) ---
+  - RULE-SET,category-ip-geo-detect-meta,DIRECT    # сервисы определения IP/гео (MetaCubeX) — напрямую
+  - RULE-SET,microsoft-meta,DIRECT                 # Microsoft-домены (MetaCubeX, покрывает roscomvpn/microsoft) — напрямую
+  - RULE-SET,microsoft-domains-custom,DIRECT       # MS/OneDrive-домены не из MetaCubeX (1drv.ms, onedrive ccTLD, akadns) — напрямую
+  - RULE-SET,apple-meta,DIRECT                     # Apple-домены (MetaCubeX, покрывает roscomvpn/apple) — напрямую
+  - RULE-SET,apple-domains-custom,DIRECT           # Apple OCSP/CRL не из MetaCubeX (digicert, akadns) — напрямую
   - RULE-SET,pinterest,DIRECT
-
-  # --- DIRECT ---
-  - RULE-SET,category-ru,DIRECT                    # RU-сайты, жесткая зависимость от whitelist
+  - RULE-SET,category-ecommerce-ru,DIRECT          # российский e-commerce (MetaCubeX) — напрямую
+  - RULE-SET,category-entertainment-ru,DIRECT      # российские медиа/стриминги (MetaCubeX) — напрямую
+  - RULE-SET,category-finance,DIRECT               # банки/брокеры/финсервисы (MetaCubeX) — напрямую
+  - RULE-SET,t2-ru,DIRECT                           # Tele2 (MetaCubeX) — напрямую
+  - RULE-SET,mts-ru,DIRECT                          # МТС (MetaCubeX) — напрямую
+  - RULE-SET,nic-ru,DIRECT                          # RU-NIC/хостинг (MetaCubeX) — напрямую
+  - RULE-SET,category-gov-ru,DIRECT                 # госуслуги/госсайты РФ (MetaCubeX) — напрямую
+  - RULE-SET,category-media-ru,DIRECT               # СМИ РФ (MetaCubeX) — напрямую
+  - RULE-SET,category-retail-ru,DIRECT              # ритейл РФ (MetaCubeX) — напрямую
+  - RULE-SET,category-travel-ru,DIRECT              # транспорт/путешествия РФ (MetaCubeX) — напрямую
+  - RULE-SET,category-medicine-ru,DIRECT            # медицина РФ (MetaCubeX) — напрямую
+  - RULE-SET,category-ru-meta,DIRECT               # RU-сайты (MetaCubeX, без широких +.ru/+.su) — напрямую
+  - RULE-SET,category-ru-custom,DIRECT             # курируемые RU-домены вне MetaCubeX (иностр. банки .ru, IP-чек) — напрямую
   - RULE-SET,whitelist,DIRECT                      # RU-белосписочный
 
-
-  # --- Приложения по имени процесса ---
-  - PROCESS-NAME-REGEX,discord,💬 Discord
-  - PROCESS-NAME-REGEX,vesktop,💬 Discord
-
-  # --- Широкие категории ---
-  - RULE-SET,games,🎮 Игры                         # общая игровая категория
-  - RULE-SET,games-custom,🎮 Игры                  # локальные дополнения игр (GFN, нативные, ручные)
-  - RULE-SET,wine,🍷 Wine                          # Windows-софт/игры на Linux (Wine/Proton)
-  - RULE-SET,ru-apps,DIRECT                        # RU-приложения Android
-  - RULE-SET,ru-apps-custom,DIRECT                 # локальные дополнения RU-приложений
-  - RULE-SET,ru-app-list,DIRECT                    # RU-приложения (legiz-ru) — напрямую
-
-  # --- IP-адреса → DIRECT ---
-  - RULE-SET,direct-ips,DIRECT
+  # --- RU-приложения и IP → DIRECT (низкий приоритет) ---
+  - RULE-SET,ru-app-list,DIRECT                    # RU-приложения Android (legiz-ru, покрывает roscomvpn/ru-apps) — напрямую
+  - RULE-SET,ru-apps-custom,DIRECT                 # локальные дополнения RU-приложений (вне legiz)
+  - RULE-SET,ru-ips,DIRECT                         # российские IP-подсети (MetaCubeX geoip) — напрямую
 
   # --- Всё остальное → PROXY ---
   - MATCH,PROXY

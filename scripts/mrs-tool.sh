@@ -67,12 +67,12 @@ for line in open(path, encoding="utf-8"):
     elif cur is not None and ":" in s and not s.startswith("#"):
         k, v = s.split(":", 1)
         k, v = k.strip(), v.strip()
-        if k in ("id", "behavior", "file", "url", "src"):
+        if k in ("id", "behavior", "file", "url", "src", "exclude"):
             cur[k] = v
 if cur:
     sets.append(cur)
 for item in sets:
-    print("\t".join(item.get(k, "") for k in ("id", "behavior", "file", "url", "src")))
+    print("\t".join(item.get(k, "") for k in ("id", "behavior", "file", "url", "src", "exclude")))
 PY
 }
 
@@ -88,13 +88,34 @@ v2ray_domain_to_list() {
   ' "$1" >"$2"
 }
 
+# $1 — .list файл; $2 — список исключаемых строк через запятую (точное совпадение строки)
+# Убирает слишком широкие правила (например +.ru, +.su) из скачанного списка.
+list_apply_exclude() {
+  local out_list="$1" exclude="$2"
+  [[ -z "$exclude" ]] && return 0
+  local args=() e
+  local oldifs="$IFS"; IFS=','
+  for e in $exclude; do
+    e="${e// /}"
+    [[ -n "$e" ]] && args+=(-e "$e")
+  done
+  IFS="$oldifs"
+  [[ ${#args[@]} -eq 0 ]] && return 0
+  local before after tmp; tmp="$(mktemp)"
+  before="$(grep -cve '^$' "$out_list")"
+  grep -vxF "${args[@]}" "$out_list" >"$tmp" || true
+  mv "$tmp" "$out_list"
+  after="$(grep -cve '^$' "$out_list")"
+  echo "   exclude: $before → $after строк (убрано: $exclude)"
+}
+
 # $1 — каталог bin; $2 — force (1 = перезаписать)
 staging_download() {
   local dest="${1:-$BIN_DIR}"
   local force="${2:-0}"
   local text_dest; text_dest="$(dirname "$dest")/text"   # bin/ и text/ — соседи
   mkdir -p "$dest"
-  while IFS=$'\t' read -r _ _ file url src; do
+  while IFS=$'\t' read -r _ _ file url src exclude; do
     if [[ -n "$src" ]]; then
       # Текстовый источник: url → .txt → преобразуем сразу в text/*.list.
       # .mrs пакуется позже (cmd_pack). ponytail: только src=v2ray-domain.
@@ -113,6 +134,7 @@ staging_download() {
         *) rm -f "$tmp"; die "неизвестный src=$src для $file" ;;
       esac
       rm -f "$tmp"
+      list_apply_exclude "$out_list" "$exclude"
       continue
     fi
     local out="$dest/${file}.mrs"
@@ -131,7 +153,7 @@ staging_unpack() {
   local text_d="${2:-$TEXT_DIR}"
   ensure_mihomo
   mkdir -p "$text_d"
-  while IFS=$'\t' read -r _ behavior file _ src; do
+  while IFS=$'\t' read -r _ behavior file _ src _; do
     [[ -n "$src" ]] && continue   # текстовый источник: list уже готов в staging_download
     local bin="$bin_d/${file}.mrs"
     local txt="$text_d/${file}.list"
@@ -161,7 +183,7 @@ cmd_pack() {
   ensure_mihomo
   mkdir -p "$BIN_DIR"
   local changed=0
-  while IFS=$'\t' read -r _ behavior file _ _; do
+  while IFS=$'\t' read -r _ behavior file _ _ _; do
     local txt="$TEXT_DIR/${file}.list"
     local bin="$BIN_DIR/${file}.mrs"
     [[ -f "$txt" ]] || continue
