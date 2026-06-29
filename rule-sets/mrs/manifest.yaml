@@ -29,10 +29,6 @@ sets:
     behavior: domain
     file: twitch-ads
     url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/twitch-ads.mrs
-  - id: youtube
-    behavior: domain
-    file: youtube
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/youtube.mrs
   - id: win-spy
     behavior: domain
     file: win-spy

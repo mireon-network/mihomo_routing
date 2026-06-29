@@ -624,14 +624,6 @@ rule-providers:
     path: ./ruleset/meta-github.mrs
     proxy: ⚡️ Авто
     interval: 86400
-  youtube:
-    type: http
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/youtube.mrs
-    path: ./ruleset/youtube.mrs
-    proxy: ⚡️ Авто
-    interval: 86400
   youtube-meta:
     type: http
     behavior: domain
@@ -822,8 +814,7 @@ rules:
   - RULE-SET,ai-meta,🤖 ИИ                          # AI/LLM-домены (MetaCubeX, !cn)
   # --- Сервисы через PROXY ---
   # google-play / telegram убраны: их домены и так попадают в финальный MATCH,PROXY
-  - RULE-SET,youtube,📺 Youtube
-  - RULE-SET,youtube-meta,📺 Youtube               # YouTube-домены (MetaCubeX)
+  - RULE-SET,youtube-meta,📺 Youtube               # YouTube-домены (MetaCubeX; покрывает удалённый roscomvpn youtube)
   - RULE-SET,github-meta,PROXY                     # GitHub-домены (MetaCubeX, покрывает roscomvpn/github; выше microsoft-meta — иначе Copilot/atom.io уйдут в DIRECT)
 
     # --- Приложения по имени процесса ---
