@@ -12,8 +12,8 @@
 # ============================================================
 
 # ============================================================
-# YAML-якоря (mihomo раскрывает <<:; Remnawave отдаёт уже развёрнутый конфиг).
-# Цель — не дублировать списки IP/DNS и шаблоны rule-providers.
+# YAML-якоря для IP/DNS (alias ≤10 — лимит Remnawave/node-yaml).
+# rule-providers развёрнуты явно (без <<: *rp_*).
 # В этом профиле весь трафик идёт на 🇷🇺 Белые списки → rule-providers тянутся через PROXY.
 # ============================================================
 x-anchors:
@@ -43,30 +43,7 @@ x-anchors:
   dns_proxy: &dns_proxy
     - https://8.8.8.8/dns-query#PROXY
   # Шаблоны rule-providers (type/proxy/interval общие, behavior/format — по типу)
-  rp_base: &rp_base
-    type: http
-    proxy: PROXY
-    interval: 86400
-  rp_domain: &rp_domain
-    <<: *rp_base
-    behavior: domain
-    format: mrs
-  rp_ipcidr: &rp_ipcidr
-    <<: *rp_base
-    behavior: ipcidr
-    format: mrs
-  rp_domain_yaml: &rp_domain_yaml
-    <<: *rp_base
-    behavior: domain
-    format: yaml
-  rp_ipcidr_yaml: &rp_ipcidr_yaml
-    <<: *rp_base
-    behavior: ipcidr
-    format: yaml
-  rp_classical: &rp_classical
-    <<: *rp_base
-    behavior: classical
-    format: yaml
+  # rp_* шаблоны развёрнуты в rule-providers (Remnawave/node-yaml alias limit)
 
 mixed-port: 7890
 mode: rule
@@ -164,54 +141,113 @@ proxy-groups:
       - 🇷🇺 Белые списки
 rule-providers:
   private-domains-meta:
-    <<: *rp_domain
+    type: http
+    proxy: PROXY
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geosite-private.mrs
     path: ./ruleset/meta-geosite-private.mrs
     interval: 2592000
   private-domains-custom: # локальный mrs (source: rule-sets/mrs/text/private-domains-custom.list)
-    <<: *rp_domain
+    type: http
+    proxy: PROXY
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/private-domains-custom.mrs
     path: ./ruleset/private-domains-custom.mrs
   private-ips-meta:
-    <<: *rp_ipcidr
+    type: http
+    proxy: PROXY
+    interval: 86400
+    behavior: ipcidr
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geoip-private.mrs
     path: ./ruleset/meta-geoip-private.mrs
   private-ips-custom:
-    <<: *rp_ipcidr_yaml
+    type: http
+    proxy: PROXY
+    interval: 86400
+    behavior: ipcidr
+    format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/private-ips-custom.yaml
     path: ./ruleset/private-ips-custom.yaml
   category-gov-ru:
-    <<: *rp_domain
+    type: http
+    proxy: PROXY
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-gov-ru.mrs
     path: ./ruleset/meta-category-gov-ru.mrs
   category-medicine-ru:
-    <<: *rp_domain
+    type: http
+    proxy: PROXY
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-medicine-ru.mrs
     path: ./ruleset/meta-category-medicine-ru.mrs
   wld:
-    <<: *rp_domain
+    type: http
+    proxy: PROXY
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/wld.mrs
     path: ./ruleset/wld.mrs
   torrent-trackers:
-    <<: *rp_domain
+    type: http
+    proxy: PROXY
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-trackers.mrs
     path: ./ruleset/torrent-trackers.mrs
   torrent-websites:
-    <<: *rp_domain
+    type: http
+    proxy: PROXY
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-websites.mrs
     path: ./ruleset/torrent-websites.mrs
   torrent-domains-custom:
-    <<: *rp_domain_yaml
+    type: http
+    proxy: PROXY
+    interval: 86400
+    behavior: domain
+    format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-domains-custom.yaml
     path: ./ruleset/torrent-domains-custom.yaml
   torrent-clients:
-    <<: *rp_classical
+    type: http
+    proxy: PROXY
+    interval: 86400
+    behavior: classical
+    format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-clients.yaml
     path: ./ruleset/torrent-clients.yaml
   torrent-clients-custom:
-    <<: *rp_classical
+    type: http
+    proxy: PROXY
+    interval: 86400
+    behavior: classical
+    format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-clients-custom.yaml
     path: ./ruleset/torrent-clients-custom.yaml
+  mail-ports: # инлайн (мелкий список — без отдельной загрузки)
+    type: inline
+    behavior: classical
+    payload:
+      - DST-PORT,25
+      - DST-PORT,465
+      - DST-PORT,587
+      - DST-PORT,2525
+      - DST-PORT,110
+      - DST-PORT,995
+      - DST-PORT,143
+      - DST-PORT,993
 
 rules:
   # --- Системные / приватные адреса ---
@@ -223,14 +259,7 @@ rules:
   - RULE-SET,private-domains-custom,DIRECT         # локальные/рабочие домены — напрямую (вне upstream)
 
   # --- Почтовые порты → DIRECT ---
-  - DST-PORT,25,DIRECT    # SMTP
-  - DST-PORT,465,DIRECT   # SMTPS (implicit TLS)
-  - DST-PORT,587,DIRECT   # SMTP submission (STARTTLS)
-  - DST-PORT,2525,DIRECT  # альтернативный SMTP
-  - DST-PORT,110,DIRECT   # POP3
-  - DST-PORT,995,DIRECT   # POP3S
-  - DST-PORT,143,DIRECT   # IMAP
-  - DST-PORT,993,DIRECT   # IMAPS
+  - RULE-SET,mail-ports,DIRECT
 
   # --- Госуслуги/госсайты и медицина РФ → DIRECT (MetaCubeX) ---
   - RULE-SET,category-gov-ru,DIRECT

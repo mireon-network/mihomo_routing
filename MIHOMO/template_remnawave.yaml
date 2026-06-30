@@ -53,8 +53,8 @@ remnawave:
   includeHiddenHosts: true
 
 # ============================================================
-# YAML-якоря (mihomo раскрывает <<:; Remnawave отдаёт уже развёрнутый конфиг).
-# Цель — не дублировать списки IP/DNS и шаблоны rule-providers.
+# YAML-якоря для IP/DNS (alias ≤10 — лимит Remnawave/node-yaml).
+# rule-providers развёрнуты явно (без <<: *rp_*); при правках — полные блоки type/behavior/format.
 # ============================================================
 x-anchors:
   # Приватные и зарезервированные IP — общий список для TUN и сниффера
@@ -83,30 +83,7 @@ x-anchors:
   dns_proxy: &dns_proxy
     - https://8.8.8.8/dns-query#PROXY
   # Шаблоны rule-providers (type/proxy/interval общие, behavior/format — по типу)
-  rp_base: &rp_base
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-  rp_domain: &rp_domain
-    <<: *rp_base
-    behavior: domain
-    format: mrs
-  rp_ipcidr: &rp_ipcidr
-    <<: *rp_base
-    behavior: ipcidr
-    format: mrs
-  rp_domain_yaml: &rp_domain_yaml
-    <<: *rp_base
-    behavior: domain
-    format: yaml
-  rp_ipcidr_yaml: &rp_ipcidr_yaml
-    <<: *rp_base
-    behavior: ipcidr
-    format: yaml
-  rp_classical: &rp_classical
-    <<: *rp_base
-    behavior: classical
-    format: yaml
+  # rp_* шаблоны развёрнуты в rule-providers (Remnawave/node-yaml alias limit)
 
 mixed-port: 7890
 mode: rule
@@ -419,227 +396,469 @@ proxy-groups:
       - PASS
 rule-providers:
   private-domains-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geosite-private.mrs
     path: ./ruleset/meta-geosite-private.mrs
     interval: 2592000
   private-domains-custom: # локальный mrs (source: rule-sets/mrs/text/private-domains-custom.list)
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/private-domains-custom.mrs
     path: ./ruleset/private-domains-custom.mrs
   category-ru-custom:
-    <<: *rp_domain_yaml
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/category-ru-custom.yaml
     path: ./ruleset/category-ru-custom.yaml
   category-ru-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-ru.mrs
     path: ./ruleset/meta-category-ru.mrs
   category-ecommerce-ru:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-ecommerce-ru.mrs
     path: ./ruleset/meta-category-ecommerce-ru.mrs
   category-entertainment-ru:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-entertainment-ru.mrs
     path: ./ruleset/meta-category-entertainment-ru.mrs
   category-finance:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-finance.mrs
     path: ./ruleset/meta-category-finance.mrs
   t2-ru:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-t2-ru.mrs
     path: ./ruleset/meta-t2-ru.mrs
   mts-ru:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-mts-ru.mrs
     path: ./ruleset/meta-mts-ru.mrs
   nic-ru:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-nic-ru.mrs
     path: ./ruleset/meta-nic-ru.mrs
   category-gov-ru:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-gov-ru.mrs
     path: ./ruleset/meta-category-gov-ru.mrs
   category-media-ru:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-media-ru.mrs
     path: ./ruleset/meta-category-media-ru.mrs
   category-retail-ru:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-retail-ru.mrs
     path: ./ruleset/meta-category-retail-ru.mrs
   category-travel-ru:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-travel-ru.mrs
     path: ./ruleset/meta-category-travel-ru.mrs
   category-medicine-ru:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-medicine-ru.mrs
     path: ./ruleset/meta-category-medicine-ru.mrs
   whitelist:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/whitelist.mrs
     path: ./ruleset/whitelist.mrs
   wld:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/wld.mrs
     path: ./ruleset/wld.mrs
   win-update-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-win-update.mrs
     path: ./ruleset/meta-win-update.mrs
   apple-update-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-apple-update.mrs
     path: ./ruleset/meta-apple-update.mrs
   icloud-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-icloud.mrs
     path: ./ruleset/meta-icloud.mrs
   category-netdisk-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-netdisk.mrs
     path: ./ruleset/meta-category-netdisk.mrs
   nvidia-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-nvidia.mrs
     path: ./ruleset/meta-nvidia.mrs
   amd-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-amd.mrs
     path: ./ruleset/meta-amd.mrs
   intel-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-intel.mrs
     path: ./ruleset/meta-intel.mrs
   archlinux-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-archlinux.mrs
     path: ./ruleset/meta-archlinux.mrs
   ubuntu-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-ubuntu.mrs
     path: ./ruleset/meta-ubuntu.mrs
   debian-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-debian.mrs
     path: ./ruleset/meta-debian.mrs
   fedora-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-fedora.mrs
     path: ./ruleset/meta-fedora.mrs
   docker-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-docker.mrs
     path: ./ruleset/meta-docker.mrs
   category-android-app-download:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-android-app-download.mrs
     path: ./ruleset/meta-category-android-app-download.mrs
   category-game-platforms-download:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-game-platforms-download.mrs
     path: ./ruleset/meta-category-game-platforms-download.mrs
   category-games-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-games.mrs
     path: ./ruleset/meta-category-games.mrs
   discord:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-discord.mrs
     path: ./ruleset/meta-discord.mrs
   pinterest:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/pinterest.mrs
     path: ./ruleset/pinterest.mrs
   category-enhance-gaming:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-enhance-gaming.mrs
     path: ./ruleset/meta-category-enhance-gaming.mrs
   private-ips-custom:
-    <<: *rp_ipcidr_yaml
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: ipcidr
+    format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/private-ips-custom.yaml
     path: ./ruleset/private-ips-custom.yaml
   private-ips-meta:
-    <<: *rp_ipcidr
+    type: http
+    proxy: ⚡️ Авто
+    behavior: ipcidr
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geoip-private.mrs
     path: ./ruleset/meta-geoip-private.mrs
     interval: 2592000
   ru-ips:
-    <<: *rp_ipcidr
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: ipcidr
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geoip-ru.mrs
     path: ./ruleset/meta-geoip-ru.mrs
   youtube-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-youtube.mrs
     path: ./ruleset/meta-youtube.mrs
   win-spy:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/win-spy.mrs
     path: ./ruleset/win-spy.mrs
   win-spy-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-win-spy.mrs
     path: ./ruleset/meta-win-spy.mrs
   torrent-domains-custom:
-    <<: *rp_domain_yaml
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-domains-custom.yaml
     path: ./ruleset/torrent-domains-custom.yaml
   torrent-trackers:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-trackers.mrs
     path: ./ruleset/torrent-trackers.mrs
   torrent-websites:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-websites.mrs
     path: ./ruleset/torrent-websites.mrs
   category-ads-all-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-ads-all.mrs
     path: ./ruleset/meta-category-ads-all.mrs
   category-ip-geo-detect-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-ip-geo-detect.mrs
     path: ./ruleset/meta-category-ip-geo-detect.mrs
   torrent-clients:
-    <<: *rp_classical
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: classical
+    format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-clients.yaml
     path: ./ruleset/torrent-clients.yaml
   torrent-clients-custom:
-    <<: *rp_classical
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: classical
+    format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-clients-custom.yaml
     path: ./ruleset/torrent-clients-custom.yaml
+  games-proxy-rules: # инлайн (мелкий список — без отдельной загрузки)
+    type: inline
+    behavior: classical
+    payload:
+      - DOMAIN-SUFFIX,easebar.com,PROXY
+      - DOMAIN-SUFFIX,deadorbit.net,PROXY
+      - IP-CIDR,172.232.25.131/32,PROXY # чат Warframe
   games-launchers:
-    <<: *rp_classical
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: classical
+    format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/games-launchers.yaml
     path: ./ruleset/games-launchers.yaml
   games:
-    <<: *rp_classical
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: classical
+    format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/games.yaml
     path: ./ruleset/games.yaml
   games-custom:
-    <<: *rp_classical
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: classical
+    format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/games-custom.yaml
     path: ./ruleset/games-custom.yaml
+  wine: # инлайн (мелкий список — без отдельной загрузки)
+    type: inline
+    behavior: classical
+    payload:
+      - PROCESS-NAME-REGEX,(?i)^(wineserver|wine|wine64|wine-preloader|wine64-preloader)$
   ai:
-    <<: *rp_classical
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: classical
+    format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/ai.yaml
     path: ./ruleset/ai.yaml
   ai-meta:
-    <<: *rp_domain
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-ai.mrs
     path: ./ruleset/meta-ai.mrs
   ru-apps-custom:
-    <<: *rp_classical
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: classical
+    format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/ru-apps-custom.yaml
     path: ./ruleset/ru-apps-custom.yaml
   ru-app-list:
-    <<: *rp_classical
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: classical
+    format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/ru-app-list.yaml
     path: ./ruleset/ru-app-list.yaml
+  mail-ports: # инлайн (мелкий список — без отдельной загрузки)
+    type: inline
+    behavior: classical
+    payload:
+      - DST-PORT,25
+      - DST-PORT,465
+      - DST-PORT,587
+      - DST-PORT,2525
+      - DST-PORT,110
+      - DST-PORT,995
+      - DST-PORT,143
+      - DST-PORT,993
 
 rules:
   # --- Системные / приватные адреса ---
@@ -655,14 +874,7 @@ rules:
   - OR,((DST-PORT,5228-5230),(DOMAIN-KEYWORD,mtalk),(DOMAIN-SUFFIX,fcm.googleapis.com),(DOMAIN-SUFFIX,fcm-xmpp.googleapis.com)),DIRECT # Google FCM/GCM
 
   # --- Почтовые порты → DIRECT ---
-  - DST-PORT,25,DIRECT    # SMTP
-  - DST-PORT,465,DIRECT   # SMTPS (implicit TLS)
-  - DST-PORT,587,DIRECT   # SMTP submission (STARTTLS)
-  - DST-PORT,2525,DIRECT  # альтернативный SMTP
-  - DST-PORT,110,DIRECT   # POP3
-  - DST-PORT,995,DIRECT   # POP3S
-  - DST-PORT,143,DIRECT   # IMAP
-  - DST-PORT,993,DIRECT   # IMAPS
+  - RULE-SET,mail-ports,DIRECT
 
   # --- Блокировки ---
   - RULE-SET,category-ads-all-meta,REJECT-DROP     # реклама и трекеры (MetaCubeX category-ads-all)
@@ -690,9 +902,7 @@ rules:
   - PROCESS-NAME-REGEX,vesktop,💬 Discord
 
   # --- Игры: домены и процессы → PROXY (раньше лаунчеров и MRS steam/epic) ---
-  - DOMAIN-SUFFIX,easebar.com,PROXY
-  - DOMAIN-SUFFIX,deadorbit.net,PROXY
-  - IP-CIDR,172.232.25.131/32,PROXY # чат Warframe
+  - RULE-SET,games-proxy-rules,PROXY
 
   # --- Загрузочные CDN игровых платформ → DIRECT (выше 🎮 Игры/Лаунчеров: тяжёлые загрузки всегда напрямую, мимо VPN) ---
   - RULE-SET,category-game-platforms-download,DIRECT # загрузочные CDN игровых платформ (MetaCubeX) — напрямую
@@ -701,7 +911,7 @@ rules:
   - RULE-SET,games-launchers,🎮 Лаунчеры
 
   # --- Игровые платформы и сервисы → 🎮 Игры (по умолчанию DIRECT, можно переключить) ---
-  - PROCESS-NAME-REGEX,(?i)^(wineserver|wine|wine64|wine-preloader|wine64-preloader)$,🍷 Wine # Wine/Proton catch-all
+  - RULE-SET,wine,🍷 Wine
   - RULE-SET,games-custom,🎮 Игры                  # локальные дополнения игр (процессы: GFN/нативные/ручные + домены вне category-games)
   - RULE-SET,category-enhance-gaming,🎮 Игры       # игровые сервисы, расширенный (MetaCubeX)
   - RULE-SET,games,🎮 Игры                         # игры по имени процесса — выше DIRECT: селектор игр приоритетнее

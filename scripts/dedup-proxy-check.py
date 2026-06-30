@@ -15,7 +15,7 @@ TEXT = ROOT / "rule-sets/mrs/text"
 MANIFEST = ROOT / "rule-sets/mrs/manifest.yaml"
 TEMPLATE = ROOT / "MIHOMO/template_remnawave.yaml"
 
-CANDIDATES = ["google-play", "google-play-meta", "telegram"]
+CANDIDATES = ["google-play", "google-play-meta", "telegram", "games-proxy-rules"]
 
 
 def id_to_file() -> dict[str, str]:
