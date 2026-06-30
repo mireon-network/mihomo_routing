@@ -101,8 +101,7 @@ tun:
   auto-route: true
   auto-detect-interface: true
   dns-hijack:
-    - any:53
-    - tcp://any:53 # перехватывать и DNS по TCP/53 (защита от утечки)
+    - any:53 # mihomo отбрасывает протокол из dns-hijack → any:53 уже перехватывает и UDP/53, и TCP/53
   strict-route: true
   route-exclude-address: *reserved_ips # приватные/зарезервированные IP (см. x-anchors)
   # Российские приложения исключены из TUN (как у Davoyan/ultimate-mihomo-ru).
