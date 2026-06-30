@@ -79,9 +79,13 @@ x-anchors:
   dns_ru: &dns_ru
     - https://77.88.8.8/dns-query
     - https://8.8.8.8/dns-query
-  # DNS для проксируемого трафика (резолв через узел группы PROXY)
+  # DNS для проксируемого трафика (резолв через узел группы PROXY).
+  # mihomo опрашивает все серверы конкурентно и берёт быстрейший ответ (строгого приоритета нет).
   dns_proxy: &dns_proxy
-    - https://8.8.8.8/dns-query#PROXY
+    - https://dns.adguard-dns.com/dns-query#PROXY # AdGuard — фильтрация рекламы/трекеров
+    - https://1.1.1.1/dns-query#PROXY # Cloudflare
+    - https://9.9.9.9/dns-query#PROXY # Quad9
+    - https://8.8.8.8/dns-query#PROXY # Google
   # Шаблоны rule-providers (type/proxy/interval общие, behavior/format — по типу)
   # rp_* шаблоны развёрнуты в rule-providers (Remnawave/node-yaml alias limit)
 
