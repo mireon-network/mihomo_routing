@@ -1,6 +1,6 @@
 # mihomo_routing
 
-Форк конфигурации Mihomo (Remnawave) на базе [RoscomVPN routing](https://github.com/hydraponique/roscomvpn-routing) с локальными rule-sets и правилами для AI.
+Конфигурация Mihomo для Remnawave (mireon-network) с локальными rule-sets, MRS-наборами и правилами для AI.
 
 Локальные правки сохраняются: обновление из upstream — через скрипты с **трёхсторонним merge** (baseline / local / remote), без слепой перезаписи.
 
@@ -14,12 +14,8 @@
 | `rule-sets/yaml/games.yaml` | Игры — **зеркало** [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category) (без правок) |
 | `rule-sets/yaml/games-custom.yaml` | Локальные дополнения игр: [GeForce NOW](https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json), нативные macOS/Linux, ручные — **только локально** |
 | `rule-sets/yaml/games-launchers.yaml` | Игровые лаунчеры (Steam, Epic, VK Play…) — всегда DIRECT |
-| `rule-sets/yaml/games-proxy-rules.yaml` | Игровые домены и процессы, требующие PROXY для доступа |
 | `rule-sets/yaml/ru-apps-custom.yaml` | Локальные дополнения RU-приложений (вне legiz `ru-app-list`) → DIRECT |
 | `rule-sets/yaml/ai.yaml` | AI / LLM — **только локально**, upstream не синхронизируется |
-| `rule-sets/yaml/wine.yaml` | Wine / Proton (Windows-софт и игры на Linux) → `🍷 Wine` — **только локально** |
-| `rule-sets/yaml/mail-ports.yaml` | Почтовые порты (SMTP/POP3/IMAP +TLS) → DIRECT — **только локально** |
-| `rule-sets/yaml/private-domains-custom.yaml` | Локальные домены → DIRECT + исключение из fake-ip (реальный DNS) — **только локально** |
 | `rule-sets/yaml/private-ips-custom.yaml` | Локальные IP-подсети → DIRECT (no-resolve) — **только локально** |
 | `rule-sets/mrs/text/*.list` | Распакованные MRS-наборы (редактировать здесь) |
 | `rule-sets/mrs/bin/*.mrs` | Бинарные rule-set для Mihomo (собираются из `text/`) |
@@ -28,6 +24,8 @@
 | `scripts/upstream-manifest.yaml` | Список upstream-источников для `upstream-sync.sh` |
 | `scripts/generate-gfn-games-block.py` | Пересборка блока GeForce NOW в `games-custom.yaml` |
 | `scripts/generate-tun-exclude-package.py` | Пересборка `tun.exclude-package` (RU-приложения мимо TUN) в шаблоне |
+
+> Мелкие наборы (`wine`, `games-proxy-rules`, `mail-ports`) вынесены прямо в шаблон как `type: inline` rule-providers — отдельных файлов и загрузок для них нет. `private-domains-custom` — локальный MRS-набор: правишь `rule-sets/mrs/text/private-domains-custom.list`, `mrs-tool.sh pack` собирает `bin/*.mrs` (upstream нет, `sync` его пропускает).
 
 ## CDN
 
@@ -40,12 +38,8 @@
 - `…/rule-sets/yaml/games.yaml`
 - `…/rule-sets/yaml/games-custom.yaml`
 - `…/rule-sets/yaml/games-launchers.yaml`
-- `…/rule-sets/yaml/games-proxy-rules.yaml`
 - `…/rule-sets/yaml/ru-apps-custom.yaml`
 - `…/rule-sets/yaml/ai.yaml`
-- `…/rule-sets/yaml/wine.yaml`
-- `…/rule-sets/yaml/mail-ports.yaml`
-- `…/rule-sets/yaml/private-domains-custom.yaml`
 - `…/rule-sets/yaml/private-ips-custom.yaml`
 - `…/rule-sets/mrs/bin/<имя>.mrs`
 
@@ -103,7 +97,7 @@
 
 Синхронизируемые YAML — **зеркала апстрима без правок**. Локальные дополнения держим в отдельных `*-custom.yaml`, которые подключены в шаблоне рядом с оригиналом (см. ниже).
 
-**Не синхронизируется (только локально):** `rule-sets/yaml/ai.yaml`, `rule-sets/yaml/wine.yaml`, а также все `*-custom.yaml`.
+**Не синхронизируется (только локально):** `rule-sets/yaml/ai.yaml`, `*-custom.yaml`-файлы, а также локальный MRS `private-domains-custom` (`rule-sets/mrs/text/private-domains-custom.list`).
 
 Добавить новый источник — запись в `scripts/upstream-manifest.yaml`.
 
@@ -163,7 +157,7 @@
 
 ## games.yaml и GeForce NOW
 
-`games.yaml` — **зеркало roscomvpn без правок**. Все локальные дополнения вынесены в `games-custom.yaml`:
+`games.yaml` — **зеркало апстрима без правок**. Все локальные дополнения вынесены в `games-custom.yaml`:
 
 - блок GeForce NOW (пересобирается скриптом);
 - нативные порты macOS/Linux;
@@ -175,10 +169,10 @@
 
 Исключения с фиксированной политикой (не попадают в 🎮 Игры) — отдельные YAML, подключаются в шаблоне **до** `games`:
 
-- `games-proxy-rules.yaml` — игровые домены и процессы → PROXY (в шаблоне **раньше** лаунчеров и MRS steam/epic)
+- `games-proxy-rules` — игровые домены и процессы → PROXY, инлайн в шаблоне (**раньше** лаунчеров и MRS steam/epic)
 - `games-launchers.yaml` — лаунчеры платформ → DIRECT (после proxy-rules; до MRS steam/epic)
 
-После sync с upstream roscomvpn скрипт автоматически пересобирает блок GFN в `games-custom.yaml` (`regenerate_gfn_block`), дедуплицируя против `games.yaml` и `games-launchers.yaml`. Вручную:
+После sync с апстримом скрипт автоматически пересобирает блок GFN в `games-custom.yaml` (`regenerate_gfn_block`), дедуплицируя против `games.yaml` и `games-launchers.yaml`. Вручную:
 
 ```bash
 python3 scripts/generate-gfn-games-block.py
@@ -230,4 +224,7 @@ diff -u /tmp/upstream-template.yaml MIHOMO/template_remnawave.yaml
 
 ## Благодарности
 
-Основа правил — [hydraponique/roscomvpn-routing](https://github.com/hydraponique/roscomvpn-routing), rule-sets — [legiz-ru](https://github.com/legiz-ru/mihomo-rule-sets), [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category).
+- [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets)
+- [Davoyan/mihomo-rule-sets](https://github.com/Davoyan/mihomo-rule-sets)
+- [RoscomVPN](https://github.com/roscomvpn)
+- [MetaCubeX/meta-rules-dat](https://github.com/MetaCubeX/meta-rules-dat)

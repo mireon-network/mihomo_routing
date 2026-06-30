@@ -1,9 +1,0 @@
-payload:
-  - DST-PORT,25      # SMTP
-  - DST-PORT,465     # SMTPS (implicit TLS)
-  - DST-PORT,587     # SMTP submission (STARTTLS)
-  - DST-PORT,2525    # альтернативный SMTP
-  - DST-PORT,110     # POP3
-  - DST-PORT,995     # POP3S
-  - DST-PORT,143     # IMAP
-  - DST-PORT,993     # IMAPS

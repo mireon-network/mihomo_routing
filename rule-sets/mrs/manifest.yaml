@@ -1,8 +1,6 @@
 # Соответствует rule-providers с format: mrs в MIHOMO/template_remnawave.yaml
 # file — имя без расширения; bin/*.mrs и text/*.list
 # url по умолчанию указывает на готовый .mrs (скачивается → распаковывается в text/).
-# src: v2ray-domain — url указывает на .txt в формате V2Ray (domain:/full:),
-#   он преобразуется в text/*.list и пакуется в bin/*.mrs локально.
 # src: mihomo-list — url указывает на готовый .list (формат mihomo);
 #   берётся как есть в text/*.list и пакуется в bin/*.mrs локально.
 version: 1
@@ -22,18 +20,10 @@ sets:
     file: wld
     src: mihomo-list
     url: https://raw.githubusercontent.com/legiz-ru/mihomo-rule-sets/main/other/wld.list
-  - id: twitch
-    behavior: domain
-    file: twitch
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/twitch.mrs
   - id: pinterest
     behavior: domain
     file: pinterest
     url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/pinterest.mrs
-  - id: twitch-ads
-    behavior: domain
-    file: twitch-ads
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/twitch-ads.mrs
   - id: win-spy
     behavior: domain
     file: win-spy
@@ -212,6 +202,10 @@ sets:
     file: meta-category-game-platforms-download
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-game-platforms-download.list
+  # Локальный набор без upstream: text/ — источник правды, pack → bin/, sync пропускает.
+  - id: private-domains-custom
+    behavior: domain
+    file: private-domains-custom
   - id: private-domains-meta
     behavior: domain
     file: meta-geosite-private

@@ -76,18 +76,6 @@ for item in sets:
 PY
 }
 
-# $1 — исходный .txt (формат V2Ray: domain:/full:), $2 — выходной mihomo domain .list
-v2ray_domain_to_list() {
-  awk '
-    { sub(/\r$/, ""); sub(/[[:space:]]+@.*$/, "") }   # CRLF и V2Ray-атрибуты (@...)
-    /^[[:space:]]*$/ || /^[[:space:]]*#/ { next }
-    /^domain:/  { sub(/^domain:/, "+."); print; next }
-    /^full:/    { sub(/^full:/, "");     print; next }
-    /^keyword:/ || /^regexp:/ { next }                # domain-behavior их не поддерживает
-    { print }                                          # голый домен — как есть
-  ' "$1" >"$2"
-}
-
 # $1 — .list файл; $2 — список исключаемых строк через запятую (точное совпадение строки)
 # Убирает слишком широкие правила (например +.ru, +.su) из скачанного списка.
 list_apply_exclude() {
@@ -116,9 +104,13 @@ staging_download() {
   local text_dest; text_dest="$(dirname "$dest")/text"   # bin/ и text/ — соседи
   mkdir -p "$dest"
   while IFS=$'\t' read -r _ _ file url src exclude; do
+    if [[ -z "$src" && -z "$url" ]]; then
+      echo "→ $file (локальный набор без upstream — пакуется из text/)"
+      continue
+    fi
     if [[ -n "$src" ]]; then
-      # Текстовый источник: url → .txt → преобразуем сразу в text/*.list.
-      # .mrs пакуется позже (cmd_pack). ponytail: только src=v2ray-domain.
+      # Текстовый источник: url → .list (формат mihomo) → text/*.list.
+      # .mrs пакуется позже (cmd_pack).
       local out_list="$text_dest/${file}.list"
       mkdir -p "$text_dest"
       if [[ "$force" != "1" && -f "$out_list" ]]; then
@@ -129,8 +121,7 @@ staging_download() {
       local tmp; tmp="$(mktemp)"
       curl -fsSL -o "$tmp" "$url"
       case "$src" in
-        v2ray-domain) v2ray_domain_to_list "$tmp" "$out_list" ;;
-        mihomo-list)  sed 's/\r$//' "$tmp" >"$out_list" ;;   # уже формат mihomo, только CRLF→LF
+        mihomo-list) sed 's/\r$//' "$tmp" >"$out_list" ;;   # уже формат mihomo, только CRLF→LF
         *) rm -f "$tmp"; die "неизвестный src=$src для $file" ;;
       esac
       rm -f "$tmp"
@@ -153,8 +144,9 @@ staging_unpack() {
   local text_d="${2:-$TEXT_DIR}"
   ensure_mihomo
   mkdir -p "$text_d"
-  while IFS=$'\t' read -r _ behavior file _ src _; do
+  while IFS=$'\t' read -r _ behavior file url src _; do
     [[ -n "$src" ]] && continue   # текстовый источник: list уже готов в staging_download
+    [[ -z "$url" ]] && continue   # локальный набор: bin пакуется из text/, upstream нет
     local bin="$bin_d/${file}.mrs"
     local txt="$text_d/${file}.list"
     [[ -f "$bin" ]] || die "нет $bin"

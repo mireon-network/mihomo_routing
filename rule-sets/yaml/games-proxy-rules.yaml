@@ -1,5 +1,0 @@
-payload:
-  # Домены, процессы и IP игр — всегда PROXY (доступ без VPN часто недоступен или ломается)
-  - DOMAIN-SUFFIX,easebar.com,PROXY
-  - DOMAIN-SUFFIX,deadorbit.net,PROXY
-  - IP-CIDR,172.232.25.131/32,PROXY  # IP для чата Warframe
