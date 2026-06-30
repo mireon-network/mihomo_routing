@@ -96,6 +96,16 @@ sets:
     file: meta-mts-ru
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/mts-ru.list
+  - id: megafon
+    behavior: domain
+    file: meta-megafon
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/megafon.list
+  - id: mailru-group
+    behavior: domain
+    file: meta-mailru-group
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/mailru-group.list
   - id: nic-ru
     behavior: domain
     file: meta-nic-ru
@@ -151,52 +161,6 @@ sets:
     file: meta-category-netdisk
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-netdisk-!cn.list
-  # --- Тяжёлый трафик (драйверы/дистрибутивы/загрузки) → DIRECT ---
-  - id: nvidia-meta
-    behavior: domain
-    file: meta-nvidia
-    src: mihomo-list
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/nvidia.list
-  - id: amd-meta
-    behavior: domain
-    file: meta-amd
-    src: mihomo-list
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/amd.list
-  - id: intel-meta
-    behavior: domain
-    file: meta-intel
-    src: mihomo-list
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/intel.list
-  - id: archlinux-meta
-    behavior: domain
-    file: meta-archlinux
-    src: mihomo-list
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/archlinux.list
-  - id: ubuntu-meta
-    behavior: domain
-    file: meta-ubuntu
-    src: mihomo-list
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/ubuntu.list
-  - id: debian-meta
-    behavior: domain
-    file: meta-debian
-    src: mihomo-list
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/debian.list
-  - id: fedora-meta
-    behavior: domain
-    file: meta-fedora
-    src: mihomo-list
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/fedora.list
-  - id: docker-meta
-    behavior: domain
-    file: meta-docker
-    src: mihomo-list
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/docker.list
-  - id: category-android-app-download
-    behavior: domain
-    file: meta-category-android-app-download
-    src: mihomo-list
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-android-app-download.list
   - id: category-game-platforms-download
     behavior: domain
     file: meta-category-game-platforms-download

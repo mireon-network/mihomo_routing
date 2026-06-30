@@ -465,6 +465,22 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-mts-ru.mrs
     path: ./ruleset/meta-mts-ru.mrs
+  megafon:
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-megafon.mrs
+    path: ./ruleset/meta-megafon.mrs
+  mailru-group:
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-mailru-group.mrs
+    path: ./ruleset/meta-mailru-group.mrs
   nic-ru:
     type: http
     proxy: ⚡️ Авто
@@ -561,78 +577,6 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-netdisk.mrs
     path: ./ruleset/meta-category-netdisk.mrs
-  nvidia-meta:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-nvidia.mrs
-    path: ./ruleset/meta-nvidia.mrs
-  amd-meta:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-amd.mrs
-    path: ./ruleset/meta-amd.mrs
-  intel-meta:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-intel.mrs
-    path: ./ruleset/meta-intel.mrs
-  archlinux-meta:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-archlinux.mrs
-    path: ./ruleset/meta-archlinux.mrs
-  ubuntu-meta:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-ubuntu.mrs
-    path: ./ruleset/meta-ubuntu.mrs
-  debian-meta:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-debian.mrs
-    path: ./ruleset/meta-debian.mrs
-  fedora-meta:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-fedora.mrs
-    path: ./ruleset/meta-fedora.mrs
-  docker-meta:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-docker.mrs
-    path: ./ruleset/meta-docker.mrs
-  category-android-app-download:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-android-app-download.mrs
-    path: ./ruleset/meta-category-android-app-download.mrs
   category-game-platforms-download:
     type: http
     proxy: ⚡️ Авто
@@ -929,23 +873,14 @@ rules:
   - DOMAIN-SUFFIX,drive-thirdparty.googleusercontent.com,DIRECT
   # остальной Apple/Microsoft (iCloud/App Store/Office/Teams/Store/Xbox/OneDrive/OCSP…) уходит в финальный MATCH,PROXY (apple-meta/microsoft-meta/*-domains-custom убраны — цель: мимо VPN только большие загрузки)
 
-  # --- Тяжёлый трафик: драйверы / дистрибутивы / загрузки → DIRECT (мимо VPN, экономия трафика) ---
-  - RULE-SET,nvidia-meta,DIRECT                    # драйверы/ПО NVIDIA (MetaCubeX) — напрямую
-  - RULE-SET,amd-meta,DIRECT                       # драйверы/ПО AMD (MetaCubeX) — напрямую
-  - RULE-SET,intel-meta,DIRECT                     # драйверы/ПО Intel (MetaCubeX) — напрямую
-  - RULE-SET,archlinux-meta,DIRECT                 # репозитории Arch Linux (MetaCubeX) — напрямую
-  - RULE-SET,ubuntu-meta,DIRECT                    # репозитории/ISO Ubuntu (MetaCubeX) — напрямую
-  - RULE-SET,debian-meta,DIRECT                    # репозитории/ISO Debian (MetaCubeX) — напрямую
-  - RULE-SET,fedora-meta,DIRECT                    # репозитории/ISO Fedora (MetaCubeX) — напрямую
-  - RULE-SET,docker-meta,DIRECT                    # образы Docker Hub (MetaCubeX) — напрямую
-  - RULE-SET,category-android-app-download,DIRECT  # загрузка APK/магазины приложений (MetaCubeX) — напрямую
-
   - RULE-SET,pinterest,DIRECT
   - RULE-SET,category-ecommerce-ru,DIRECT          # российский e-commerce (MetaCubeX) — напрямую
   - RULE-SET,category-entertainment-ru,DIRECT      # российские медиа/стриминги (MetaCubeX) — напрямую
   - RULE-SET,category-finance,DIRECT               # банки/брокеры/финсервисы (MetaCubeX) — напрямую
   - RULE-SET,t2-ru,DIRECT                           # Tele2 (MetaCubeX) — напрямую
   - RULE-SET,mts-ru,DIRECT                          # МТС (MetaCubeX) — напрямую
+  - RULE-SET,megafon,DIRECT                         # МегаФон (MetaCubeX) — напрямую
+  - RULE-SET,mailru-group,DIRECT                    # VK / Mail.ru Group (MetaCubeX) — напрямую
   - RULE-SET,nic-ru,DIRECT                          # RU-NIC/хостинг (MetaCubeX) — напрямую
   - RULE-SET,category-gov-ru,DIRECT                 # госуслуги/госсайты РФ (MetaCubeX) — напрямую
   - RULE-SET,category-media-ru,DIRECT               # СМИ РФ (MetaCubeX) — напрямую
@@ -959,7 +894,7 @@ rules:
 
   # --- RU-приложения и IP → DIRECT (низкий приоритет) ---
   - RULE-SET,ru-app-list,DIRECT                    # RU-приложения Android (legiz-ru) — напрямую
-  - RULE-SET,ru-apps-custom,DIRECT                 # локальные дополнения RU-приложений (вне legiz)
+  - RULE-SET,да,DIRECT                 # локальные дополнения RU-приложений (вне legiz)
   - RULE-SET,ru-ips,DIRECT                         # российские IP-подсети (MetaCubeX geoip) — напрямую
 
   # --- Всё остальное → PROXY ---
