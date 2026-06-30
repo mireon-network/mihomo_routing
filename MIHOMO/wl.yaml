@@ -192,18 +192,6 @@ rule-providers:
     <<: *rp_domain
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/wld.mrs
     path: ./ruleset/wld.mrs
-  mail-ports: # инлайн (мелкий список — без отдельной загрузки)
-    type: inline
-    behavior: classical
-    payload:
-      - DST-PORT,25   # SMTP
-      - DST-PORT,465  # SMTPS (implicit TLS)
-      - DST-PORT,587  # SMTP submission (STARTTLS)
-      - DST-PORT,2525 # альтернативный SMTP
-      - DST-PORT,110  # POP3
-      - DST-PORT,995  # POP3S
-      - DST-PORT,143  # IMAP
-      - DST-PORT,993  # IMAPS
   torrent-trackers:
     <<: *rp_domain
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-trackers.mrs
@@ -235,7 +223,14 @@ rules:
   - RULE-SET,private-domains-custom,DIRECT         # локальные/рабочие домены — напрямую (вне upstream)
 
   # --- Почтовые порты → DIRECT ---
-  - RULE-SET,mail-ports,DIRECT                     # SMTP/POP3/IMAP (+TLS) — инлайн в rule-providers
+  - DST-PORT,25,DIRECT    # SMTP
+  - DST-PORT,465,DIRECT   # SMTPS (implicit TLS)
+  - DST-PORT,587,DIRECT   # SMTP submission (STARTTLS)
+  - DST-PORT,2525,DIRECT  # альтернативный SMTP
+  - DST-PORT,110,DIRECT   # POP3
+  - DST-PORT,995,DIRECT   # POP3S
+  - DST-PORT,143,DIRECT   # IMAP
+  - DST-PORT,993,DIRECT   # IMAPS
 
   # --- Госуслуги/госсайты и медицина РФ → DIRECT (MetaCubeX) ---
   - RULE-SET,category-gov-ru,DIRECT

@@ -33,7 +33,7 @@
 #   • YouTube, Telegram, GitHub             → PROXY (GitHub — через финальный MATCH,PROXY)
 #   • Игровые лаунчеры (games-launchers)    → 🎮 Лаунчеры (по умолчанию DIRECT)
 #   • Игровые сервисы                       → 🎮 Игры
-#   • Wine/Proton (wine.yaml)               → 🍷 Wine (по умолчанию DIRECT)
+#   • Wine/Proton                           → 🍷 Wine (по умолчанию DIRECT)
 #   • AI-сервисы                            → 🤖 ИИ (rule-sets/yaml/ai.yaml; выше прочих, чтобы *.googleapis.com не ушёл в PROXY)
 #   • Остальное                             → PROXY
 #
@@ -166,7 +166,7 @@ dns:
     "rule-set:private-domains-meta,private-domains-custom":
       - system
     # Реклама/трекеры — отказ на уровне DNS (легче, чем REJECT по правилу)
-    rule-set:category-ads-all-meta:
+    "rule-set:category-ads-all-meta":
       - rcode://refused
     # RU-домены (идут DIRECT) — резолвим через RU DNS напрямую: верный CDN и меньше задержка
     "rule-set:category-ru-meta,category-ru-custom,category-ecommerce-ru,category-entertainment-ru,category-finance,t2-ru,mts-ru,nic-ru,category-gov-ru,category-media-ru,category-retail-ru,category-travel-ru,category-medicine-ru,whitelist,wld": *dns_ru
@@ -612,14 +612,6 @@ rule-providers:
     <<: *rp_classical
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-clients-custom.yaml
     path: ./ruleset/torrent-clients-custom.yaml
-  games-proxy-rules: # инлайн (мелкий список — без отдельной загрузки)
-    type: inline
-    behavior: classical
-    payload:
-      # Домены/IP игр — всегда PROXY (доступ без VPN часто ломается)
-      - DOMAIN-SUFFIX,easebar.com,PROXY
-      - DOMAIN-SUFFIX,deadorbit.net,PROXY
-      - IP-CIDR,172.232.25.131/32,PROXY # чат Warframe
   games-launchers:
     <<: *rp_classical
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/games-launchers.yaml
@@ -632,13 +624,6 @@ rule-providers:
     <<: *rp_classical
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/games-custom.yaml
     path: ./ruleset/games-custom.yaml
-  wine: # инлайн (мелкий список — без отдельной загрузки)
-    type: inline
-    behavior: classical
-    payload:
-      # Весь Wine/Proton-трафик владеет общий wineserver/wine* (не game.exe),
-      # поэтому осознанный catch-all по имени процесса → селектор «🍷 Wine».
-      - PROCESS-NAME-REGEX,(?i)^(wineserver|wine|wine64|wine-preloader|wine64-preloader)$
   ai:
     <<: *rp_classical
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/ai.yaml
@@ -655,18 +640,6 @@ rule-providers:
     <<: *rp_classical
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/ru-app-list.yaml
     path: ./ruleset/ru-app-list.yaml
-  mail-ports: # инлайн (мелкий список — без отдельной загрузки)
-    type: inline
-    behavior: classical
-    payload:
-      - DST-PORT,25   # SMTP
-      - DST-PORT,465  # SMTPS (implicit TLS)
-      - DST-PORT,587  # SMTP submission (STARTTLS)
-      - DST-PORT,2525 # альтернативный SMTP
-      - DST-PORT,110  # POP3
-      - DST-PORT,995  # POP3S
-      - DST-PORT,143  # IMAP
-      - DST-PORT,993  # IMAPS
 
 rules:
   # --- Системные / приватные адреса ---
@@ -682,7 +655,14 @@ rules:
   - OR,((DST-PORT,5228-5230),(DOMAIN-KEYWORD,mtalk),(DOMAIN-SUFFIX,fcm.googleapis.com),(DOMAIN-SUFFIX,fcm-xmpp.googleapis.com)),DIRECT # Google FCM/GCM
 
   # --- Почтовые порты → DIRECT ---
-  - RULE-SET,mail-ports,DIRECT                     # SMTP/POP3/IMAP (+TLS) — инлайн в rule-providers
+  - DST-PORT,25,DIRECT    # SMTP
+  - DST-PORT,465,DIRECT   # SMTPS (implicit TLS)
+  - DST-PORT,587,DIRECT   # SMTP submission (STARTTLS)
+  - DST-PORT,2525,DIRECT  # альтернативный SMTP
+  - DST-PORT,110,DIRECT   # POP3
+  - DST-PORT,995,DIRECT   # POP3S
+  - DST-PORT,143,DIRECT   # IMAP
+  - DST-PORT,993,DIRECT   # IMAPS
 
   # --- Блокировки ---
   - RULE-SET,category-ads-all-meta,REJECT-DROP     # реклама и трекеры (MetaCubeX category-ads-all)
@@ -710,7 +690,9 @@ rules:
   - PROCESS-NAME-REGEX,vesktop,💬 Discord
 
   # --- Игры: домены и процессы → PROXY (раньше лаунчеров и MRS steam/epic) ---
-  - RULE-SET,games-proxy-rules,PROXY
+  - DOMAIN-SUFFIX,easebar.com,PROXY
+  - DOMAIN-SUFFIX,deadorbit.net,PROXY
+  - IP-CIDR,172.232.25.131/32,PROXY # чат Warframe
 
   # --- Загрузочные CDN игровых платформ → DIRECT (выше 🎮 Игры/Лаунчеров: тяжёлые загрузки всегда напрямую, мимо VPN) ---
   - RULE-SET,category-game-platforms-download,DIRECT # загрузочные CDN игровых платформ (MetaCubeX) — напрямую
@@ -719,7 +701,7 @@ rules:
   - RULE-SET,games-launchers,🎮 Лаунчеры
 
   # --- Игровые платформы и сервисы → 🎮 Игры (по умолчанию DIRECT, можно переключить) ---
-  - RULE-SET,wine,🍷 Wine                          # Windows-софт/игры на Linux (Wine/Proton) — выше DIRECT
+  - PROCESS-NAME-REGEX,(?i)^(wineserver|wine|wine64|wine-preloader|wine64-preloader)$,🍷 Wine # Wine/Proton catch-all
   - RULE-SET,games-custom,🎮 Игры                  # локальные дополнения игр (процессы: GFN/нативные/ручные + домены вне category-games)
   - RULE-SET,category-enhance-gaming,🎮 Игры       # игровые сервисы, расширенный (MetaCubeX)
   - RULE-SET,games,🎮 Игры                         # игры по имени процесса — выше DIRECT: селектор игр приоритетнее

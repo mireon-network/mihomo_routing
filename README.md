@@ -25,7 +25,7 @@
 | `scripts/generate-gfn-games-block.py` | Пересборка блока GeForce NOW в `games-custom.yaml` |
 | `scripts/generate-tun-exclude-package.py` | Пересборка `tun.exclude-package` (RU-приложения мимо TUN) в шаблоне |
 
-> Мелкие наборы (`wine`, `games-proxy-rules`, `mail-ports`) вынесены прямо в шаблон как `type: inline` rule-providers — отдельных файлов и загрузок для них нет. `private-domains-custom` — локальный MRS-набор: правишь `rule-sets/mrs/text/private-domains-custom.list`, `mrs-tool.sh pack` собирает `bin/*.mrs` (upstream нет, `sync` его пропускает).
+> Мелкие правила (`wine`, `games-proxy-rules`, `mail-ports`) вынесены прямо в секцию `rules` шаблона — без отдельных rule-providers и загрузок. `private-domains-custom` — локальный MRS-набор: правишь `rule-sets/mrs/text/private-domains-custom.list`, `mrs-tool.sh pack` собирает `bin/*.mrs` (upstream нет, `sync` его пропускает).
 
 ## CDN
 
@@ -169,7 +169,7 @@
 
 Исключения с фиксированной политикой (не попадают в 🎮 Игры) — отдельные YAML, подключаются в шаблоне **до** `games`:
 
-- `games-proxy-rules` — игровые домены и процессы → PROXY, инлайн в шаблоне (**раньше** лаунчеров и MRS steam/epic)
+- `games-proxy-rules` — игровые домены и процессы → PROXY, прямо в `rules` (**раньше** лаунчеров и MRS steam/epic)
 - `games-launchers.yaml` — лаунчеры платформ → DIRECT (после proxy-rules; до MRS steam/epic)
 
 После sync с апстримом скрипт автоматически пересобирает блок GFN в `games-custom.yaml` (`regenerate_gfn_block`), дедуплицируя против `games.yaml` и `games-launchers.yaml`. Вручную:
