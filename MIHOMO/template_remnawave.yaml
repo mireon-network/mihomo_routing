@@ -79,6 +79,8 @@ x-anchors:
   dns_ru: &dns_ru
     - https://77.88.8.8/dns-query
     - https://8.8.8.8/dns-query
+    - https://9.9.9.9/dns-query # Quad9
+    - https://dns.adguard-dns.com/dns-query # AdGuard — фильтрация рекламы/трекеров
   # DNS для проксируемого трафика (резолв через узел группы PROXY).
   # mihomo опрашивает все серверы конкурентно и берёт быстрейший ответ (строгого приоритета нет).
   dns_proxy: &dns_proxy
@@ -898,7 +900,7 @@ rules:
 
   # --- RU-приложения и IP → DIRECT (низкий приоритет) ---
   - RULE-SET,ru-app-list,DIRECT                    # RU-приложения Android (legiz-ru) — напрямую
-  - RULE-SET,да,DIRECT                 # локальные дополнения RU-приложений (вне legiz)
+  - RULE-SET,ru-apps-custom,DIRECT                 # локальные дополнения RU-приложений (вне legiz)
   - RULE-SET,ru-ips,DIRECT                         # российские IP-подсети (MetaCubeX geoip) — напрямую
 
   # --- Всё остальное → PROXY ---
