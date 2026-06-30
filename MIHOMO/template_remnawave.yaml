@@ -99,7 +99,6 @@ tun:
   enable: true
   stack: gvisor
   auto-route: true
-  auto-redirect: true # ускорение TUN на Linux (eBPF redirect); на прочих ОС игнорируется
   auto-detect-interface: true
   dns-hijack:
     - any:53
