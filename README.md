@@ -16,7 +16,6 @@
 | `rule-sets/yaml/games-launchers.yaml` | Игровые лаунчеры (Steam, Epic, VK Play…) — всегда DIRECT |
 | `rule-sets/yaml/ru-apps-custom.yaml` | Локальные дополнения RU-приложений (вне legiz `ru-app-list`) → DIRECT |
 | `rule-sets/yaml/ai.yaml` | AI / LLM — **только локально**, upstream не синхронизируется |
-| `rule-sets/yaml/private-ips-custom.yaml` | Локальные IP-подсети → DIRECT (no-resolve) — **только локально** |
 | `rule-sets/mrs/text/*.list` | Распакованные MRS-наборы (редактировать здесь) |
 | `rule-sets/mrs/bin/*.mrs` | Бинарные rule-set для Mihomo (собираются из `text/`) |
 | `scripts/upstream-sync.sh` | Обновление YAML из upstream-репозиториев |
@@ -26,7 +25,7 @@
 | `scripts/generate-tun-exclude-package.py` | Пересборка `tun.exclude-package` (RU-приложения мимо TUN) в шаблоне |
 | `scripts/expand-yaml-merges.py` | Развернуть `<<: *rp_*` в rule-providers (Remnawave падает на alias flood) |
 
-> Мелкие наборы (`wine`, `games-proxy-rules`, `mail-ports`) — `type: inline` rule-providers в шаблоне (без отдельных загрузок). `private-domains-custom` — локальный MRS-набор: правишь `rule-sets/mrs/text/private-domains-custom.list`, `mrs-tool.sh pack` собирает `bin/*.mrs` (upstream нет, `sync` его пропускает).
+> Мелкие наборы (`wine`, `games-proxy-rules`, `mail-ports`) — `type: inline` rule-providers в шаблоне (без отдельных загрузок). Локальные MRS без upstream: `private-domains-custom`, `category-ru-custom`, `private-ips-custom`, `torrent-domains-custom` — правишь `rule-sets/mrs/text/<имя>.list`, `mrs-tool.sh pack` собирает `bin/*.mrs` (sync их пропускает).
 
 ## CDN
 
@@ -41,7 +40,6 @@
 - `…/rule-sets/yaml/games-launchers.yaml`
 - `…/rule-sets/yaml/ru-apps-custom.yaml`
 - `…/rule-sets/yaml/ai.yaml`
-- `…/rule-sets/yaml/private-ips-custom.yaml`
 - `…/rule-sets/mrs/bin/<имя>.mrs`
 
 Проверка URL для файла:
@@ -98,7 +96,7 @@
 
 Синхронизируемые YAML — **зеркала апстрима без правок**. Локальные дополнения держим в отдельных `*-custom.yaml`, которые подключены в шаблоне рядом с оригиналом (см. ниже).
 
-**Не синхронизируется (только локально):** `rule-sets/yaml/ai.yaml`, `*-custom.yaml`-файлы, а также локальный MRS `private-domains-custom` (`rule-sets/mrs/text/private-domains-custom.list`).
+**Не синхронизируется (только локально):** `rule-sets/yaml/ai.yaml`, остальные `*-custom.yaml` (кроме перенесённых в MRS), а также локальные MRS: `private-domains-custom`, `category-ru-custom`, `private-ips-custom`, `torrent-domains-custom` (`rule-sets/mrs/text/<имя>.list`).
 
 Добавить новый источник — запись в `scripts/upstream-manifest.yaml`.
 

@@ -166,10 +166,19 @@ sets:
     file: meta-category-game-platforms-download
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-game-platforms-download.list
-  # Локальный набор без upstream: text/ — источник правды, pack → bin/, sync пропускает.
+  # Локальные наборы без upstream: text/ — источник правды, pack → bin/, sync пропускает.
   - id: private-domains-custom
     behavior: domain
     file: private-domains-custom
+  - id: category-ru-custom
+    behavior: domain
+    file: category-ru-custom
+  - id: private-ips-custom
+    behavior: ipcidr
+    file: private-ips-custom
+  - id: torrent-domains-custom
+    behavior: domain
+    file: torrent-domains-custom
   - id: private-domains-meta
     behavior: domain
     file: meta-geosite-private

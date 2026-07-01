@@ -259,6 +259,10 @@ usage() {
   install-hooks         — git pre-commit
 
   sync при конфликте создаёт $CONFLICTS_REPORT и каталоги conflicts/<имя>/.
+
+  Локальные наборы (запись в manifest.yaml без url/src): правки только в text/,
+  pack → bin/; download/sync не трогают upstream для них.
+
   Переменные: MIHOMO_BIN, MIHOMO_VERSION
 EOF
 }

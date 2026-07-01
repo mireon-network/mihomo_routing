@@ -15,6 +15,7 @@ class SetInfo:
     set_id: str
     behavior: str
     file: str
+    has_upstream: bool
 
 
 def parse_manifest(path: Path) -> list[SetInfo]:
@@ -25,16 +26,28 @@ def parse_manifest(path: Path) -> list[SetInfo]:
         if s.startswith("- id:"):
             if cur:
                 sets.append(
-                    SetInfo(cur["id"], cur["behavior"], cur["file"])
+                    SetInfo(
+                        cur["id"],
+                        cur["behavior"],
+                        cur["file"],
+                        bool(cur.get("url") or cur.get("src")),
+                    )
                 )
             cur = {"id": s.split(":", 1)[1].strip()}
         elif cur and ":" in s and not s.startswith("#"):
             k, v = s.split(":", 1)
             k, v = k.strip(), v.strip()
-            if k in ("id", "behavior", "file"):
+            if k in ("id", "behavior", "file", "url", "src"):
                 cur[k] = v
     if cur:
-        sets.append(SetInfo(cur["id"], cur["behavior"], cur["file"]))
+        sets.append(
+            SetInfo(
+                cur["id"],
+                cur["behavior"],
+                cur["file"],
+                bool(cur.get("url") or cur.get("src")),
+            )
+        )
     return sets
 
 
@@ -229,6 +242,10 @@ def main() -> int:
     conflict_sets: list[SetInfo] = []
 
     for info in sets:
+        if not info.has_upstream:
+            stats["skipped_local"] = stats.get("skipped_local", 0) + 1
+            print(f"{info.file}: skipped_local")
+            continue
         result = merge_one(
             info,
             text_dir,

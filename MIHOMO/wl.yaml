@@ -164,14 +164,14 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geoip-private.mrs
     path: ./ruleset/meta-geoip-private.mrs
-  private-ips-custom:
+  private-ips-custom: # локальный mrs (source: rule-sets/mrs/text/private-ips-custom.list)
     type: http
     proxy: PROXY
     interval: 86400
     behavior: ipcidr
-    format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/private-ips-custom.yaml
-    path: ./ruleset/private-ips-custom.yaml
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/private-ips-custom.mrs
+    path: ./ruleset/private-ips-custom.mrs
   category-gov-ru:
     type: http
     proxy: PROXY
@@ -212,14 +212,14 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-websites.mrs
     path: ./ruleset/torrent-websites.mrs
-  torrent-domains-custom:
+  torrent-domains-custom: # локальный mrs (source: rule-sets/mrs/text/torrent-domains-custom.list)
     type: http
     proxy: PROXY
     interval: 86400
     behavior: domain
-    format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-domains-custom.yaml
-    path: ./ruleset/torrent-domains-custom.yaml
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-domains-custom.mrs
+    path: ./ruleset/torrent-domains-custom.mrs
   torrent-clients:
     type: http
     proxy: PROXY

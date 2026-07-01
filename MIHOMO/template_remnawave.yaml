@@ -409,14 +409,14 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/private-domains-custom.mrs
     path: ./ruleset/private-domains-custom.mrs
-  category-ru-custom:
+  category-ru-custom: # локальный mrs (source: rule-sets/mrs/text/category-ru-custom.list)
     type: http
     proxy: ⚡️ Авто
     interval: 86400
     behavior: domain
-    format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/category-ru-custom.yaml
-    path: ./ruleset/category-ru-custom.yaml
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/category-ru-custom.mrs
+    path: ./ruleset/category-ru-custom.mrs
   category-ru-meta:
     type: http
     proxy: ⚡️ Авто
@@ -617,14 +617,14 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-enhance-gaming.mrs
     path: ./ruleset/meta-category-enhance-gaming.mrs
-  private-ips-custom:
+  private-ips-custom: # локальный mrs (source: rule-sets/mrs/text/private-ips-custom.list)
     type: http
     proxy: ⚡️ Авто
     interval: 86400
     behavior: ipcidr
-    format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/private-ips-custom.yaml
-    path: ./ruleset/private-ips-custom.yaml
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/private-ips-custom.mrs
+    path: ./ruleset/private-ips-custom.mrs
   private-ips-meta:
     type: http
     proxy: ⚡️ Авто
@@ -665,14 +665,14 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-win-spy.mrs
     path: ./ruleset/meta-win-spy.mrs
-  torrent-domains-custom:
+  torrent-domains-custom: # локальный mrs (source: rule-sets/mrs/text/torrent-domains-custom.list)
     type: http
     proxy: ⚡️ Авто
     interval: 86400
     behavior: domain
-    format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-domains-custom.yaml
-    path: ./ruleset/torrent-domains-custom.yaml
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-domains-custom.mrs
+    path: ./ruleset/torrent-domains-custom.mrs
   torrent-trackers:
     type: http
     proxy: ⚡️ Авто

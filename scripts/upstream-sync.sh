@@ -26,7 +26,8 @@ usage() {
   $(basename "$0") baseline-init
   $(basename "$0") sync
 
-Локальные-only (не синхронизируются): ai.yaml, *-custom.yaml
+Локальные-only (не синхронизируются): ai.yaml, *-custom.yaml (YAML),
+  MRS *-custom в rule-sets/mrs/text/ (см. manifest.yaml без url)
 EOF
 }
 
