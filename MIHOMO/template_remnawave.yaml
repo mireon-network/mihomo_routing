@@ -725,9 +725,9 @@ rule-providers:
     type: inline
     behavior: classical
     payload:
-      - DOMAIN-SUFFIX,easebar.com,PROXY
-      - DOMAIN-SUFFIX,deadorbit.net,PROXY
-      - IP-CIDR,172.232.25.131/32,PROXY # чат Warframe
+      - DOMAIN-SUFFIX,easebar.com
+      - DOMAIN-SUFFIX,deadorbit.net
+      - IP-CIDR,172.232.25.131/32 # чат Warframe
   games-launchers:
     type: http
     proxy: ⚡️ Авто
