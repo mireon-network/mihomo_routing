@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""include-proxies: true в видимых select-группах YAML-шаблона (in-place)."""
+"""Патч debug-шаблона: все узлы подписки в видимых select-группах.
+
+Remnawave include-proxies: true подставляет только hidden gateway_*.
+Вместо этого — mihomo include-all-proxies: true (все записи из proxies:).
+include-proxies остаётся false; includeHiddenHosts: true не трогаем.
+"""
 from __future__ import annotations
 
 import re
@@ -7,6 +12,8 @@ import sys
 from pathlib import Path
 
 import yaml
+
+INCLUDE_ALL_PROXIES = "    include-all-proxies: true"
 
 
 def visible_select_groups(text: str) -> list[str]:
@@ -18,18 +25,32 @@ def visible_select_groups(text: str) -> list[str]:
     ]
 
 
+def patch_group_include_all(text: str, name: str) -> str | None:
+    pat = (
+        rf"(  - name: {re.escape(name)}\n"
+        rf"    icon: [^\n]+\n"
+        rf"    type: select\n)"
+        rf"(?!    include-all-proxies: true\n)"
+    )
+    text, n = re.subn(pat, rf"\1{INCLUDE_ALL_PROXIES}\n", text, count=1)
+    if n != 1:
+        print(
+            f"patch-include-proxies: не найдена группа {name!r} (type: select)",
+            file=sys.stderr,
+        )
+        return None
+    return text
+
+
 def patch_text(text: str) -> str | None:
     names = visible_select_groups(text)
     if not names:
+        print("patch-include-proxies: нет видимых select-групп", file=sys.stderr)
         return None
+
     for name in names:
-        pat = rf"(  - name: {re.escape(name)}\n(?:.*\n)*?    remnawave:\n      include-proxies:) false"
-        text, n = re.subn(pat, r"\1 true", text, count=1)
-        if n != 1:
-            print(
-                f"patch-include-proxies: не найдена группа {name!r} (include-proxies: false)",
-                file=sys.stderr,
-            )
+        text = patch_group_include_all(text, name)
+        if text is None:
             return None
     return text
 
@@ -42,7 +63,7 @@ def patch_file(path: Path) -> bool:
     if out != text:
         path.write_text(out, encoding="utf-8")
     names = visible_select_groups(out)
-    print(f"patch-include-proxies: {len(names)} селекторов → {path}")
+    print(f"patch-include-proxies: {len(names)} селекторов, include-all-proxies → {path}")
     return True
 
 
