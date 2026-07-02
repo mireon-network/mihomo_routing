@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Throwaway-ветка <источник>-debug от текущего HEAD:
 #   • CDN-URL в template_remnawave.yaml и wl.yaml → <owner>/<repo>@<ветка>-debug
-#   • include-all-proxies: true в видимых select (все узлы из proxies:)
+#   • убрать remnawave.include-proxies: false + include-all: true (includeHiddenHosts не трогаем)
 #
 #   ./scripts/deploy-debug.sh                  # <текущая>-debug
 #   ./scripts/deploy-debug.sh routing-v2-debug # явное имя throwaway-ветки
@@ -54,7 +54,7 @@ python3 "$ROOT/scripts/patch-include-proxies.py" "${TEMPLATES[@]}"
 
 git -C "$WT" add -A
 if ! git -C "$WT" diff --cached --quiet; then
-  git -C "$WT" commit -q -m "test(debug): CDN → ${OWNER_REPO}@${BR}, include-all-proxies (throwaway, do NOT merge)"
+  git -C "$WT" commit -q -m "test(debug): CDN → ${OWNER_REPO}@${BR}, include-all + Remnawave inject (throwaway, do NOT merge)"
 fi
 git -C "$WT" push -f "$REMOTE" "$BR"
 

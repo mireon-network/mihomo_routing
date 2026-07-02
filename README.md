@@ -27,7 +27,7 @@
 | `scripts/deploy-test-branches.sh` | Обновить `<ветка>-cdn` и `<ветка>-debug` от текущего HEAD |
 | `scripts/deploy-cdn-test.sh` | Throwaway-ветка `<ветка>-cdn`: CDN-URL rule-sets → своя ветка |
 | `scripts/deploy-debug.sh` | Throwaway-ветка `<ветка>-debug`: CDN-URL + все узлы в селекторах |
-| `scripts/patch-include-proxies.py` | Debug-патч: `include-all-proxies: true` в видимых select |
+| `scripts/patch-include-proxies.py` | Debug-патч: `include-all: true`, видимые хосты, без блокировки Remnawave |
 | `scripts/expand-yaml-merges.py` | Развернуть `<<: *rp_*` в rule-providers (Remnawave падает на alias flood) |
 
 > Мелкие наборы (`wine`, `games-proxy-rules`, `mail-ports`) — `type: inline` rule-providers в шаблоне (без отдельных загрузок). Локальные MRS без upstream: `private-domains-custom`, `category-ru-custom`, `private-ips-custom`, `torrent-domains-custom` — правишь `rule-sets/mrs/text/<имя>.list`, `mrs-tool.sh pack` собирает `bin/*.mrs` (sync их пропускает).
@@ -69,7 +69,7 @@ Live-тест — throwaway-ветки **`<ветка>-cdn`** и **`<ветка>
 Пример для `routing-v2`:
 
 - CDN: `https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@routing-v2-cdn/MIHOMO/template_remnawave.yaml`
-- Debug: `https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@routing-v2-debug/MIHOMO/template_remnawave.yaml` — все видимые узлы в селекторах (`include-all-proxies`)
+- Debug: `https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@routing-v2-debug/MIHOMO/template_remnawave.yaml` — все узлы в селекторах (`include-all` + инъекция Remnawave)
 
 ## Обновление из upstream
 
