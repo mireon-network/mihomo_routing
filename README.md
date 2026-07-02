@@ -8,7 +8,8 @@
 
 | Путь | Описание |
 |------|----------|
-| `MIHOMO/template_remnawave.yaml` | Шаблон для Remnawave |
+| `MIHOMO/template_remnawave.yaml` | Шаблон для Remnawave (страны + gateway LB) |
+| `MIHOMO/wl.yaml` | Режим «белые списки» |
 | `rule-sets/yaml/torrent-clients.yaml` | Торрент-клиенты — **зеркало** [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets/blob/main/other/torrent-clients.yaml) (без правок) |
 | `rule-sets/yaml/torrent-clients-custom.yaml` | Локальные дополнения торрент-клиентов → DIRECT |
 | `rule-sets/yaml/games.yaml` | Игры — **зеркало** [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category) (без правок) |
@@ -23,6 +24,10 @@
 | `scripts/upstream-manifest.yaml` | Список upstream-источников для `upstream-sync.sh` |
 | `scripts/generate-gfn-games-block.py` | Пересборка блока GeForce NOW в `games-custom.yaml` |
 | `scripts/generate-tun-exclude-package.py` | Пересборка `tun.exclude-package` (RU-приложения мимо TUN) в шаблоне |
+| `scripts/deploy-test-branches.sh` | Обновить `<ветка>-cdn` и `<ветка>-debug` от текущего HEAD |
+| `scripts/deploy-cdn-test.sh` | Throwaway-ветка `<ветка>-cdn`: CDN-URL rule-sets → своя ветка |
+| `scripts/deploy-debug.sh` | Throwaway-ветка `<ветка>-debug`: CDN-URL + все узлы в селекторах |
+| `scripts/patch-include-proxies.py` | Включить все прокси в видимых select-группах (для `deploy-debug.sh`) |
 | `scripts/expand-yaml-merges.py` | Развернуть `<<: *rp_*` в rule-providers (Remnawave падает на alias flood) |
 
 > Мелкие наборы (`wine`, `games-proxy-rules`, `mail-ports`) — `type: inline` rule-providers в шаблоне (без отдельных загрузок). Локальные MRS без upstream: `private-domains-custom`, `category-ru-custom`, `private-ips-custom`, `torrent-domains-custom` — правишь `rule-sets/mrs/text/<имя>.list`, `mrs-tool.sh pack` собирает `bin/*.mrs` (sync их пропускает).
@@ -54,9 +59,17 @@
 
 ## Использование в Remnawave
 
-Шаблон:
+Шаблоны (ветка `main`):
 
-`https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/MIHOMO/template_remnawave.yaml`
+- Основной: `https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/MIHOMO/template_remnawave.yaml`
+- Белые списки: `https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/MIHOMO/wl.yaml`
+
+Live-тест — throwaway-ветки **`<ветка>-cdn`** и **`<ветка>-debug`** обновляются автоматически при push в любую ветку (кроме `*-cdn`/`*-debug`). Вручную: `./scripts/deploy-test-branches.sh`.
+
+Пример для `routing-v2`:
+
+- CDN: `https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@routing-v2-cdn/MIHOMO/template_remnawave.yaml`
+- Debug: `https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@routing-v2-debug/MIHOMO/template_remnawave.yaml`
 
 ## Обновление из upstream
 

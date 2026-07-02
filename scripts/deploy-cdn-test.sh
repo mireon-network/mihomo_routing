@@ -8,16 +8,24 @@
 # Пушит в remote, КУДА У ТЕБЯ ЕСТЬ ДОСТУП (свой форк/личный репо). jsDelivr отдаёт
 # любой ПУБЛИЧНЫЙ GitHub-репозиторий.
 #
-# Сначала закоммить правки в свою ветку (не в main!), затем:
-#   ./scripts/deploy-cdn-test.sh                 # ветка cdn-test, remote origin
-#   ./scripts/deploy-cdn-test.sh my-test fork    # ветка my-test, remote fork
+# Сначала закоммить и запушь — <ветка>-cdn и <ветка>-debug обновятся в CI
+# (или вручную: ./scripts/deploy-test-branches.sh).
+#   ./scripts/deploy-cdn-test.sh                    # <текущая>-cdn
+#   ./scripts/deploy-cdn-test.sh routing-v2-cdn     # явное имя throwaway-ветки
 #
 # В конце печатает клиентский URL шаблона.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-BR="${1:-cdn-test}"
-REMOTE="${2:-origin}"
+if [[ -n "${1:-}" ]]; then
+  BR="$1"
+  REMOTE="${2:-origin}"
+else
+  SRC="${GITHUB_REF_NAME:-$(git -C "$ROOT" branch --show-current)}"
+  [[ -n "$SRC" ]] || { echo "deploy-cdn-test: укажите ветку или checkout исходной ветки" >&2; exit 1; }
+  BR="${SRC}-cdn"
+  REMOTE="${2:-origin}"
+fi
 
 # owner/repo из push-URL выбранного remote (https или ssh)
 URL="$(git -C "$ROOT" remote get-url --push "$REMOTE")"
@@ -47,7 +55,9 @@ print(f"переписано {n} внутренних URL → gh/{dst}")
 PY
 
 git -C "$WT" add -A
-git -C "$WT" commit -q -m "test(cdn): internal URLs → ${OWNER_REPO}@${BR} (throwaway, do NOT merge)"
+if ! git -C "$WT" diff --cached --quiet; then
+  git -C "$WT" commit -q -m "test(cdn): internal URLs → ${OWNER_REPO}@${BR} (throwaway, do NOT merge)"
+fi
 git -C "$WT" push -f "$REMOTE" "$BR"
 
 echo
@@ -56,6 +66,6 @@ echo "  ${CDN}@${BR}/MIHOMO/template_remnawave.yaml"
 echo "  ${CDN}@${BR}/MIHOMO/wl.yaml"
 echo
 echo "Репозиторий ${OWNER_REPO} должен быть ПУБЛИЧНЫМ (иначе jsDelivr не отдаст)."
-echo "Повторный деплой в ту же ветку кэшируется jsDelivr ~12ч — сбрось кэш:"
+echo "Повторный деплой в ту же ветку кэшируется jsDelivr ~12h — сбрось кэш:"
 echo "  grep -oE 'https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main[^\" ]+' MIHOMO/template_remnawave.yaml \\"
 echo "    | sed 's#mireon-network/mihomo_routing@main#${OWNER_REPO}@${BR}#' | sort -u | xargs ./scripts/cdn-purge.sh --url"

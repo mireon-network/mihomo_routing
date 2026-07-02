@@ -1,0 +1,39 @@
+name: Deploy test branches
+
+on:
+  push:
+    branches-ignore:
+      - "*-cdn"
+      - "*-debug"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy-test-branches-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install Python deps
+        run: pip install pyyaml
+
+      - name: Configure git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Update ${{ github.ref_name }}-cdn and ${{ github.ref_name }}-debug
+        env:
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+        run: ./scripts/deploy-test-branches.sh
