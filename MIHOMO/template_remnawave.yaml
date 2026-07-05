@@ -144,7 +144,7 @@ dns:
     "rule-set:category-ads-all-meta":
       - rcode://refused
     # RU-домены (идут DIRECT) — резолвим через RU DNS напрямую: верный CDN и меньше задержка
-    "rule-set:category-ru-meta,category-ru-custom,category-ecommerce-ru,category-entertainment-ru,category-finance,t2-ru,mts-ru,nic-ru,category-gov-ru,category-media-ru,category-retail-ru,category-travel-ru,category-medicine-ru,whitelist,wld": *dns_ru
+    "rule-set:category-ru-meta,category-ru-custom,category-ecommerce-ru,category-entertainment-ru,category-bank-ru,t2-ru,mts-ru,nic-ru,category-gov-ru,category-media-ru,category-retail-ru,category-travel-ru,category-medicine-ru,whitelist,wld": *dns_ru
 sniffer:
   enable: true
   override-destination: false
@@ -441,14 +441,14 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-entertainment-ru.mrs
     path: ./ruleset/meta-category-entertainment-ru.mrs
-  category-finance:
+  category-bank-ru:
     type: http
     proxy: ⚡️ Авто
     interval: 86400
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-finance.mrs
-    path: ./ruleset/meta-category-finance.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-bank-ru.mrs
+    path: ./ruleset/meta-category-bank-ru.mrs
   t2-ru:
     type: http
     proxy: ⚡️ Авто
@@ -876,7 +876,7 @@ rules:
   - RULE-SET,pinterest,DIRECT
   - RULE-SET,category-ecommerce-ru,DIRECT          # российский e-commerce (MetaCubeX) — напрямую
   - RULE-SET,category-entertainment-ru,DIRECT      # российские медиа/стриминги (MetaCubeX) — напрямую
-  - RULE-SET,category-finance,DIRECT               # банки/брокеры/финсервисы (MetaCubeX) — напрямую
+  - RULE-SET,category-bank-ru,DIRECT               # банки/финсервисы РФ (MetaCubeX category-bank-ru) — напрямую
   - RULE-SET,t2-ru,DIRECT                           # Tele2 (MetaCubeX) — напрямую
   - RULE-SET,mts-ru,DIRECT                          # МТС (MetaCubeX) — напрямую
   - RULE-SET,megafon,DIRECT                         # МегаФон (MetaCubeX) — напрямую

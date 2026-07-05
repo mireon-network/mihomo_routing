@@ -81,11 +81,11 @@ sets:
     file: meta-category-entertainment-ru
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-entertainment-ru.list
-  - id: category-finance
+  - id: category-bank-ru
     behavior: domain
-    file: meta-category-finance
+    file: meta-category-bank-ru
     src: mihomo-list
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-finance.list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-bank-ru.list
   - id: t2-ru
     behavior: domain
     file: meta-t2-ru
