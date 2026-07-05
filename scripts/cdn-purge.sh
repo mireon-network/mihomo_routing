@@ -2,13 +2,14 @@
 # Сброс кэша jsDelivr для файлов репозитория (purge API).
 # Использование:
 #   ./scripts/cdn-purge.sh rule-sets/yaml/ai.yaml
-#   ./scripts/cdn-purge.sh --all    # все URL из MIHOMO/template_remnawave.yaml
+#   ./scripts/cdn-purge.sh --all    # все URL из MIHOMO/*.yaml
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CDN_URL="$SCRIPT_DIR/cdn-url.sh"
 TEMPLATE="$ROOT/MIHOMO/template_remnawave.yaml"
+WL_TEMPLATE="$ROOT/MIHOMO/wl.yaml"
 CDN_HOST="${CDN_HOST:-cdn.jsdelivr.net}"
 PURGE_HOST="${PURGE_HOST:-purge.jsdelivr.net}"
 
@@ -54,8 +55,11 @@ purge_path() {
 }
 
 collect_all_urls() {
-  [[ -f "$TEMPLATE" ]] || die "нет файла: $TEMPLATE"
-  grep -oE "https://${CDN_HOST}/gh/mireon-network/mihomo_routing@[^\"[:space:]]+" "$TEMPLATE" | sort -u
+  local f
+  for f in "$TEMPLATE" "$WL_TEMPLATE"; do
+    [[ -f "$f" ]] || die "нет файла: $f"
+    grep -oE "https://${CDN_HOST}/gh/mireon-network/mihomo_routing@[^\"[:space:]]+" "$f"
+  done | sort -u
 }
 
 failed=0

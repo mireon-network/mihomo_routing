@@ -144,7 +144,7 @@ dns:
     "rule-set:category-ads-all-meta":
       - rcode://refused
     # RU-домены (идут DIRECT) — резолвим через RU DNS напрямую: верный CDN и меньше задержка
-    "rule-set:category-ru-meta,category-ru-custom,category-ecommerce-ru,category-entertainment-ru,category-bank-ru,t2-ru,mts-ru,nic-ru,category-gov-ru,category-media-ru,category-retail-ru,category-travel-ru,category-medicine-ru,whitelist,wld": *dns_ru
+    "rule-set:category-ru-meta,category-ru-custom,category-ecommerce-ru,category-entertainment-ru,category-bank-ru,t2-ru,mts-ru,nic-ru,category-gov-ru,category-media-ru,category-retail-ru,category-travel-ru,category-medicine-ru,yandex,whitelist,wld": *dns_ru
 sniffer:
   enable: true
   override-destination: false
@@ -481,6 +481,14 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-mailru-group.mrs
     path: ./ruleset/meta-mailru-group.mrs
+  yandex:
+    type: http
+    proxy: ⚡️ Авто
+    interval: 86400
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-yandex.mrs
+    path: ./ruleset/meta-yandex.mrs
   nic-ru:
     type: http
     proxy: ⚡️ Авто
@@ -836,7 +844,7 @@ rules:
   # --- Сервисы через PROXY ---
   # google-play / telegram убраны: их домены и так попадают в финальный MATCH,PROXY
   - RULE-SET,youtube-meta,📺 Youtube               # YouTube-домены (MetaCubeX)
-  # github-meta убран: GitHub-домены уходят в финальный MATCH,PROXY (проверено scripts/dedup-proxy-check.py)
+  # github-meta убран: GitHub-домены уходят в финальный MATCH,PROXY
 
     # --- Приложения по имени процесса ---
   - RULE-SET,discord,💬 Discord                    # Discord-домены (MetaCubeX)
@@ -881,6 +889,7 @@ rules:
   - RULE-SET,mts-ru,DIRECT                          # МТС (MetaCubeX) — напрямую
   - RULE-SET,megafon,DIRECT                         # МегаФон (MetaCubeX) — напрямую
   - RULE-SET,mailru-group,DIRECT                    # VK / Mail.ru Group (MetaCubeX) — напрямую
+  - RULE-SET,yandex,DIRECT                          # Яндекс (MetaCubeX) — напрямую
   - RULE-SET,nic-ru,DIRECT                          # RU-NIC/хостинг (MetaCubeX) — напрямую
   - RULE-SET,category-gov-ru,DIRECT                 # госуслуги/госсайты РФ (MetaCubeX) — напрямую
   - RULE-SET,category-media-ru,DIRECT               # СМИ РФ (MetaCubeX) — напрямую

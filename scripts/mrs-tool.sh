@@ -8,8 +8,6 @@ MANIFEST="$MRS_DIR/manifest.yaml"
 BIN_DIR="$MRS_DIR/bin"
 TEXT_DIR="$MRS_DIR/text"
 STAGING_DIR="$MRS_DIR/.sync-staging"
-BASELINE_DIR="$MRS_DIR/.sync-baseline"
-CONFLICTS_REPORT="$MRS_DIR/SYNC-CONFLICTS.md"
 TOOLS_DIR="$ROOT/.tools"
 MIHOMO_BIN="${MIHOMO_BIN:-$TOOLS_DIR/mihomo}"
 MIHOMO_VERSION="${MIHOMO_VERSION:-v1.19.25}"
@@ -199,42 +197,15 @@ cmd_sync() {
   staging_download "$STAGING_DIR/bin" 1
   staging_unpack "$STAGING_DIR/bin" "$STAGING_DIR/text"
 
-  echo "mrs-tool: слияние с локальным text/…"
-  local merge_rc=0
+  echo "mrs-tool: зеркалирование upstream в text/…"
   python3 "$ROOT/scripts/mrs-sync-merge.py" \
     --mrs-dir "$MRS_DIR" \
-    --manifest "$MANIFEST" || merge_rc=$?
+    --manifest "$MANIFEST"
 
-  echo "mrs-tool: упаковка локальных правок в bin/…"
+  echo "mrs-tool: упаковка text/ → bin/…"
   cmd_pack
 
-  if [[ "$merge_rc" -ne 0 ]]; then
-    echo "mrs-tool: есть конфликты — см. $CONFLICTS_REPORT" >&2
-    exit 1
-  fi
-  echo "mrs-tool: sync завершён без конфликтов"
-}
-
-cmd_resolve() {
-  parse_manifest
-  python3 "$ROOT/scripts/mrs-sync-merge.py" \
-    --mrs-dir "$MRS_DIR" \
-    --manifest "$MANIFEST" \
-    --resolve "$@"
-  cmd_pack
-}
-
-cmd_baseline_init() {
-  mkdir -p "$BASELINE_DIR"
-  local n=0
-  for f in "$TEXT_DIR"/*.list; do
-    [[ -f "$f" ]] || continue
-    local base
-    base="$(basename "$f")"
-    cp "$f" "$BASELINE_DIR/$base"
-    n=$((n + 1))
-  done
-  echo "mrs-tool: baseline инициализирован ($n файлов) в .sync-baseline/"
+  echo "mrs-tool: sync завершён"
 }
 
 cmd_install_hooks() {
@@ -253,15 +224,11 @@ usage() {
   download [--force]  — скачать .mrs в rule-sets/mrs/bin/
   unpack --force        — bin/*.mrs → text/*.list (перезаписывает text/)
   pack                  — text/*.list → bin/*.mrs
-  sync                  — upstream → staging, слияние без перетирания локальных правок
-  resolve [имя …]       — после ручного merge: local → baseline, убрать conflict
-  baseline-init         — один раз: скопировать text/ → .sync-baseline/
+  sync                  — upstream → text/ (зеркала) + pack → bin/
   install-hooks         — git pre-commit
 
-  sync при конфликте создаёт $CONFLICTS_REPORT и каталоги conflicts/<имя>/.
-
-  Локальные наборы (запись в manifest.yaml без url/src): правки только в text/,
-  pack → bin/; download/sync не трогают upstream для них.
+  Upstream-наборы (url/src в manifest): перезаписываются из CDN/upstream.
+  Локальные *-custom (без url/src): правки только в text/, pack → bin/.
 
   Переменные: MIHOMO_BIN, MIHOMO_VERSION
 EOF
@@ -275,8 +242,6 @@ main() {
     unpack) cmd_unpack "$@" ;;
     pack) cmd_pack ;;
     sync) cmd_sync ;;
-    resolve) cmd_resolve "$@" ;;
-    baseline-init) cmd_baseline_init ;;
     install-hooks) cmd_install_hooks ;;
     -h|--help|"") usage ;;
     *) die "неизвестная команда: $cmd (см. --help)" ;;

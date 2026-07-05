@@ -29,6 +29,10 @@ out = {
 }
 missing = []
 for name, p in provs.items():
+    if p.get("type") == "inline":
+        out["rule-providers"][name] = p
+        out["rules"].append(f"RULE-SET,{name},G")
+        continue
     url = p.get("url", "")
     sub = url.split("@main/", 1)[1] if "@main/" in url else None
     local = (root / sub) if sub else None
@@ -54,14 +58,20 @@ echo "→ [2/2] парсинг содержимого каждого файла 
 rc=0
 python3 - "$TPL" "$ROOT" <<'PY' >"$WORK/files.tsv"
 import sys, yaml
-from pathlib import Path
 doc = yaml.safe_load(open(sys.argv[1], encoding="utf-8")); root = sys.argv[2]
 for name, p in (doc.get("rule-providers") or {}).items():
+    if p.get("type") == "inline":
+        print(f"{name}\tinline\t-\t-")
+        continue
     url = p.get("url", "")
     if "@main/" not in url: continue
     print(f"{name}\t{p.get('behavior','domain')}\t{p.get('format','yaml')}\t{root}/{url.split('@main/',1)[1]}")
 PY
 while IFS=$'\t' read -r name behavior format path; do
+  if [[ "$behavior" == "inline" ]]; then
+    printf "   %-28s %-9s %-6s %s\n" "$name" "inline" "-" "ok(inline)"
+    continue
+  fi
   # classical mrs не поддерживается — classical валидируем как yaml-парс (mihomo читает),
   # domain/ipcidr конвертируем в mrs (полноценный парс контента).
   if [[ "$behavior" == "classical" ]]; then

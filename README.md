@@ -2,7 +2,7 @@
 
 Конфигурация Mihomo для Remnawave (mireon-network) с локальными rule-sets, MRS-наборами и правилами для AI.
 
-Локальные правки сохраняются: обновление из upstream — через скрипты с **трёхсторонним merge** (baseline / local / remote), без слепой перезаписи.
+Локальные правки — в `*-custom` и локальных MRS; зеркала upstream перезаписываются через `./scripts/upstream-sync.sh sync`.
 
 ## Содержимое
 
@@ -15,7 +15,9 @@
 | `rule-sets/yaml/games.yaml` | Игры — **зеркало** [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category) (без правок) |
 | `rule-sets/yaml/games-custom.yaml` | Локальные дополнения игр: [GeForce NOW](https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json), нативные macOS/Linux, ручные — **только локально** |
 | `rule-sets/yaml/games-launchers.yaml` | Игровые лаунчеры (Steam, Epic, VK Play…) — всегда DIRECT |
+| `rule-sets/yaml/ru-app-list.yaml` | RU Android-пакеты — **зеркало** [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets) (без правок) |
 | `rule-sets/yaml/ru-apps-custom.yaml` | Локальные дополнения RU-приложений (вне legiz `ru-app-list`) → DIRECT |
+| `rule-sets/yaml/wld-apps-custom.yaml` | Локальные дополнения для `wl.yaml` `tun.exclude-package` (домены из `wld.list`) |
 | `rule-sets/yaml/ai.yaml` | AI / LLM — **только локально**, upstream не синхронизируется |
 | `rule-sets/mrs/text/*.list` | Распакованные MRS-наборы (редактировать здесь) |
 | `rule-sets/mrs/bin/*.mrs` | Бинарные rule-set для Mihomo (собираются из `text/`) |
@@ -23,12 +25,12 @@
 | `scripts/mrs-tool.sh` | Обновление MRS rule-sets |
 | `scripts/upstream-manifest.yaml` | Список upstream-источников для `upstream-sync.sh` |
 | `scripts/generate-gfn-games-block.py` | Пересборка блока GeForce NOW в `games-custom.yaml` |
-| `scripts/generate-tun-exclude-package.py` | Пересборка `tun.exclude-package` (RU-приложения мимо TUN) в шаблоне |
+| `scripts/generate-tun-exclude-package.py` | Пересборка `tun.exclude-package` в обоих шаблонах |
+| `scripts/test-config-local.sh` | Локальная проверка rule-providers без CDN (`mihomo -t` + convert-ruleset) |
 | `scripts/deploy-test-branches.sh` | Обновить `<ветка>-cdn` и `<ветка>-debug` от текущего HEAD |
 | `scripts/deploy-cdn-test.sh` | Throwaway-ветка `<ветка>-cdn`: CDN-URL rule-sets → своя ветка |
 | `scripts/deploy-debug.sh` | Throwaway-ветка `<ветка>-debug`: CDN-URL + все узлы в селекторах |
 | `scripts/patch-include-proxies.py` | Debug-патч: `include-all: true`, видимые хосты, без блокировки Remnawave |
-| `scripts/expand-yaml-merges.py` | Развернуть `<<: *rp_*` в rule-providers (Remnawave падает на alias flood) |
 
 > Мелкие наборы (`wine`, `games-proxy-rules`, `mail-ports`) — `type: inline` rule-providers в шаблоне (без отдельных загрузок). Локальные MRS без upstream: `private-domains-custom`, `category-ru-custom`, `private-ips-custom`, `torrent-domains-custom` — правишь `rule-sets/mrs/text/<имя>.list`, `mrs-tool.sh pack` собирает `bin/*.mrs` (sync их пропускает).
 
@@ -52,10 +54,17 @@
 ```bash
 ./scripts/cdn-url.sh rule-sets/yaml/games.yaml
 ./scripts/cdn-purge.sh rule-sets/yaml/ai.yaml   # сброс кэша jsDelivr
-./scripts/cdn-purge.sh --all                     # все rule-providers из шаблона
+./scripts/cdn-purge.sh --all                     # все rule-providers из MIHOMO/*.yaml
 ```
 
 После `git push` в `main` файлы доступны на CDN автоматически (кэш jsDelivr может обновляться с задержкой; при срочном обновлении — `./scripts/cdn-purge.sh` или [purge](https://www.jsdelivr.com/tools/purge)).
+
+Локальная проверка rule-sets без CDN:
+
+```bash
+./scripts/test-config-local.sh
+./scripts/test-config-local.sh MIHOMO/wl.yaml
+```
 
 ## Использование в Remnawave
 
@@ -73,78 +82,45 @@ Live-тест — throwaway-ветки **`<ветка>-cdn`** и **`<ветка>
 
 ## Обновление из upstream
 
-Два независимых контура синхронизации:
+Два контура синхронизации:
 
 | Контур | Скрипт | Что обновляет |
 |--------|--------|---------------|
-| YAML rule-sets, шаблон | `./scripts/upstream-sync.sh` | `MIHOMO/`, `rule-sets/yaml/` |
+| YAML-зеркала | `./scripts/upstream-sync.sh` | `torrent-clients`, `games`, `ru-app-list` |
 | MRS (geosite / geoip) | `./scripts/mrs-tool.sh` | `rule-sets/mrs/text/` → `bin/` |
 
 ### Быстрый старт
 
 ```bash
-# один раз после клонирования или перед первым sync
-./scripts/upstream-sync.sh baseline-init
-./scripts/mrs-tool.sh baseline-init   # если ещё не делали для MRS
 ./scripts/mrs-tool.sh install-hooks   # pre-commit: pack .mrs при коммите
-
-# обновить всё
-./scripts/upstream-sync.sh sync
+./scripts/upstream-sync.sh sync       # YAML-зеркала + MRS
 ```
+
+**Автоматически:** GitHub Actions [`.github/workflows/upstream-sync.yml`](.github/workflows/upstream-sync.yml) — каждый день **06:00 МСК** (`sync` + `test-config-local.sh`, коммит в `main` при изменениях). Ручной запуск: Actions → *Upstream sync* → *Run workflow*.
 
 `upstream-sync.sh sync` последовательно:
 
 1. скачивает upstream в `.sync-upstream/staging/`;
-2. сливает с локальными файлами (см. логику ниже);
-3. запускает post-hooks (CDN URL в шаблоне, блок GFN в `games.yaml`);
+2. **перезаписывает** зеркала из manifest (конфликтов нет — правки только в `*-custom`);
+3. post-hooks: GFN → `games-custom.yaml`, `tun.exclude-package` в обоих шаблонах, CDN URL в `template_remnawave.yaml`;
 4. вызывает `./scripts/mrs-tool.sh sync`.
 
 ### Источники (`scripts/upstream-manifest.yaml`)
 
-| id | Файл | Upstream | auto_apply |
-|----|------|----------|------------|
-| `template_remnawave` | `MIHOMO/template_remnawave.yaml` | [hydraponique/roscomvpn-routing](https://github.com/hydraponique/roscomvpn-routing) | **false** (форк) |
-| `torrent_clients` | `rule-sets/yaml/torrent-clients.yaml` | [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets) | true (зеркало) |
-| `games` | `rule-sets/yaml/games.yaml` | [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category) | true (зеркало; post → GFN в `games-custom.yaml`) |
+| id | Файл | Upstream |
+|----|------|----------|
+| `torrent_clients` | `rule-sets/yaml/torrent-clients.yaml` | [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets) |
+| `games` | `rule-sets/yaml/games.yaml` | [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category) (post → GFN в `games-custom.yaml`) |
+| `ru_app_list` | `rule-sets/yaml/ru-app-list.yaml` | [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets) (post → `tun.exclude-package`) |
 
-Синхронизируемые YAML — **зеркала апстрима без правок**. Локальные дополнения держим в отдельных `*-custom.yaml`, которые подключены в шаблоне рядом с оригиналом (см. ниже).
-
-**Не синхронизируется (только локально):** `rule-sets/yaml/ai.yaml`, остальные `*-custom.yaml` (кроме перенесённых в MRS), а также локальные MRS: `private-domains-custom`, `category-ru-custom`, `private-ips-custom`, `torrent-domains-custom` (`rule-sets/mrs/text/<имя>.list`).
-
-Добавить новый источник — запись в `scripts/upstream-manifest.yaml`.
-
-### Логика merge (без перетирания правок)
-
-Для каждого файла хранится **baseline** в `.sync-upstream/baseline/` (снимок после последней успешной синхронизации).
-
-| Ситуация | Результат |
-|----------|-----------|
-| local = baseline, upstream изменился, `auto_apply: true` | подтянуть upstream (`applied`) |
-| local = baseline, upstream изменился, `auto_apply: false` | **конфликт** — нужен ручной merge |
-| local изменён, upstream нет | оставить local (`kept_local`) |
-| local и upstream изменились по-разному | **конфликт** |
-
-При конфликте:
-
-- отчёт: `.sync-upstream/SYNC-CONFLICTS.md`;
-- файлы: `.sync-upstream/conflicts/<id>/{baseline,local,remote}`.
-
-Разрешение:
-
-```bash
-# вручную собрать итог в рабочем файле, затем:
-./scripts/upstream-sync.sh resolve template_remnawave
-./scripts/upstream-sync.sh sync
-```
+**Не синхронизируется (только локально):** `MIHOMO/template_remnawave.yaml`, `MIHOMO/wl.yaml`, `rule-sets/yaml/ai.yaml`, все `*-custom.yaml`, локальные MRS `*-custom` (`rule-sets/mrs/text/<имя>.list`).
 
 Команды `upstream-sync.sh`:
 
 ```bash
-./scripts/upstream-sync.sh sync            # YAML + MRS
-./scripts/upstream-sync.sh download        # только скачать в staging
-./scripts/upstream-sync.sh baseline-init   # зафиксировать текущие файлы как baseline
-./scripts/upstream-sync.sh resolve [id]    # принять local как baseline
-./scripts/upstream-sync.sh mrs-only        # только MRS
+./scripts/upstream-sync.sh sync       # YAML-зеркала + MRS
+./scripts/upstream-sync.sh download # только staging
+./scripts/upstream-sync.sh mrs-only # только MRS
 ```
 
 ### MRS rule-sets
@@ -159,13 +135,11 @@ Live-тест — throwaway-ветки **`<ветка>-cdn`** и **`<ветка>
 ./scripts/mrs-tool.sh sync
 ```
 
-При конфликте — `rule-sets/mrs/SYNC-CONFLICTS.md` и `rule-sets/mrs/conflicts/<имя>/`. После ручного merge: `./scripts/mrs-tool.sh resolve [имя]`.
+Upstream-наборы перезаписываются из CDN/MetaCubeX. Локальные правки — только в `*-custom` (`private-domains-custom`, `category-ru-custom`, `private-ips-custom`, `torrent-domains-custom`): правьте `text/*.list`, **pre-commit** вызовет `pack`.
 
-Редактируйте `rule-sets/mrs/text/<имя>.list`, затем коммит — **pre-commit** вызовет `pack` и добавит обновлённые `rule-sets/mrs/bin/*.mrs` в индекс.
+Отдельные команды MRS: `download`, `unpack --force`, `pack`. Бинарник `mihomo` — из `PATH` или `.tools/mihomo` (в `.gitignore`).
 
-Отдельные команды MRS: `download`, `unpack`, `pack`. Бинарник `mihomo` — из `PATH` или `.tools/mihomo` (в `.gitignore`).
-
-Служебные каталоги (в `.gitignore`): `.sync-upstream/`, `rule-sets/mrs/.sync-staging/`, `rule-sets/mrs/.sync-baseline/`, `rule-sets/mrs/conflicts/`.
+Служебный каталог (в `.gitignore`): `rule-sets/mrs/.sync-staging/`.
 
 ## games.yaml и GeForce NOW
 
@@ -202,7 +176,7 @@ python3 scripts/generate-gfn-games-block.py
 
 ## Локальные дополнения в шаблоне
 
-После merge upstream-шаблона из hydraponique проверьте, что сохранены локальные блоки:
+`MIHOMO/template_remnawave.yaml` — **локальный** шаблон (не зеркало upstream). Локальные блоки:
 
 ### 🤖 ИИ
 
@@ -212,7 +186,14 @@ python3 scripts/generate-gfn-games-block.py
 
 ### TUN exclude-package (RU-приложения мимо TUN)
 
-`tun.exclude-package` в шаблоне — список Android-пакетов RU-приложений, которые не заворачиваются в TUN (механизм как у [Davoyan/ultimate-mihomo-ru](https://github.com/Davoyan/mihomo-rule-sets/blob/main/remnawave-templates/ultimate-mihomo-ru.yaml)). Строка генерируется из `ru-app-list.yaml` + `ru-apps-custom.yaml` пост-хуком `regenerate_tun_exclude` (источник `ru_app_list`). Вручную:
+`tun.exclude-package` — список Android-пакетов, которые не заворачиваются в TUN (механизм как у [Davoyan/ultimate-mihomo-ru](https://github.com/Davoyan/mihomo-rule-sets/blob/main/remnawave-templates/ultimate-mihomo-ru.yaml)):
+
+| Шаблон | Источник пакетов |
+|--------|------------------|
+| `template_remnawave.yaml` | `ru-app-list.yaml` + `ru-apps-custom.yaml` (~530 пакетов) |
+| `wl.yaml` | домены из `wld.list` + `wld-apps-custom.yaml` (~156 пакетов, совпадает с `RULE-SET,wld`) |
+
+Пост-хук `regenerate_tun_exclude` срабатывает после sync `ru_app_list`. Вручную:
 
 ```bash
 python3 scripts/generate-tun-exclude-package.py
@@ -220,7 +201,7 @@ python3 scripts/generate-tun-exclude-package.py
 
 ### CDN URL в rule-providers
 
-Post-hook `fix_template_cdn` подставляет jsDelivr **mireon-network/mihomo_routing** вместо legiz-ru / roscomvpn. Проверка:
+После каждого `upstream-sync.sh sync` в `template_remnawave.yaml` подставляются jsDelivr URL **mireon-network/mihomo_routing** вместо legiz-ru / roscomvpn. Проверка:
 
 ```bash
 grep -E "url:.*cdn\.jsdelivr\.net/gh/mireon-network/mihomo_routing@main" MIHOMO/template_remnawave.yaml
