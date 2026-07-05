@@ -223,8 +223,18 @@ def main() -> int:
         "  - PROCESS-NAME,Overwolf.exe\n"
     )
     out = base + "\n".join(lines) + manual
+    current = GAMES_CUSTOM_YAML.read_text(encoding="utf-8")
+    if out == current:
+        print(
+            f"generate-gfn-games-block: без изменений "
+            f"({len(entries)} GFN PROCESS-NAME, stats={stats})"
+        )
+        return 0
     GAMES_CUSTOM_YAML.write_text(out, encoding="utf-8")
-    print(f"Wrote {GAMES_CUSTOM_YAML} (+{len(entries)} rules, stats={stats})")
+    print(
+        f"generate-gfn-games-block: обновлён {GAMES_CUSTOM_YAML} "
+        f"({len(entries)} GFN PROCESS-NAME, stats={stats})"
+    )
     return 0
 
 
