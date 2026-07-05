@@ -54,7 +54,7 @@
 ```bash
 ./scripts/cdn-url.sh rule-sets/yaml/games.yaml
 ./scripts/cdn-purge.sh rule-sets/yaml/ai.yaml   # сброс кэша jsDelivr
-./scripts/cdn-purge.sh --all                     # все rule-providers из MIHOMO/*.yaml
+./scripts/cdn-purge.sh --all                     # @main + @<ветка>-cdn/debug из MIHOMO/*.yaml
 ```
 
 После `git push` в `main` файлы доступны на CDN автоматически (кэш jsDelivr может обновляться с задержкой; при срочном обновлении — `./scripts/cdn-purge.sh` или [purge](https://www.jsdelivr.com/tools/purge)).
