@@ -44,10 +44,5 @@ jobs:
             exit 0
           fi
           git add -A
-          git commit -m "$(cat <<EOF
-chore: upstream sync $(date -u +%Y-%m-%d)
-
-Автоматическое зеркалирование YAML/MRS из upstream (scheduled 06:00 MSK).
-EOF
-)"
+          git commit -m "chore: upstream sync $(date -u +%Y-%m-%d)"
           git push
