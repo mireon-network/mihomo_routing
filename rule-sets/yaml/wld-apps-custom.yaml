@@ -1,4 +1,4 @@
 payload:
   # Локальные дополнения Android-пакетов для wl.yaml tun.exclude-package.
-  # Базовый список генерируется из wld.list + ru-app-list/ru-apps-custom (scripts/generate-tun-exclude-package.py).
+  # Базовый список: wld.list → фильтр ru-app-list; дополнения — только здесь (без ru-apps-custom).
   # Добавляй сюда пакеты, которые должны обходить TUN в режиме «белые списки», но не попали в автоматический матч.

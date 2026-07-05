@@ -2,7 +2,7 @@
 """Сгенерировать tun.exclude-package в шаблонах Mihomo.
 
 template_remnawave.yaml — все RU-приложения из ru-app-list + ru-apps-custom (DIRECT-маршрутизация).
-wl.yaml — только пакеты, соответствующие доменам rule-set wld (RULE-SET,wld,DIRECT), плюс wld-apps-custom.
+wl.yaml — пакеты из ru-app-list, отфильтрованные по wld.list (+ aliases), плюс wld-apps-custom.
 """
 from __future__ import annotations
 
@@ -56,11 +56,8 @@ WLD_ALIASES: dict[str, frozenset[str]] = {
 }
 
 PKG_RE = re.compile(r"^[A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)+$")
-WLD_PKG_SOURCES = (
-    ROOT / "rule-sets/yaml/ru-app-list.yaml",
-    ROOT / "rule-sets/yaml/ru-apps-custom.yaml",
-    ROOT / "rule-sets/yaml/wld-apps-custom.yaml",
-)
+WLD_FILTER_SOURCES = (ROOT / "rule-sets/yaml/ru-app-list.yaml",)
+WLD_CUSTOM_SOURCES = (ROOT / "rule-sets/yaml/wld-apps-custom.yaml",)
 
 
 def _primary_label(domain: str) -> str:
@@ -106,8 +103,13 @@ def collect_wld_packages() -> list[str]:
     if not tokens:
         print("generate-tun-exclude-package: wld.list пуст или не найден", file=sys.stderr)
         return []
-    all_pkgs = collect_packages(WLD_PKG_SOURCES)
-    return [p for p in all_pkgs if package_matches_wld(p, tokens)]
+    seen: dict[str, None] = {}
+    for pkg in collect_packages(WLD_FILTER_SOURCES):
+        if package_matches_wld(pkg, tokens):
+            seen.setdefault(pkg, None)
+    for pkg in collect_packages(WLD_CUSTOM_SOURCES):
+        seen.setdefault(pkg, None)
+    return list(seen)
 
 
 def main() -> int:
@@ -115,7 +117,7 @@ def main() -> int:
     for tpl, sources in TEMPLATES.items():
         if tpl.name == "wl.yaml":
             pkgs = collect_wld_packages()
-            src_desc = "wld.list + ru-app-list/ru-apps-custom/wld-apps-custom"
+            src_desc = "wld.list → ru-app-list + wld-apps-custom"
         else:
             pkgs = collect_packages(sources)
             src_desc = " + ".join(s.name for s in sources)

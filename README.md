@@ -191,7 +191,7 @@ python3 scripts/generate-gfn-games-block.py
 | Шаблон | Источник пакетов |
 |--------|------------------|
 | `template_remnawave.yaml` | `ru-app-list.yaml` + `ru-apps-custom.yaml` (~530 пакетов) |
-| `wl.yaml` | домены из `wld.list` + `wld-apps-custom.yaml` (~156 пакетов, совпадает с `RULE-SET,wld`) |
+| `wl.yaml` | `wld.list` → `ru-app-list.yaml` + `wld-apps-custom.yaml` |
 
 Пост-хук `regenerate_tun_exclude` срабатывает после sync `ru_app_list`. Вручную:
 

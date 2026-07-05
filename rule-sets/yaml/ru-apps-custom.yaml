@@ -5,3 +5,4 @@ payload:
   - PROCESS-NAME,ru.napopravku
   - PROCESS-NAME,ru.profi.client
   - PROCESS-NAME,ru.sravni.android.bankproduct
+  - PROCESS-NAME,com.hrlink.app
