@@ -27,9 +27,7 @@
 | `scripts/generate-gfn-games-block.py` | Пересборка блока GeForce NOW в `games-custom.yaml` |
 | `scripts/generate-tun-exclude-package.py` | Пересборка `tun.exclude-package` в обоих шаблонах |
 | `scripts/test-config-local.sh` | Локальная проверка rule-providers без CDN (`mihomo -t` + convert-ruleset) |
-| `scripts/deploy-test-branches.sh` | Обновить `<ветка>-cdn` и `<ветка>-debug` от текущего HEAD |
-| `scripts/deploy-cdn-test.sh` | Throwaway-ветка `<ветка>-cdn`: CDN-URL rule-sets → своя ветка |
-| `scripts/deploy-debug.sh` | Throwaway-ветка `<ветка>-debug`: CDN-URL + все узлы в селекторах |
+| `scripts/deploy-test-branches.sh` | Throwaway `<ветка>-cdn` и `<ветка>-debug` от текущего HEAD (CDN-URL + debug-патч) |
 | `scripts/patch-include-proxies.py` | Debug-патч: `include-all: true`, видимые хосты, без блокировки Remnawave |
 
 > Мелкие наборы (`wine`, `games-proxy-rules`, `mail-ports`) — `type: inline` rule-providers в шаблоне (без отдельных загрузок). Локальные MRS без upstream: `private-domains-custom`, `category-ru-custom`, `private-ips-custom`, `torrent-domains-custom` — правишь `rule-sets/mrs/text/<имя>.list`, `mrs-tool.sh pack` собирает `bin/*.mrs` (sync их пропускает).

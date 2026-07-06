@@ -11,10 +11,6 @@ sets:
     src: mihomo-list
     exclude: +.ru,+.su
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ru.list
-  - id: whitelist
-    behavior: domain
-    file: whitelist
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/whitelist.mrs
   - id: wld
     behavior: domain
     file: wld
@@ -116,6 +112,51 @@ sets:
     file: meta-nic-ru
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/nic-ru.list
+  - id: selectel
+    behavior: domain
+    file: meta-selectel
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/selectel.list
+  - id: regru
+    behavior: domain
+    file: meta-regru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/regru.list
+  - id: rostelecom
+    behavior: domain
+    file: meta-rostelecom
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/rostelecom.list
+  - id: myoffice-ru
+    behavior: domain
+    file: meta-myoffice-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/myoffice-ru.list
+  - id: headhunter
+    behavior: domain
+    file: meta-headhunter
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/headhunter.list
+  - id: cdek
+    behavior: domain
+    file: meta-cdek
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cdek.list
+  - id: ideco-ru
+    behavior: domain
+    file: meta-ideco-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/ideco-ru.list
+  - id: beget
+    behavior: domain
+    file: meta-beget
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/beget.list
+  - id: timeweb
+    behavior: domain
+    file: meta-timeweb
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/timeweb.list
   - id: category-gov-ru
     behavior: domain
     file: meta-category-gov-ru
