@@ -140,9 +140,6 @@ dns:
     # Локальные/приватные домены — через системный резолвер
     "rule-set:private-domains-meta,private-domains-custom":
       - system
-    # Реклама/трекеры — отказ на уровне DNS (легче, чем REJECT по правилу)
-    "rule-set:category-ads-all-meta":
-      - rcode://refused
     # RU-домены (идут DIRECT) — резолвим через RU DNS напрямую: верный CDN и меньше задержка
     "rule-set:category-ru-meta,category-ru-custom,category-ecommerce-ru,category-entertainment-ru,category-bank-ru,t2-ru,mts-ru,megafon,nic-ru,selectel,regru,rostelecom,myoffice-ru,headhunter,cdek,ideco-ru,beget,timeweb,category-gov-ru,category-media-ru,category-retail-ru,category-travel-ru,category-medicine-ru,mailru-group,yandex,wld": *dns_ru
 sniffer:
@@ -617,38 +614,6 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/wld.mrs
     path: ./ruleset/wld.mrs
-  win-update-meta:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-win-update.mrs
-    path: ./ruleset/meta-win-update.mrs
-  apple-update-meta:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-apple-update.mrs
-    path: ./ruleset/meta-apple-update.mrs
-  icloud-meta:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-icloud.mrs
-    path: ./ruleset/meta-icloud.mrs
-  category-netdisk-meta:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-netdisk.mrs
-    path: ./ruleset/meta-category-netdisk.mrs
   category-game-platforms-download:
     type: http
     proxy: ⚡️ Авто
@@ -673,14 +638,6 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-discord.mrs
     path: ./ruleset/meta-discord.mrs
-  pinterest:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/pinterest.mrs
-    path: ./ruleset/pinterest.mrs
   category-enhance-gaming:
     type: http
     proxy: ⚡️ Авто
@@ -721,14 +678,6 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-youtube.mrs
     path: ./ruleset/meta-youtube.mrs
-  win-spy:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/win-spy.mrs
-    path: ./ruleset/win-spy.mrs
   win-spy-meta:
     type: http
     proxy: ⚡️ Авто
@@ -761,14 +710,6 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-websites.mrs
     path: ./ruleset/torrent-websites.mrs
-  category-ads-all-meta:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-ads-all.mrs
-    path: ./ruleset/meta-category-ads-all.mrs
   category-ip-geo-detect-meta:
     type: http
     proxy: ⚡️ Авто
@@ -891,8 +832,6 @@ rules:
   - RULE-SET,mail-ports,DIRECT
 
   # --- Блокировки ---
-  - RULE-SET,category-ads-all-meta,REJECT-DROP     # реклама и трекеры (MetaCubeX category-ads-all)
-  - RULE-SET,win-spy,REJECT-DROP                   # телеметрия Windows
   - RULE-SET,win-spy-meta,REJECT-DROP              # телеметрия Windows (MetaCubeX)
 
   # --- Торренты ---
@@ -933,19 +872,6 @@ rules:
 
   # --- Конкретные сервисы → DIRECT (выше широких catch-all внизу) ---
   - RULE-SET,category-ip-geo-detect-meta,DIRECT    # сервисы определения IP/гео (MetaCubeX) — напрямую
-  - RULE-SET,win-update-meta,DIRECT                # Windows: загрузка обновлений ОС/ПО (MetaCubeX win-update) — напрямую, мимо VPN
-  - RULE-SET,apple-update-meta,DIRECT              # Apple: загрузка обновлений ОС/ПО (MetaCubeX apple-update) — напрямую, мимо VPN
-  - RULE-SET,icloud-meta,DIRECT                    # iCloud: бэкапы/Фото/iCloud Drive (MetaCubeX) — напрямую, тяжёлый синк мимо VPN
-  - RULE-SET,category-netdisk-meta,DIRECT          # Облачные хранилища не-CN (MetaCubeX: OneDrive/SharePoint/Dropbox/Mega/Terabox/PikPak/UsersDrive) — напрямую, тяжёлый синк мимо VPN
-  # Google Drive → DIRECT (отдельного geosite нет; точечно — основной «вес» Drive: веб + контент/загрузки, без общего googleapis/googleusercontent)
-  - DOMAIN-SUFFIX,drive.google.com,DIRECT
-  - DOMAIN-SUFFIX,docs.google.com,DIRECT
-  - DOMAIN-SUFFIX,drive.usercontent.google.com,DIRECT
-  - DOMAIN-SUFFIX,docs.googleusercontent.com,DIRECT
-  - DOMAIN-SUFFIX,drive-thirdparty.googleusercontent.com,DIRECT
-  # остальной Apple/Microsoft (iCloud/App Store/Office/Teams/Store/Xbox/OneDrive/OCSP…) уходит в финальный MATCH,PROXY (apple-meta/microsoft-meta/*-domains-custom убраны — цель: мимо VPN только большие загрузки)
-
-  - RULE-SET,pinterest,DIRECT
   - RULE-SET,category-ecommerce-ru,DIRECT          # российский e-commerce (MetaCubeX) — напрямую
   - RULE-SET,category-entertainment-ru,DIRECT      # российские медиа/стриминги (MetaCubeX) — напрямую
   - RULE-SET,category-bank-ru,DIRECT               # банки/финсервисы РФ (MetaCubeX category-bank-ru) — напрямую

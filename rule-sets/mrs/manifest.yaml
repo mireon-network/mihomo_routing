@@ -16,14 +16,6 @@ sets:
     file: wld
     src: mihomo-list
     url: https://raw.githubusercontent.com/legiz-ru/mihomo-rule-sets/main/other/wld.list
-  - id: pinterest
-    behavior: domain
-    file: pinterest
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/pinterest.mrs
-  - id: win-spy
-    behavior: domain
-    file: win-spy
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/win-spy.mrs
   - id: torrent-trackers
     behavior: domain
     file: torrent-trackers
@@ -62,11 +54,6 @@ sets:
     file: meta-youtube
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.list
-  - id: category-ads-all-meta
-    behavior: domain
-    file: meta-category-ads-all
-    src: mihomo-list
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ads-all.list
   - id: category-ecommerce-ru
     behavior: domain
     file: meta-category-ecommerce-ru
@@ -187,26 +174,6 @@ sets:
     file: meta-category-ip-geo-detect
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ip-geo-detect.list
-  - id: win-update-meta
-    behavior: domain
-    file: meta-win-update
-    src: mihomo-list
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/win-update.list
-  - id: apple-update-meta
-    behavior: domain
-    file: meta-apple-update
-    src: mihomo-list
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple-update.list
-  - id: icloud-meta
-    behavior: domain
-    file: meta-icloud
-    src: mihomo-list
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/icloud.list
-  - id: category-netdisk-meta
-    behavior: domain
-    file: meta-category-netdisk
-    src: mihomo-list
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-netdisk-!cn.list
   - id: category-game-platforms-download
     behavior: domain
     file: meta-category-game-platforms-download
