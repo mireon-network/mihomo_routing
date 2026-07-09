@@ -141,7 +141,7 @@ dns:
     "rule-set:private-domains-meta,private-domains-custom":
       - system
     # RU-домены (идут DIRECT) — резолвим через RU DNS напрямую: верный CDN и меньше задержка
-    "rule-set:category-ru-meta,category-ru-custom,category-ecommerce-ru,category-entertainment-ru,category-bank-ru,t2-ru,mts-ru,megafon,nic-ru,selectel,regru,rostelecom,myoffice-ru,headhunter,cdek,ideco-ru,beget,timeweb,category-gov-ru,category-media-ru,category-retail-ru,category-travel-ru,category-medicine-ru,mailru-group,yandex,wld": *dns_ru
+    "rule-set:summary-category-ru,category-ru-custom,wld": *dns_ru
 sniffer:
   enable: true
   override-destination: false
@@ -414,198 +414,14 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/category-ru-custom.mrs
     path: ./ruleset/category-ru-custom.mrs
-  category-ru-meta:
+  summary-category-ru:
     type: http
     proxy: ⚡️ Авто
     interval: 86400
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-ru.mrs
-    path: ./ruleset/meta-category-ru.mrs
-  category-ecommerce-ru:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-ecommerce-ru.mrs
-    path: ./ruleset/meta-category-ecommerce-ru.mrs
-  category-entertainment-ru:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-entertainment-ru.mrs
-    path: ./ruleset/meta-category-entertainment-ru.mrs
-  category-bank-ru:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-bank-ru.mrs
-    path: ./ruleset/meta-category-bank-ru.mrs
-  t2-ru:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-t2-ru.mrs
-    path: ./ruleset/meta-t2-ru.mrs
-  mts-ru:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-mts-ru.mrs
-    path: ./ruleset/meta-mts-ru.mrs
-  megafon:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-megafon.mrs
-    path: ./ruleset/meta-megafon.mrs
-  mailru-group:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-mailru-group.mrs
-    path: ./ruleset/meta-mailru-group.mrs
-  yandex:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-yandex.mrs
-    path: ./ruleset/meta-yandex.mrs
-  nic-ru:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-nic-ru.mrs
-    path: ./ruleset/meta-nic-ru.mrs
-  selectel:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-selectel.mrs
-    path: ./ruleset/meta-selectel.mrs
-  regru:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-regru.mrs
-    path: ./ruleset/meta-regru.mrs
-  rostelecom:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-rostelecom.mrs
-    path: ./ruleset/meta-rostelecom.mrs
-  myoffice-ru:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-myoffice-ru.mrs
-    path: ./ruleset/meta-myoffice-ru.mrs
-  headhunter:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-headhunter.mrs
-    path: ./ruleset/meta-headhunter.mrs
-  cdek:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-cdek.mrs
-    path: ./ruleset/meta-cdek.mrs
-  ideco-ru:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-ideco-ru.mrs
-    path: ./ruleset/meta-ideco-ru.mrs
-  beget:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-beget.mrs
-    path: ./ruleset/meta-beget.mrs
-  timeweb:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-timeweb.mrs
-    path: ./ruleset/meta-timeweb.mrs
-  category-gov-ru:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-gov-ru.mrs
-    path: ./ruleset/meta-category-gov-ru.mrs
-  category-media-ru:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-media-ru.mrs
-    path: ./ruleset/meta-category-media-ru.mrs
-  category-retail-ru:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-retail-ru.mrs
-    path: ./ruleset/meta-category-retail-ru.mrs
-  category-travel-ru:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-travel-ru.mrs
-    path: ./ruleset/meta-category-travel-ru.mrs
-  category-medicine-ru:
-    type: http
-    proxy: ⚡️ Авто
-    interval: 86400
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-medicine-ru.mrs
-    path: ./ruleset/meta-category-medicine-ru.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/summary_category_ru.mrs
+    path: ./ruleset/summary_category_ru.mrs
   wld:
     type: http
     proxy: ⚡️ Авто
@@ -662,14 +478,14 @@ rule-providers:
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geoip-private.mrs
     path: ./ruleset/meta-geoip-private.mrs
     interval: 2592000
-  ru-ips:
+  summary-ips:
     type: http
     proxy: ⚡️ Авто
     interval: 86400
     behavior: ipcidr
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geoip-ru.mrs
-    path: ./ruleset/meta-geoip-ru.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/summary_ips.mrs
+    path: ./ruleset/summary_ips.mrs
   youtube-meta:
     type: http
     proxy: ⚡️ Авто
@@ -872,37 +688,14 @@ rules:
 
   # --- Конкретные сервисы → DIRECT (выше широких catch-all внизу) ---
   - RULE-SET,category-ip-geo-detect-meta,DIRECT    # сервисы определения IP/гео (MetaCubeX) — напрямую
-  - RULE-SET,category-ecommerce-ru,DIRECT          # российский e-commerce (MetaCubeX) — напрямую
-  - RULE-SET,category-entertainment-ru,DIRECT      # российские медиа/стриминги (MetaCubeX) — напрямую
-  - RULE-SET,category-bank-ru,DIRECT               # банки/финсервисы РФ (MetaCubeX category-bank-ru) — напрямую
-  - RULE-SET,t2-ru,DIRECT                           # Tele2 (MetaCubeX) — напрямую
-  - RULE-SET,mts-ru,DIRECT                          # МТС (MetaCubeX) — напрямую
-  - RULE-SET,megafon,DIRECT                         # МегаФон (MetaCubeX) — напрямую
-  - RULE-SET,mailru-group,DIRECT                    # VK / Mail.ru Group (MetaCubeX) — напрямую
-  - RULE-SET,yandex,DIRECT                          # Яндекс (MetaCubeX) — напрямую
-  - RULE-SET,nic-ru,DIRECT                          # RU-NIC/хостинг (MetaCubeX) — напрямую
-  - RULE-SET,selectel,DIRECT                        # Selectel/Servercore (MetaCubeX) — напрямую
-  - RULE-SET,regru,DIRECT                           # REG.RU (MetaCubeX) — напрямую
-  - RULE-SET,rostelecom,DIRECT                      # Ростелеком/Wink (MetaCubeX) — напрямую
-  - RULE-SET,myoffice-ru,DIRECT                     # МойОфис (MetaCubeX) — напрямую
-  - RULE-SET,headhunter,DIRECT                      # HeadHunter/hh.ru (MetaCubeX) — напрямую
-  - RULE-SET,cdek,DIRECT                            # СДЭК (MetaCubeX) — напрямую
-  - RULE-SET,ideco-ru,DIRECT                        # Ideco UTM (MetaCubeX) — напрямую
-  - RULE-SET,beget,DIRECT                           # Beget хостинг (MetaCubeX) — напрямую
-  - RULE-SET,timeweb,DIRECT                         # Timeweb хостинг (MetaCubeX) — напрямую
-  - RULE-SET,category-gov-ru,DIRECT                 # госуслуги/госсайты РФ (MetaCubeX) — напрямую
-  - RULE-SET,category-media-ru,DIRECT               # СМИ РФ (MetaCubeX) — напрямую
-  - RULE-SET,category-retail-ru,DIRECT              # ритейл РФ (MetaCubeX) — напрямую
-  - RULE-SET,category-travel-ru,DIRECT              # транспорт/путешествия РФ (MetaCubeX) — напрямую
-  - RULE-SET,category-medicine-ru,DIRECT            # медицина РФ (MetaCubeX) — напрямую
-  - RULE-SET,category-ru-meta,DIRECT               # RU-сайты (MetaCubeX, без широких +.ru/+.su) — напрямую
+  - RULE-SET,summary-category-ru,DIRECT            # RU-домены (MetaCubeX geosite + Davoyan → summary, без +.ru/+.su) — напрямую
   - RULE-SET,category-ru-custom,DIRECT             # курируемые RU-домены вне MetaCubeX (иностр. банки .ru, IP-чек) — напрямую
   - RULE-SET,wld,DIRECT                            # RU-белосписочный (legiz wld)
 
   # --- RU-приложения и IP → DIRECT (низкий приоритет) ---
   - RULE-SET,ru-app-list,DIRECT                    # RU-приложения Android (legiz-ru) — напрямую
   - RULE-SET,ru-apps-custom,DIRECT                 # локальные дополнения RU-приложений (вне legiz)
-  - RULE-SET,ru-ips,DIRECT                         # российские IP-подсети (MetaCubeX geoip) — напрямую
+  - RULE-SET,summary-ips,DIRECT                    # RU IP (meta-geoip-ru + ips-for-ru → summary_ips) — напрямую
 
   # --- Всё остальное → PROXY ---
   - MATCH,PROXY

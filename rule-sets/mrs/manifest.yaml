@@ -11,6 +11,12 @@ sets:
     src: mihomo-list
     exclude: +.ru,+.su
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ru.list
+  - id: category-ru-davoyan
+    behavior: domain
+    file: category-ru-davoyan
+    src: davoyan-list
+    exclude: +.ru,+.su
+    url: https://raw.githubusercontent.com/Davoyan/mihomo-rule-sets/main/rules/category-ru.lst
   - id: wld
     behavior: domain
     file: wld
@@ -180,18 +186,29 @@ sets:
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-game-platforms-download.list
   # Локальные наборы без upstream: text/ — источник правды, pack → bin/, sync пропускает.
+  # summary_ips — генерируется из merge-from (meta-geoip-ru + ips-for-ru), не править вручную.
+  # summary_category_ru — merge всех RU geosite-зеркал + Davoyan, без +.ru/+.su.
   - id: private-domains-custom
     behavior: domain
     file: private-domains-custom
   - id: category-ru-custom
     behavior: domain
     file: category-ru-custom
+  - id: summary-category-ru
+    behavior: domain
+    file: summary_category_ru
+    merge-from: meta-category-ru,category-ru-davoyan,meta-category-ecommerce-ru,meta-category-entertainment-ru,meta-category-bank-ru,meta-t2-ru,meta-mts-ru,meta-megafon,meta-mailru-group,meta-yandex,meta-nic-ru,meta-selectel,meta-regru,meta-rostelecom,meta-myoffice-ru,meta-headhunter,meta-cdek,meta-ideco-ru,meta-beget,meta-timeweb,meta-category-gov-ru,meta-category-media-ru,meta-category-retail-ru,meta-category-travel-ru,meta-category-medicine-ru
+    exclude: +.ru,+.su
   - id: private-ips-custom
     behavior: ipcidr
     file: private-ips-custom
   - id: torrent-domains-custom
     behavior: domain
     file: torrent-domains-custom
+  - id: summary-ips
+    behavior: ipcidr
+    file: summary_ips
+    merge-from: meta-geoip-ru,ips-for-ru
   - id: private-domains-meta
     behavior: domain
     file: meta-geosite-private
@@ -207,3 +224,8 @@ sets:
     file: meta-geoip-ru
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/ru.list
+  - id: ips-for-ru
+    behavior: ipcidr
+    file: ips-for-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/Davoyan/mihomo-rule-sets/main/ip-for-ru/lists/ips-for-ru.lst

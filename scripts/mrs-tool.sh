@@ -70,7 +70,9 @@ for line in open(path, encoding="utf-8"):
 if cur:
     sets.append(cur)
 for item in sets:
-    print("\t".join(item.get(k, "") for k in ("id", "behavior", "file", "url", "src", "exclude")))
+    def f(v: str) -> str:
+        return v if v else "-"
+    print("\t".join(f(item.get(k, "")) for k in ("id", "behavior", "file", "url", "src", "exclude")))
 PY
 }
 
@@ -102,6 +104,9 @@ staging_download() {
   local text_dest; text_dest="$(dirname "$dest")/text"   # bin/ и text/ — соседи
   mkdir -p "$dest"
   while IFS=$'\t' read -r _ _ file url src exclude; do
+    [[ "$url" == "-" ]] && url=""
+    [[ "$src" == "-" ]] && src=""
+    [[ "$exclude" == "-" ]] && exclude=""
     if [[ -z "$src" && -z "$url" ]]; then
       echo "→ $file (локальный набор без upstream — пакуется из text/)"
       continue
@@ -120,6 +125,17 @@ staging_download() {
       curl -fsSL -o "$tmp" "$url"
       case "$src" in
         mihomo-list) sed 's/\r$//' "$tmp" >"$out_list" ;;   # уже формат mihomo, только CRLF→LF
+        davoyan-list)
+          while IFS= read -r line || [[ -n "$line" ]]; do
+            line="${line//$'\r'/}"
+            [[ -z "$line" || "$line" == \#* ]] && continue
+            if [[ "$line" == +* ]]; then
+              printf '%s\n' "$line"
+            else
+              printf '+.%s\n' "$line"
+            fi
+          done <"$tmp" >"$out_list"
+          ;;
         *) rm -f "$tmp"; die "неизвестный src=$src для $file" ;;
       esac
       rm -f "$tmp"
@@ -143,6 +159,8 @@ staging_unpack() {
   ensure_mihomo
   mkdir -p "$text_d"
   while IFS=$'\t' read -r _ behavior file url src _; do
+    [[ "$url" == "-" ]] && url=""
+    [[ "$src" == "-" ]] && src=""
     [[ -n "$src" ]] && continue   # текстовый источник: list уже готов в staging_download
     [[ -z "$url" ]] && continue   # локальный набор: bin пакуется из text/, upstream нет
     local bin="$bin_d/${file}.mrs"
@@ -169,8 +187,15 @@ cmd_unpack() {
   die "unpack перезаписывает text/; для безопасного обновления используйте: $0 sync"
 }
 
+cmd_build_merged_lists() {
+  python3 "$ROOT/scripts/mrs-build-merged-lists.py" \
+    --mrs-dir "$MRS_DIR" \
+    --manifest "$MANIFEST"
+}
+
 cmd_pack() {
   ensure_mihomo
+  cmd_build_merged_lists
   mkdir -p "$BIN_DIR"
   local changed=0
   while IFS=$'\t' read -r _ behavior file _ _ _; do
@@ -201,6 +226,9 @@ cmd_sync() {
   python3 "$ROOT/scripts/mrs-sync-merge.py" \
     --mrs-dir "$MRS_DIR" \
     --manifest "$MANIFEST"
+
+  echo "mrs-tool: сборка summary из merge-from…"
+  cmd_build_merged_lists
 
   echo "mrs-tool: упаковка text/ → bin/…"
   cmd_pack
