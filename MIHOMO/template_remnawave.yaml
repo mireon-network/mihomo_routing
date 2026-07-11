@@ -23,14 +23,13 @@
 #   ⛔ Блок      — блокировка (REJECT)
 #   ⏭️ Пропуск   — PASS (передать следующему правилу)
 #
-# Rule-sets (MetaCubeX geosite/geoip, legiz-ru и локальные наборы mireon):
-#   • Реклама и слежка Windows              → REJECT-DROP
+# Rule-sets (MetaCubeX geosite/geoip, legiz-ru, Davoyan и локальные наборы mireon):
+#   • Слежка Windows                        → REJECT-DROP
 #   • Торренты (домены/клиенты)             → DIRECT
-#   • Microsoft: обновления Windows/ПО     → DIRECT; остальной Microsoft → PROXY
-#   • Apple: обновления ОС/ПО + OCSP/CRL    → DIRECT; остальной Apple → PROXY
+#   • Заблокированные в РФ (category-ban-ru) → PROXY (выше RU catch-all)
 #   • Российские домены (category-ru), ru-apps → DIRECT
-#   • Pinterest                             → DIRECT
-#   • YouTube, Telegram, GitHub             → PROXY (GitHub — через финальный MATCH,PROXY)
+#   • YouTube / Discord → отдельные селекторы
+#   • Telegram, GitHub и прочее     → PROXY (финальный MATCH)
 #   • Игровые лаунчеры (games-launchers)    → 🎮 Лаунчеры (по умолчанию DIRECT)
 #   • Игровые сервисы                       → 🎮 Игры
 #   • Wine/Proton                           → 🍷 Wine (по умолчанию DIRECT)
@@ -59,6 +58,7 @@ remnawave:
 x-anchors:
   # Приватные и зарезервированные IP — общий список для TUN и сниффера
   reserved_ips: &reserved_ips
+    - 0.0.0.0/8
     - 224.0.0.0/3
     - 10.0.0.0/8
     - 127.0.0.0/8
@@ -99,6 +99,7 @@ allow-lan: false
 ipv6: true # для перехвата ipv6 трафика в ядро
 unified-delay: true
 tcp-concurrent: true
+enable-process: true
 geodata-loader: memconservative # ленивая загрузка geoip/geosite .dat — меньше RAM (дефолт Mihomo)
 disable-keep-alive: false
 keep-alive-idle: 30 # сек до первого probe при простое (типичный LB idle ~60–120 с)
@@ -122,12 +123,15 @@ dns:
   use-hosts: true
   use-system-hosts: true
   ipv6: false
+  cache-algorithm: arc
+  prefer-h3: false
   enhanced-mode: fake-ip # fake-ip/redir-host
   fake-ip-range: 198.18.0.1/16
   fake-ip-filter:
     - rule-set:private-domains-meta # исключить из fake-ip приватные домены (MetaCubeX)
     - rule-set:private-domains-custom # локальные/рабочие домены — реальный DNS
     - "*.lan"
+    - "+.local"
     # STUN/WebRTC, NTP/синхронизация времени, игровые консоли — нужен реальный IP, не fake-ip
     - "stun.*.*"
     - "stun.*.*.*"
@@ -173,11 +177,13 @@ dns:
     # Локальные/приватные домены — через системный резолвер
     "rule-set:private-domains-meta,private-domains-custom":
       - system
+    # PROXY-сервисы — резолв через узел VPN (legiz/Davoyan nameserver-policy)
+    "rule-set:youtube-meta,category-ban-ru,discord,discord_voiceips": *dns_proxy
     # RU-домены (идут DIRECT) — резолвим через RU DNS напрямую: верный CDN и меньше задержка
     "rule-set:summary-category-ru,category-ru-custom,wld": *dns_ru
 sniffer:
   enable: true
-  override-destination: false
+  override-destination: true
   parse-pure-ip: true
   force-dns-mapping: true # восстанавливать домен для соединений, идущих сразу по IP
   sniff:
@@ -651,6 +657,22 @@ rule-providers:
     format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/ru-app-list.yaml
     path: ./ruleset/ru-app-list.yaml
+  category-ban-ru:
+    type: http
+    proxy: ⚡️ Авто
+    interval: *rp_interval
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/category-ban-ru.mrs
+    path: ./ruleset/category-ban-ru.mrs
+  discord_voiceips:
+    type: http
+    proxy: ⚡️ Авто
+    interval: *rp_interval
+    behavior: ipcidr
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/discord_voiceips.mrs
+    path: ./ruleset/discord_voiceips.mrs
   mail-ports: # инлайн (мелкий список — без отдельной загрузки)
     type: inline
     behavior: classical
@@ -674,6 +696,7 @@ rules:
   - RULE-SET,private-domains-custom,DIRECT         # локальные домены — напрямую (вне upstream)
 
   # --- Пуш-уведомления → DIRECT (через VPN APNs/FCM тормозят и жрут батарею) ---
+  - IP-CIDR,17.0.0.0/8,DIRECT,no-resolve           # Apple CDN (legiz prod)
   - OR,((DST-PORT,5223),(DOMAIN-SUFFIX,push.apple.com)),DIRECT                                                              # Apple APNs (порт 5223 ловит и коннект по IP)
   - OR,((DST-PORT,5228-5230),(DOMAIN-KEYWORD,mtalk),(DOMAIN-SUFFIX,fcm.googleapis.com),(DOMAIN-SUFFIX,fcm-xmpp.googleapis.com)),DIRECT # Google FCM/GCM
 
@@ -693,15 +716,19 @@ rules:
   # --- AI / LLM → 🤖 ИИ (выше MATCH,PROXY: иначе *.googleapis.com уходит в PROXY) ---
   - RULE-SET,ai,🤖 ИИ
   - RULE-SET,ai-meta,🤖 ИИ                          # AI/LLM-домены (MetaCubeX, !cn)
-  # --- Сервисы через PROXY ---
-  # google-play / telegram убраны: их домены и так попадают в финальный MATCH,PROXY
-  - RULE-SET,youtube-meta,📺 Youtube               # YouTube-домены (MetaCubeX)
-  # github-meta убран: GitHub-домены уходят в финальный MATCH,PROXY
 
-    # --- Приложения по имени процесса ---
+  # --- Сервисы через PROXY / селекторы ---
+  # telegram убран: домены попадают в финальный MATCH,PROXY
+  - RULE-SET,youtube-meta,📺 Youtube               # YouTube-домены (MetaCubeX)
+
+  # --- Discord ---
+  - AND,((RULE-SET,discord_voiceips),(NETWORK,udp),(DST-PORT,50000-50100)),💬 Discord # голос Discord по IP (legiz)
   - RULE-SET,discord,💬 Discord                    # Discord-домены (MetaCubeX)
   - PROCESS-NAME-REGEX,discord,💬 Discord
   - PROCESS-NAME-REGEX,vesktop,💬 Discord
+
+  # --- Заблокированные в РФ → PROXY (legiz category-ban-ru; выше RU catch-all) ---
+  - RULE-SET,category-ban-ru,PROXY
 
   # --- Игры: домены и процессы → PROXY (раньше лаунчеров и MRS steam/epic) ---
   - RULE-SET,games-proxy-rules,PROXY

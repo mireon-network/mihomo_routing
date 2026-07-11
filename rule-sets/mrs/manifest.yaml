@@ -30,6 +30,15 @@ sets:
     behavior: domain
     file: torrent-websites
     url: https://cdn.jsdelivr.net/gh/legiz-ru/mihomo-rule-sets@main/other/torrent-websites.mrs
+  - id: category-ban-ru
+    behavior: domain
+    file: category-ban-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/legiz-ru/mihomo-rule-sets/main/other/category-ban-ru.list
+  - id: discord-voiceips
+    behavior: ipcidr
+    file: discord_voiceips
+    url: https://cdn.jsdelivr.net/gh/legiz-ru/mihomo-rule-sets@main/other/discord-voice-ip-list.mrs
   - id: discord
     behavior: domain
     file: meta-discord
