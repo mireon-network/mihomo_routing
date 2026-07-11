@@ -42,16 +42,21 @@ x-anchors:
   # DNS для проксируемого трафика (резолв через узел группы PROXY)
   dns_proxy: &dns_proxy
     - https://8.8.8.8/dns-query#PROXY
+    - https://1.1.1.1/dns-query#PROXY
+    - https://9.9.9.9/dns-query#PROXY
   # Шаблоны rule-providers (type/proxy/interval общие, behavior/format — по типу)
   # rp_* шаблоны развёрнуты в rule-providers (Remnawave/node-yaml alias limit)
+  rp_interval: &rp_interval 604800              # rule-sets: 7 дней — реже перезагрузка в память
+  rp_interval_static: &rp_interval_static 2592000 # meta/private: 30 дней — почти не меняются
 
 mixed-port: 7890
 mode: rule
-log-level: debug # временно для отладки роутинга; в проде вернуть silent/error
+log-level: error
 allow-lan: false
 ipv6: true # для перехвата ipv6 трафика в ядро
 unified-delay: true
 tcp-concurrent: true
+geodata-loader: memconservative # ленивая загрузка geoip/geosite .dat — меньше RAM (дефолт Mihomo)
 disable-keep-alive: false
 keep-alive-idle: 30 # сек до первого probe при простое (типичный LB idle ~60–120 с)
 keep-alive-interval: 15 # интервал probe-пакетов, сек
@@ -146,11 +151,11 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geosite-private.mrs
     path: ./ruleset/meta-geosite-private.mrs
-    interval: 2592000
+    interval: *rp_interval_static
   private-domains-custom: # локальный mrs (source: rule-sets/mrs/text/private-domains-custom.list)
     type: http
     proxy: PROXY
-    interval: 86400
+    interval: *rp_interval
     behavior: domain
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/private-domains-custom.mrs
@@ -158,7 +163,7 @@ rule-providers:
   private-ips-meta:
     type: http
     proxy: PROXY
-    interval: 86400
+    interval: *rp_interval_static
     behavior: ipcidr
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geoip-private.mrs
@@ -166,7 +171,7 @@ rule-providers:
   private-ips-custom: # локальный mrs (source: rule-sets/mrs/text/private-ips-custom.list)
     type: http
     proxy: PROXY
-    interval: 86400
+    interval: *rp_interval
     behavior: ipcidr
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/private-ips-custom.mrs
@@ -174,7 +179,7 @@ rule-providers:
   category-gov-ru:
     type: http
     proxy: PROXY
-    interval: 86400
+    interval: *rp_interval_static
     behavior: domain
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-gov-ru.mrs
@@ -182,7 +187,7 @@ rule-providers:
   category-medicine-ru:
     type: http
     proxy: PROXY
-    interval: 86400
+    interval: *rp_interval_static
     behavior: domain
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-medicine-ru.mrs
@@ -190,7 +195,7 @@ rule-providers:
   wld:
     type: http
     proxy: PROXY
-    interval: 86400
+    interval: *rp_interval
     behavior: domain
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/wld.mrs
@@ -198,7 +203,7 @@ rule-providers:
   torrent-trackers:
     type: http
     proxy: PROXY
-    interval: 86400
+    interval: *rp_interval
     behavior: domain
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-trackers.mrs
@@ -206,7 +211,7 @@ rule-providers:
   torrent-websites:
     type: http
     proxy: PROXY
-    interval: 86400
+    interval: *rp_interval
     behavior: domain
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-websites.mrs
@@ -214,7 +219,7 @@ rule-providers:
   torrent-domains-custom: # локальный mrs (source: rule-sets/mrs/text/torrent-domains-custom.list)
     type: http
     proxy: PROXY
-    interval: 86400
+    interval: *rp_interval
     behavior: domain
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-domains-custom.mrs
@@ -222,7 +227,7 @@ rule-providers:
   torrent-clients:
     type: http
     proxy: PROXY
-    interval: 86400
+    interval: *rp_interval
     behavior: classical
     format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-clients.yaml
@@ -230,7 +235,7 @@ rule-providers:
   torrent-clients-custom:
     type: http
     proxy: PROXY
-    interval: 86400
+    interval: *rp_interval
     behavior: classical
     format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-clients-custom.yaml
