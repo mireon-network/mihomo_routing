@@ -178,7 +178,7 @@ dns:
     "rule-set:private-domains-meta,private-domains-custom":
       - system
     # PROXY-сервисы — резолв через узел VPN (legiz/Davoyan nameserver-policy)
-    "rule-set:youtube-meta,category-ban-ru,discord,discord_voiceips": *dns_proxy
+    "rule-set:youtube-meta,category-ban-ru,discord": *dns_proxy
     # RU-домены (идут DIRECT) — резолвим через RU DNS напрямую: верный CDN и меньше задержка
     "rule-set:summary-category-ru,category-ru-custom,wld": *dns_ru
 sniffer:
