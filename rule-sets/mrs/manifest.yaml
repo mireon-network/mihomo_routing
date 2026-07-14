@@ -1,96 +1,240 @@
 # Соответствует rule-providers с format: mrs в MIHOMO/template_remnawave.yaml
 # file — имя без расширения; bin/*.mrs и text/*.list
+# url по умолчанию указывает на готовый .mrs (скачивается → распаковывается в text/).
+# src: mihomo-list — url указывает на готовый .list (формат mihomo);
+#   берётся как есть в text/*.list и пакуется в bin/*.mrs локально.
 version: 1
 sets:
-  - id: private-domains
+  - id: category-ru-meta
     behavior: domain
-    file: geosite-private
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/private.mrs
-  - id: category-ru
+    file: meta-category-ru
+    src: mihomo-list
+    exclude: +.ru,+.su
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ru.list
+  - id: category-ru-davoyan
     behavior: domain
-    file: category-ru
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/category-ru.mrs
-  - id: whitelist
+    file: category-ru-davoyan
+    src: davoyan-list
+    exclude: +.ru,+.su
+    url: https://raw.githubusercontent.com/Davoyan/mihomo-rule-sets/main/rules/category-ru.lst
+  - id: wld
     behavior: domain
-    file: whitelist
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/whitelist.mrs
-  - id: microsoft
+    file: wld
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/legiz-ru/mihomo-rule-sets/main/other/wld.list
+  - id: torrent-trackers
     behavior: domain
-    file: microsoft
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/microsoft.mrs
-  - id: apple
+    file: torrent-trackers
+    url: https://cdn.jsdelivr.net/gh/legiz-ru/mihomo-rule-sets@main/other/torrent-trackers.mrs
+  - id: torrent-websites
     behavior: domain
-    file: apple
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/apple.mrs
-  - id: google-play
+    file: torrent-websites
+    url: https://cdn.jsdelivr.net/gh/legiz-ru/mihomo-rule-sets@main/other/torrent-websites.mrs
+  - id: category-ban-ru
     behavior: domain
-    file: google-play
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/google-play.mrs
-  - id: epicgames
-    behavior: domain
-    file: epicgames
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/epicgames.mrs
-  - id: origin
-    behavior: domain
-    file: origin
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/origin.mrs
-  - id: riot
-    behavior: domain
-    file: riot
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/riot.mrs
-  - id: escapefromtarkov
-    behavior: domain
-    file: escapefromtarkov
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/escapefromtarkov.mrs
-  - id: steam
-    behavior: domain
-    file: steam
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/steam.mrs
-  - id: twitch
-    behavior: domain
-    file: twitch
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/twitch.mrs
-  - id: pinterest
-    behavior: domain
-    file: pinterest
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/pinterest.mrs
-  - id: faceit
-    behavior: domain
-    file: faceit
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/faceit.mrs
-  - id: private-ips
+    file: category-ban-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/legiz-ru/mihomo-rule-sets/main/other/category-ban-ru.list
+  - id: discord-voiceips
     behavior: ipcidr
-    file: geoip-private
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geoip/release/mihomo/private.mrs
-  - id: direct-ips
+    file: discord_voiceips
+    url: https://cdn.jsdelivr.net/gh/legiz-ru/mihomo-rule-sets@main/other/discord-voice-ip-list.mrs
+  - id: discord
+    behavior: domain
+    file: meta-discord
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/discord.list
+  - id: win-spy-meta
+    behavior: domain
+    file: meta-win-spy
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/win-spy.list
+  - id: ai-meta
+    behavior: domain
+    file: meta-ai
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ai-!cn.list
+  - id: category-enhance-gaming
+    behavior: domain
+    file: meta-category-enhance-gaming
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-enhance-gaming.list
+  - id: category-games-meta
+    behavior: domain
+    file: meta-category-games
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-games.list
+  - id: youtube-meta
+    behavior: domain
+    file: meta-youtube
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.list
+  - id: category-ecommerce-ru
+    behavior: domain
+    file: meta-category-ecommerce-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ecommerce-ru.list
+  - id: category-entertainment-ru
+    behavior: domain
+    file: meta-category-entertainment-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-entertainment-ru.list
+  - id: category-bank-ru
+    behavior: domain
+    file: meta-category-bank-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-bank-ru.list
+  - id: t2-ru
+    behavior: domain
+    file: meta-t2-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/t2-ru.list
+  - id: mts-ru
+    behavior: domain
+    file: meta-mts-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/mts-ru.list
+  - id: megafon
+    behavior: domain
+    file: meta-megafon
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/megafon.list
+  - id: mailru-group
+    behavior: domain
+    file: meta-mailru-group
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/mailru-group.list
+  - id: yandex
+    behavior: domain
+    file: meta-yandex
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/yandex.list
+  - id: nic-ru
+    behavior: domain
+    file: meta-nic-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/nic-ru.list
+  - id: selectel
+    behavior: domain
+    file: meta-selectel
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/selectel.list
+  - id: regru
+    behavior: domain
+    file: meta-regru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/regru.list
+  - id: rostelecom
+    behavior: domain
+    file: meta-rostelecom
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/rostelecom.list
+  - id: myoffice-ru
+    behavior: domain
+    file: meta-myoffice-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/myoffice-ru.list
+  - id: headhunter
+    behavior: domain
+    file: meta-headhunter
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/headhunter.list
+  - id: cdek
+    behavior: domain
+    file: meta-cdek
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cdek.list
+  - id: ideco-ru
+    behavior: domain
+    file: meta-ideco-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/ideco-ru.list
+  - id: beget
+    behavior: domain
+    file: meta-beget
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/beget.list
+  - id: timeweb
+    behavior: domain
+    file: meta-timeweb
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/timeweb.list
+  - id: category-gov-ru
+    behavior: domain
+    file: meta-category-gov-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-gov-ru.list
+  - id: category-media-ru
+    behavior: domain
+    file: meta-category-media-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-media-ru.list
+  - id: category-retail-ru
+    behavior: domain
+    file: meta-category-retail-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-retail-ru.list
+  - id: category-travel-ru
+    behavior: domain
+    file: meta-category-travel-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-travel-ru.list
+  - id: category-medicine-ru
+    behavior: domain
+    file: meta-category-medicine-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-medicine-ru.list
+  - id: category-ip-geo-detect-meta
+    behavior: domain
+    file: meta-category-ip-geo-detect
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ip-geo-detect.list
+  - id: category-game-platforms-download
+    behavior: domain
+    file: meta-category-game-platforms-download
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-game-platforms-download.list
+  # Локальные наборы без upstream: text/ — источник правды, pack → bin/, sync пропускает.
+  # summary_ips — генерируется из merge-from (meta-geoip-ru + ips-for-ru), не править вручную.
+  # summary_category_ru — merge всех RU geosite-зеркал + Davoyan, без +.ru/+.su.
+  - id: private-domains-custom
+    behavior: domain
+    file: private-domains-custom
+  - id: category-ru-custom
+    behavior: domain
+    file: category-ru-custom
+  - id: summary-category-ru
+    behavior: domain
+    file: summary_category_ru
+    merge-from: meta-category-ru,category-ru-davoyan,meta-category-ecommerce-ru,meta-category-entertainment-ru,meta-category-bank-ru,meta-t2-ru,meta-mts-ru,meta-megafon,meta-mailru-group,meta-yandex,meta-nic-ru,meta-selectel,meta-regru,meta-rostelecom,meta-myoffice-ru,meta-headhunter,meta-cdek,meta-ideco-ru,meta-beget,meta-timeweb,meta-category-gov-ru,meta-category-media-ru,meta-category-retail-ru,meta-category-travel-ru,meta-category-medicine-ru
+    exclude: +.ru,+.su
+  - id: private-ips-custom
     behavior: ipcidr
-    file: direct-ips
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geoip/release/mihomo/direct.mrs
-  - id: github
+    file: private-ips-custom
+  - id: torrent-domains-custom
     behavior: domain
-    file: github
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/github.mrs
-  - id: twitch-ads
+    file: torrent-domains-custom
+  - id: summary-ips
+    behavior: ipcidr
+    file: summary_ips
+    merge-from: meta-geoip-ru,ips-for-ru
+  - id: private-domains-meta
     behavior: domain
-    file: twitch-ads
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/twitch-ads.mrs
-  - id: youtube
-    behavior: domain
-    file: youtube
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/youtube.mrs
-  - id: telegram
-    behavior: domain
-    file: telegram
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/telegram.mrs
-  - id: win-spy
-    behavior: domain
-    file: win-spy
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/win-spy.mrs
-  - id: torrent-domains
-    behavior: domain
-    file: torrent-domains
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/torrent.mrs
-  - id: category-ads
-    behavior: domain
-    file: category-ads
-    url: https://cdn.jsdelivr.net/gh/hydraponique/roscomvpn-geosite/release/mihomo/category-ads.mrs
+    file: meta-geosite-private
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.list
+  - id: private-ips-meta
+    behavior: ipcidr
+    file: meta-geoip-private
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.list
+  - id: ru-ips
+    behavior: ipcidr
+    file: meta-geoip-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/ru.list
+  - id: ips-for-ru
+    behavior: ipcidr
+    file: ips-for-ru
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/Davoyan/mihomo-rule-sets/main/ip-for-ru/lists/ips-for-ru.lst

@@ -1,0 +1,48 @@
+name: Upstream sync
+
+on:
+  schedule:
+    # 06:00 Europe/Moscow (UTC+3, без DST) = 03:00 UTC
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: upstream-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+
+      - name: Install Python deps
+        run: pip install pyyaml
+
+      - name: Sync upstream (YAML + MRS)
+        run: ./scripts/upstream-sync.sh sync
+
+      - name: Validate config
+        run: ./scripts/test-config-local.sh
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and push
+        run: |
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "upstream-sync: изменений нет"
+            exit 0
+          fi
+          git add -A
+          git commit -m "chore: upstream sync $(date -u +%Y-%m-%d)"
+          git push

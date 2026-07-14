@@ -1,0 +1,39 @@
+payload:
+  # Локальные дополнения к torrent-clients.yaml (апстрим: legiz-ru/mihomo-rule-sets).
+  # Оригинал не редактируем — он синхронизируется как есть; новые клиенты здесь.
+
+  # --- Windows (.exe) ---
+  - PROCESS-NAME,transmission-cli.exe
+  - PROCESS-NAME,BitComet_x64.exe
+  - PROCESS-NAME,Halite.exe
+  - PROCESS-NAME,LIII.exe
+  - PROCESS-NAME,BATorrent.exe
+  - PROCESS-NAME,Motrix.exe
+  - PROCESS-NAME,aria2.exe
+  - PROCESS-NAME,aria2c.exe
+
+  # --- macOS ---
+  - PROCESS-NAME,Tribler
+  - PROCESS-NAME,BATorrent
+  - PROCESS-NAME,Motrix
+
+  # --- Linux / BSD ---
+  - PROCESS-NAME,transmission-cli
+  - PROCESS-NAME,tremc
+  - PROCESS-NAME,Halite
+  - PROCESS-NAME,LIII
+  - PROCESS-NAME,aria2
+  - PROCESS-NAME,aria2c
+
+  # --- Android (package name) ---
+  - PROCESS-NAME,com.delphicoder.flud.plus
+  - PROCESS-NAME,com.mobilityflow.torrent
+  - PROCESS-NAME,co.we.torrent
+  - PROCESS-NAME,fr.beedown.beetorrent
+  - PROCESS-NAME,org.btorrent.hgcor
+  - PROCESS-NAME,com.vuze.torrent.downloader
+  - PROCESS-NAME,com.vuze.android.remote
+  - PROCESS-NAME,org.transdroid.full
+
+  # --- iOS (bundle id, sideload) ---
+  - PROCESS-NAME,org.m0k.transmission

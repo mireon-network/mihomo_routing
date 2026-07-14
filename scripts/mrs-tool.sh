@@ -8,8 +8,6 @@ MANIFEST="$MRS_DIR/manifest.yaml"
 BIN_DIR="$MRS_DIR/bin"
 TEXT_DIR="$MRS_DIR/text"
 STAGING_DIR="$MRS_DIR/.sync-staging"
-BASELINE_DIR="$MRS_DIR/.sync-baseline"
-CONFLICTS_REPORT="$MRS_DIR/SYNC-CONFLICTS.md"
 TOOLS_DIR="$ROOT/.tools"
 MIHOMO_BIN="${MIHOMO_BIN:-$TOOLS_DIR/mihomo}"
 MIHOMO_VERSION="${MIHOMO_VERSION:-v1.19.25}"
@@ -67,21 +65,83 @@ for line in open(path, encoding="utf-8"):
     elif cur is not None and ":" in s and not s.startswith("#"):
         k, v = s.split(":", 1)
         k, v = k.strip(), v.strip()
-        if k in ("id", "behavior", "file", "url"):
+        if k in ("id", "behavior", "file", "url", "src", "exclude"):
             cur[k] = v
 if cur:
     sets.append(cur)
 for item in sets:
-    print("\t".join(item[k] for k in ("id", "behavior", "file", "url")))
+    def f(v: str) -> str:
+        return v if v else "-"
+    print("\t".join(f(item.get(k, "")) for k in ("id", "behavior", "file", "url", "src", "exclude")))
 PY
+}
+
+# $1 — .list файл; $2 — список исключаемых строк через запятую (точное совпадение строки)
+# Убирает слишком широкие правила (например +.ru, +.su) из скачанного списка.
+list_apply_exclude() {
+  local out_list="$1" exclude="$2"
+  [[ -z "$exclude" ]] && return 0
+  local args=() e
+  local oldifs="$IFS"; IFS=','
+  for e in $exclude; do
+    e="${e// /}"
+    [[ -n "$e" ]] && args+=(-e "$e")
+  done
+  IFS="$oldifs"
+  [[ ${#args[@]} -eq 0 ]] && return 0
+  local before after tmp; tmp="$(mktemp)"
+  before="$(grep -cve '^$' "$out_list")"
+  grep -vxF "${args[@]}" "$out_list" >"$tmp" || true
+  mv "$tmp" "$out_list"
+  after="$(grep -cve '^$' "$out_list")"
+  echo "   exclude: $before → $after строк (убрано: $exclude)"
 }
 
 # $1 — каталог bin; $2 — force (1 = перезаписать)
 staging_download() {
   local dest="${1:-$BIN_DIR}"
   local force="${2:-0}"
+  local text_dest; text_dest="$(dirname "$dest")/text"   # bin/ и text/ — соседи
   mkdir -p "$dest"
-  while IFS=$'\t' read -r _ _ file url; do
+  while IFS=$'\t' read -r _ _ file url src exclude; do
+    [[ "$url" == "-" ]] && url=""
+    [[ "$src" == "-" ]] && src=""
+    [[ "$exclude" == "-" ]] && exclude=""
+    if [[ -z "$src" && -z "$url" ]]; then
+      echo "→ $file (локальный набор без upstream — пакуется из text/)"
+      continue
+    fi
+    if [[ -n "$src" ]]; then
+      # Текстовый источник: url → .list (формат mihomo) → text/*.list.
+      # .mrs пакуется позже (cmd_pack).
+      local out_list="$text_dest/${file}.list"
+      mkdir -p "$text_dest"
+      if [[ "$force" != "1" && -f "$out_list" ]]; then
+        echo "→ $file.list (пропуск, уже есть; --force чтобы перезаписать)"
+        continue
+      fi
+      echo "→ $file.list (src=$src)"
+      local tmp; tmp="$(mktemp)"
+      curl -fsSL -o "$tmp" "$url"
+      case "$src" in
+        mihomo-list) sed 's/\r$//' "$tmp" >"$out_list" ;;   # уже формат mihomo, только CRLF→LF
+        davoyan-list)
+          while IFS= read -r line || [[ -n "$line" ]]; do
+            line="${line//$'\r'/}"
+            [[ -z "$line" || "$line" == \#* ]] && continue
+            if [[ "$line" == +* ]]; then
+              printf '%s\n' "$line"
+            else
+              printf '+.%s\n' "$line"
+            fi
+          done <"$tmp" >"$out_list"
+          ;;
+        *) rm -f "$tmp"; die "неизвестный src=$src для $file" ;;
+      esac
+      rm -f "$tmp"
+      list_apply_exclude "$out_list" "$exclude"
+      continue
+    fi
     local out="$dest/${file}.mrs"
     if [[ "$force" != "1" && -f "$out" ]]; then
       echo "→ $file.mrs (пропуск, уже есть; --force чтобы перезаписать)"
@@ -98,7 +158,11 @@ staging_unpack() {
   local text_d="${2:-$TEXT_DIR}"
   ensure_mihomo
   mkdir -p "$text_d"
-  while IFS=$'\t' read -r _ behavior file _; do
+  while IFS=$'\t' read -r _ behavior file url src _; do
+    [[ "$url" == "-" ]] && url=""
+    [[ "$src" == "-" ]] && src=""
+    [[ -n "$src" ]] && continue   # текстовый источник: list уже готов в staging_download
+    [[ -z "$url" ]] && continue   # локальный набор: bin пакуется из text/, upstream нет
     local bin="$bin_d/${file}.mrs"
     local txt="$text_d/${file}.list"
     [[ -f "$bin" ]] || die "нет $bin"
@@ -123,11 +187,18 @@ cmd_unpack() {
   die "unpack перезаписывает text/; для безопасного обновления используйте: $0 sync"
 }
 
+cmd_build_merged_lists() {
+  python3 "$ROOT/scripts/mrs-build-merged-lists.py" \
+    --mrs-dir "$MRS_DIR" \
+    --manifest "$MANIFEST"
+}
+
 cmd_pack() {
   ensure_mihomo
+  cmd_build_merged_lists
   mkdir -p "$BIN_DIR"
   local changed=0
-  while IFS=$'\t' read -r _ behavior file _; do
+  while IFS=$'\t' read -r _ behavior file _ _ _; do
     local txt="$TEXT_DIR/${file}.list"
     local bin="$BIN_DIR/${file}.mrs"
     [[ -f "$txt" ]] || continue
@@ -151,42 +222,18 @@ cmd_sync() {
   staging_download "$STAGING_DIR/bin" 1
   staging_unpack "$STAGING_DIR/bin" "$STAGING_DIR/text"
 
-  echo "mrs-tool: слияние с локальным text/…"
-  local merge_rc=0
+  echo "mrs-tool: зеркалирование upstream в text/…"
   python3 "$ROOT/scripts/mrs-sync-merge.py" \
     --mrs-dir "$MRS_DIR" \
-    --manifest "$MANIFEST" || merge_rc=$?
+    --manifest "$MANIFEST"
 
-  echo "mrs-tool: упаковка локальных правок в bin/…"
+  echo "mrs-tool: сборка summary из merge-from…"
+  cmd_build_merged_lists
+
+  echo "mrs-tool: упаковка text/ → bin/…"
   cmd_pack
 
-  if [[ "$merge_rc" -ne 0 ]]; then
-    echo "mrs-tool: есть конфликты — см. $CONFLICTS_REPORT" >&2
-    exit 1
-  fi
-  echo "mrs-tool: sync завершён без конфликтов"
-}
-
-cmd_resolve() {
-  parse_manifest
-  python3 "$ROOT/scripts/mrs-sync-merge.py" \
-    --mrs-dir "$MRS_DIR" \
-    --manifest "$MANIFEST" \
-    --resolve "$@"
-  cmd_pack
-}
-
-cmd_baseline_init() {
-  mkdir -p "$BASELINE_DIR"
-  local n=0
-  for f in "$TEXT_DIR"/*.list; do
-    [[ -f "$f" ]] || continue
-    local base
-    base="$(basename "$f")"
-    cp "$f" "$BASELINE_DIR/$base"
-    n=$((n + 1))
-  done
-  echo "mrs-tool: baseline инициализирован ($n файлов) в .sync-baseline/"
+  echo "mrs-tool: sync завершён"
 }
 
 cmd_install_hooks() {
@@ -205,12 +252,12 @@ usage() {
   download [--force]  — скачать .mrs в rule-sets/mrs/bin/
   unpack --force        — bin/*.mrs → text/*.list (перезаписывает text/)
   pack                  — text/*.list → bin/*.mrs
-  sync                  — upstream → staging, слияние без перетирания локальных правок
-  resolve [имя …]       — после ручного merge: local → baseline, убрать conflict
-  baseline-init         — один раз: скопировать text/ → .sync-baseline/
+  sync                  — upstream → text/ (зеркала) + pack → bin/
   install-hooks         — git pre-commit
 
-  sync при конфликте создаёт $CONFLICTS_REPORT и каталоги conflicts/<имя>/.
+  Upstream-наборы (url/src в manifest): перезаписываются из CDN/upstream.
+  Локальные *-custom (без url/src): правки только в text/, pack → bin/.
+
   Переменные: MIHOMO_BIN, MIHOMO_VERSION
 EOF
 }
@@ -223,8 +270,6 @@ main() {
     unpack) cmd_unpack "$@" ;;
     pack) cmd_pack ;;
     sync) cmd_sync ;;
-    resolve) cmd_resolve "$@" ;;
-    baseline-init) cmd_baseline_init ;;
     install-hooks) cmd_install_hooks ;;
     -h|--help|"") usage ;;
     *) die "неизвестная команда: $cmd (см. --help)" ;;

@@ -1,0 +1,8 @@
+payload:
+  # Локальные дополнения RU-приложений (Android package-name), которых нет в
+  # ru-app-list.yaml (legiz-ru). Маршрут DIRECT. НЕ синхронизируется — добавляй сюда.
+  - PROCESS-NAME,ru.ivi.client
+  - PROCESS-NAME,ru.napopravku
+  - PROCESS-NAME,ru.profi.client
+  - PROCESS-NAME,ru.sravni.android.bankproduct
+  - PROCESS-NAME,com.hrlink.app

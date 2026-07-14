@@ -1,14 +1,7 @@
-# Источники для ./scripts/upstream-sync.sh
-# Локальные-only файлы (rule-sets/yaml/ai.yaml и т.п.) сюда не добавлять.
+# Источники для ./scripts/upstream-sync.sh — зеркала upstream без локальных правок.
+# Локальные-only (сюда не добавлять): ai.yaml, *-custom.yaml, MIHOMO/template_remnawave.yaml.
 
 sources:
-  - id: template_remnawave
-    url: https://raw.githubusercontent.com/hydraponique/roscomvpn-routing/main/MIHOMO/template_remnawave.yaml
-    path: MIHOMO/template_remnawave.yaml
-    auto_apply: false
-    post:
-      - fix_template_cdn
-
   - id: torrent_clients
     url: https://raw.githubusercontent.com/legiz-ru/mihomo-rule-sets/main/other/torrent-clients.yaml
     path: rule-sets/yaml/torrent-clients.yaml
@@ -16,10 +9,13 @@ sources:
   - id: games
     url: https://raw.githubusercontent.com/roscomvpn/custom-category/release/mihomo/games.yaml
     path: rule-sets/yaml/games.yaml
-    auto_apply: false
+    # Локальные игры — rule-sets/yaml/games-custom.yaml;
+    # блок GFN/ручные пересобирает post-hook.
     post:
       - regenerate_gfn_block
 
-  - id: ru_apps
-    url: https://raw.githubusercontent.com/roscomvpn/custom-category/release/mihomo/ru-apps.yaml
-    path: rule-sets/yaml/ru-apps.yaml
+  - id: ru_app_list
+    url: https://raw.githubusercontent.com/legiz-ru/mihomo-rule-sets/main/other/ru-app-list.yaml
+    path: rule-sets/yaml/ru-app-list.yaml
+    post:
+      - regenerate_tun_exclude

@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Собрать блок GeForce NOW для rule-sets/yaml/games.yaml.
+"""Собрать блок GeForce NOW для rule-sets/yaml/games-custom.yaml.
+
+games.yaml — зеркало апстрима (roscomvpn), не редактируется. Наши добавления
+(GFN, ручные игры) живут в games-custom.yaml; апстримные процессы и лаунчеры
+исключаются из блока, чтобы не плодить дубли между наборами.
 
 Источники:
   - https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json
@@ -15,7 +19,12 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-GAMES_YAML = ROOT / "rule-sets/yaml/games.yaml"
+GAMES_CUSTOM_YAML = ROOT / "rule-sets/yaml/games-custom.yaml"
+# Зеркала апстрима / соседние наборы — для дедупликации (их процессы не дублируем).
+DEDUP_SOURCES = (
+    ROOT / "rule-sets/yaml/games.yaml",
+    ROOT / "rule-sets/yaml/games-launchers.yaml",
+)
 
 GFN_URL = "https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json"
 GDB_URL = "https://gist.githubusercontent.com/Gr3gorywolf/1757c79ce1152966bf77bf8c6d069161/raw/gamedatabase.json"
@@ -143,15 +152,23 @@ def main() -> int:
                 return proc, "steam_substring"
         return None, "none"
 
-    base = GAMES_YAML.read_text(encoding="utf-8")
+    def process_names(text: str) -> set[str]:
+        names: set[str] = set()
+        for m in re.finditer(r"PROCESS-NAME,([^\n]+)", text):
+            v = m.group(1).split("#", 1)[0].strip()  # отсечь инлайн-комментарий
+            v = v.removesuffix(",DIRECT").removesuffix(",PROXY").strip()
+            if v and not v.startswith("(?"):
+                names.add(v.lower())
+        return names
+
+    base = GAMES_CUSTOM_YAML.read_text(encoding="utf-8")
     if GFN_MARKER in base:
         base = base.split(GFN_MARKER)[0].rstrip() + "\n"
 
-    existing: set[str] = set()
-    for m in re.finditer(r"PROCESS-NAME,([^\n]+)", base):
-        v = m.group(1).split("#", 1)[0].strip()  # отсечь инлайн-комментарий
-        if v and not v.startswith("(?"):
-            existing.add(v.lower())
+    existing: set[str] = process_names(base)
+    for src in DEDUP_SOURCES:
+        if src.is_file():
+            existing |= process_names(src.read_text(encoding="utf-8"))
 
     entries: list[tuple[str, str, str, str, list]] = []
     stats: dict[str, int] = {}
@@ -198,17 +215,26 @@ def main() -> int:
     manual = (
         "\n  # --- Добавленно вручную (нет в GFN / не попали в фильтр жанров) ---\n"
         "  # R.E.P.O. — co-op онлайн, Steam 3241660; в gfnpc-en-US.json отсутствует\n"
-        "  # (REPO/Overwolf/Tanki — только Windows; на Linux Proton видит REPO.exe)\n"
+        "  # (REPO/Overwolf — только Windows; на Linux Proton видит REPO.exe)\n"
+        "  # Raft.exe / Tanki.exe уже есть в апстримном games.yaml — не дублируем.\n"
         "  - PROCESS-NAME,REPO.exe\n"
         "  - PROCESS-NAME,REPO-Win64-Shipping.exe\n"
-        "  - PROCESS-NAME,Raft.exe\n"
         "  - PROCESS-NAME,Raft                  # Raft — нативный macOS\n"
-        "  - PROCESS-NAME,Tanki.exe\n"
         "  - PROCESS-NAME,Overwolf.exe\n"
     )
     out = base + "\n".join(lines) + manual
-    GAMES_YAML.write_text(out, encoding="utf-8")
-    print(f"Wrote {GAMES_YAML} (+{len(entries)} rules, stats={stats})")
+    current = GAMES_CUSTOM_YAML.read_text(encoding="utf-8")
+    if out == current:
+        print(
+            f"generate-gfn-games-block: без изменений "
+            f"({len(entries)} GFN PROCESS-NAME, stats={stats})"
+        )
+        return 0
+    GAMES_CUSTOM_YAML.write_text(out, encoding="utf-8")
+    print(
+        f"generate-gfn-games-block: обновлён {GAMES_CUSTOM_YAML} "
+        f"({len(entries)} GFN PROCESS-NAME, stats={stats})"
+    )
     return 0
 
 
