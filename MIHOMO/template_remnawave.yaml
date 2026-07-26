@@ -107,6 +107,7 @@ keep-alive-interval: 15 # интервал probe-пакетов, сек
 tun:
   enable: true
   stack: gvisor
+  endpoint-independent-nat: true
   auto-route: true
   auto-detect-interface: true
   dns-hijack:
