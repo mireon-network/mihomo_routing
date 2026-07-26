@@ -7,6 +7,7 @@ payload:
 
   # --- Игровые домены вне MetaCubeX category-games (classical: можно и DOMAIN, и PROCESS) ---
   - DOMAIN-SUFFIX,eft-project.com # Escape from Tarkov (из roscomvpn; нет в category-games)
+  - DOMAIN-SUFFIX,vivox.com # Голосовой чат Vivox — не зависит от определения процесса
 
   # --- Windows: игры из стандартных каталогов лаунчеров (любой диск) ---
   - PROCESS-PATH-REGEX,(?i).*\\steamapps\\common\\.*                 # Steam
