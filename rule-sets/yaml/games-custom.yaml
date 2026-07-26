@@ -8,6 +8,14 @@ payload:
   # --- Игровые домены вне MetaCubeX category-games (classical: можно и DOMAIN, и PROCESS) ---
   - DOMAIN-SUFFIX,eft-project.com # Escape from Tarkov (из roscomvpn; нет в category-games)
 
+  # --- Windows: игры из стандартных каталогов лаунчеров (любой диск) ---
+  - PROCESS-PATH-REGEX,(?i).*\\steamapps\\common\\.*                 # Steam
+  - PROCESS-PATH-REGEX,(?i).*\\GOG Galaxy\\Games\\.*                # GOG Galaxy
+  - PROCESS-PATH-REGEX,(?i).*\\Ubisoft\\Ubisoft Game Launcher\\games\\.* # Ubisoft Connect
+  - PROCESS-PATH-REGEX,(?i).*\\EA Games\\.*                         # EA app
+  - PROCESS-PATH-REGEX,(?i).*\\XboxGames\\.*                        # Xbox app
+  - PROCESS-PATH-REGEX,(?i).*\\Amazon Games\\Library\\.*            # Amazon Games
+
   # TEKKEN (онлайн на PC: 7, 8; Tekken 6 / TTT2 / Revolution — консоли или RPCS3)
   - PROCESS-NAME,TekkenGame-Win64-Shipping.exe # Tekken 7 — ranked, лобби (Steam 389730)
   - PROCESS-NAME,Polaris-Win64-Shipping.exe # Tekken 8 — онлайн (Steam 1778820)
