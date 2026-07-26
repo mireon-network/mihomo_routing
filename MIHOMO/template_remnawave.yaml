@@ -741,8 +741,8 @@ rules:
   - RULE-SET,games-launchers,🎮 Лаунчеры
 
   # --- Игровые платформы и сервисы → 🎮 Игры (по умолчанию DIRECT, можно переключить) ---
-  - RULE-SET,wine,🍷 Wine
   - RULE-SET,games-custom,🎮 Игры                  # локальные дополнения игр (процессы: GFN/нативные/ручные + домены вне category-games)
+  - RULE-SET,wine,🍷 Wine
   - RULE-SET,category-enhance-gaming,🎮 Игры       # игровые сервисы, расширенный (MetaCubeX)
   - RULE-SET,games,🎮 Игры                         # игры по имени процесса — выше DIRECT: селектор игр приоритетнее
   - RULE-SET,category-games-meta,🎮 Игры           # игровые домены (MetaCubeX category-games: Steam/Epic/EA/Riot/Ubisoft/Blizzard/Rockstar/GOG/EfT/FACEIT/2K…)
