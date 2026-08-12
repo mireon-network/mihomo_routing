@@ -208,14 +208,6 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-trackers.mrs
     path: ./ruleset/torrent-trackers.mrs
-  torrent-websites:
-    type: http
-    proxy: PROXY
-    interval: *rp_interval
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-websites.mrs
-    path: ./ruleset/torrent-websites.mrs
   torrent-domains-custom: # локальный mrs (source: rule-sets/mrs/text/torrent-domains-custom.list)
     type: http
     proxy: PROXY
@@ -270,9 +262,8 @@ rules:
   - RULE-SET,category-medicine-ru,DIRECT
   - RULE-SET,wld,DIRECT                            # RU-белосписочный (legiz wld)
 
-  # --- Торренты → DIRECT (мимо прокси) ---
+  # --- Торренты: только P2P (сайты — обычный MATCH/PROXY; клиент всё равно DIRECT по процессу) ---
   - RULE-SET,torrent-trackers,DIRECT               # торрент-трекеры (legiz-ru)
-  - RULE-SET,torrent-websites,DIRECT               # торрент-сайты (legiz-ru)
   - RULE-SET,torrent-domains-custom,DIRECT         # торрент-домены не из legiz (DHT-ноды и пр.)
   - RULE-SET,torrent-clients,DIRECT                # торрент-клиенты по процессу
   - RULE-SET,torrent-clients-custom,DIRECT         # локальные дополнения торрент-клиентов

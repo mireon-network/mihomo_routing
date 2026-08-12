@@ -25,7 +25,7 @@
 #
 # Rule-sets (MetaCubeX geosite/geoip, legiz-ru, Davoyan и локальные наборы mireon):
 #   • Слежка Windows                        → REJECT-DROP
-#   • Торренты (домены/клиенты)             → DIRECT
+#   • Торренты (трекеры/DHT/клиенты)        → DIRECT; сайты — обычный роутинг (ban-ru/MATCH → PROXY)
 #   • Заблокированные в РФ (category-ban-ru) → PROXY (выше RU catch-all)
 #   • Российские домены (category-ru), ru-apps → DIRECT
 #   • YouTube / Discord → отдельные селекторы
@@ -558,14 +558,6 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-trackers.mrs
     path: ./ruleset/torrent-trackers.mrs
-  torrent-websites:
-    type: http
-    proxy: ⚡️ Авто
-    interval: *rp_interval
-    behavior: domain
-    format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-websites.mrs
-    path: ./ruleset/torrent-websites.mrs
   category-ip-geo-detect-meta:
     type: http
     proxy: ⚡️ Авто
@@ -707,9 +699,8 @@ rules:
   # --- Блокировки ---
   - RULE-SET,win-spy-meta,REJECT-DROP              # телеметрия Windows (MetaCubeX)
 
-  # --- Торренты ---
+  # --- Торренты: только P2P (сайты не форсим — иначе заблокированные в РФ не откроются через PROXY) ---
   - RULE-SET,torrent-trackers,DIRECT               # торрент-трекеры (legiz-ru) — напрямую
-  - RULE-SET,torrent-websites,DIRECT               # торрент-сайты (legiz-ru) — напрямую
   - RULE-SET,torrent-domains-custom,DIRECT         # торрент-домены не из legiz (DHT-ноды и пр.) — напрямую
   - RULE-SET,torrent-clients,DIRECT                # торрент-клиенты по процессу
   - RULE-SET,torrent-clients-custom,DIRECT         # локальные дополнения торрент-клиентов

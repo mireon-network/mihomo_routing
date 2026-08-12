@@ -26,10 +26,6 @@ sets:
     behavior: domain
     file: torrent-trackers
     url: https://cdn.jsdelivr.net/gh/legiz-ru/mihomo-rule-sets@main/other/torrent-trackers.mrs
-  - id: torrent-websites
-    behavior: domain
-    file: torrent-websites
-    url: https://cdn.jsdelivr.net/gh/legiz-ru/mihomo-rule-sets@main/other/torrent-websites.mrs
   - id: category-ban-ru
     behavior: domain
     file: category-ban-ru
