@@ -94,13 +94,14 @@ x-anchors:
     - ff00::/8
     - fe80::/10
     - ::/127
-  # DNS для RU/DIRECT-трафика (Yandex + Google, запрос напрямую)
+  # DNS для RU/DIRECT-трафика (Yandex + Google, запрос напрямую).
+  # Без system: mihomo резолвит параллельно, а systemd-resolved при fake-ip +
+  # dns-hijack отдаёт 198.18 обратно в ядро (петля, DIRECT на fake-ip таймаутится).
   dns_ru: &dns_ru
     - https://77.88.8.8/dns-query#DIRECT   # Yandex — всегда доступен в РФ
     - https://94.140.14.14/dns-query#DIRECT  # AdGuard — доступен в РФ
     - https://8.8.8.8/dns-query#DIRECT      # Google — резерв
     - https://1.1.1.1/dns-query#DIRECT      # Cloudflare — резерв
-    - system                                 # последний резерв при недоступности всех DoH
   # DNS для проксируемого трафика (резолв через узел группы PROXY)
   dns_proxy: &dns_proxy
     - https://8.8.8.8/dns-query#PROXY
