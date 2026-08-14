@@ -17,8 +17,26 @@
 # В этом профиле весь трафик идёт на 🇷🇺 Белые списки → rule-providers тянутся через PROXY.
 # ============================================================
 x-anchors:
-  # Приватные и зарезервированные IP — общий список для TUN и сниффера
+  # Приватные и зарезервированные IP — TUN route-exclude (без fake-ip)
   reserved_ips: &reserved_ips
+    - 224.0.0.0/3
+    - 10.0.0.0/8
+    - 127.0.0.0/8
+    - 100.64.0.0/10
+    - 172.16.0.0/12
+    - 169.254.0.0/16
+    - 192.168.0.0/16
+    - 192.0.0.0/24
+    - 192.0.2.0/24
+    - 192.88.99.0/24
+    - 198.51.100.0/24
+    - 203.0.113.0/24
+    - fc00::/7
+    - ff00::/8
+    - fe80::/10
+    - ::/127
+  sniffer_skip_ips: &sniffer_skip_ips
+    - 198.18.0.0/15
     - 224.0.0.0/3
     - 10.0.0.0/8
     - 127.0.0.0/8
@@ -98,6 +116,9 @@ dns:
     - "speedtest.cros.wr.pvp.net" # пинг-серверы Riot (LoL/Valorant)
     - "*.msftncsi.com"
     - "*.msftconnecttest.com"
+    - "captive.apple.com"
+    - "connectivitycheck.gstatic.com"
+    - "connectivitycheck.android.com"
   default-nameserver: *dns_ru
   proxy-server-nameserver: *dns_ru
   direct-nameserver: *dns_ru
@@ -122,7 +143,7 @@ sniffer:
       ports:
         - 443
         - 8443
-  skip-dst-address: *reserved_ips # приватные/зарезервированные IP (см. x-anchors)
+  skip-dst-address: *sniffer_skip_ips # reserved + fake-ip 198.18.0.0/15
 find-process-mode: strict
 profile:
   store-selected: true
@@ -244,6 +265,13 @@ rule-providers:
       - DST-PORT,995
       - DST-PORT,143
       - DST-PORT,993
+  vpn-clients:
+    type: inline
+    behavior: classical
+    payload:
+      - PROCESS-NAME-REGEX,(?i).*tailscale.*
+      - PROCESS-NAME-REGEX,(?i).*wireguard.*
+      - PROCESS-NAME-REGEX,(?i).*netbird.*
 
 rules:
   # --- Системные / приватные адреса ---
@@ -253,6 +281,7 @@ rules:
   - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT-DROP # QUIC — принудительно через TCP
   - RULE-SET,private-domains-meta,DIRECT           # локальные домены (MetaCubeX) — напрямую
   - RULE-SET,private-domains-custom,DIRECT         # локальные/рабочие домены — напрямую (вне upstream)
+  - RULE-SET,vpn-clients,DIRECT                    # Tailscale/WireGuard/NetBird — не туннелировать в mihomo
 
   # --- Почтовые порты → DIRECT ---
   - RULE-SET,mail-ports,DIRECT

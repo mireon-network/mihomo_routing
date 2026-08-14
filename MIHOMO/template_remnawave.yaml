@@ -21,14 +21,13 @@
 #   🤖 ИИ        — сервисы искусственного интеллекта (OpenAI, Claude, Gemini, Copilot…)
 #   🔓 Без VPN   — принудительный прямой доступ (DIRECT)
 #   ⛔ Блок      — блокировка (REJECT)
-#   ⏭️ Пропуск   — PASS (передать следующему правилу)
 #
 # Rule-sets (MetaCubeX geosite/geoip, legiz-ru, Davoyan и локальные наборы mireon):
 #   • Слежка Windows                        → REJECT-DROP
 #   • Торренты (трекеры/DHT/клиенты)        → DIRECT; сайты — обычный роутинг (ban-ru/MATCH → PROXY)
 #   • Заблокированные в РФ (category-ban-ru) → PROXY (выше RU catch-all)
 #   • Российские домены (category-ru), ru-apps → DIRECT
-#   • YouTube / Discord → отдельные селекторы
+#   • YouTube / Discord → отдельные селекторы (голос Discord: Cloudflare UDP 19200–19500 + 50000–50100)
 #   • Telegram, GitHub и прочее     → PROXY (финальный MATCH)
 #   • Игровые лаунчеры (games-launchers)    → 🎮 Лаунчеры (по умолчанию DIRECT)
 #   • Игровые сервисы                       → 🎮 Игры
@@ -56,8 +55,28 @@ remnawave:
 # rule-providers развёрнуты явно (без <<: *rp_*); при правках — полные блоки type/behavior/format.
 # ============================================================
 x-anchors:
-  # Приватные и зарезервированные IP — общий список для TUN и сниффера
+  # Приватные и зарезервированные IP — TUN route-exclude (без fake-ip: 198.18 должен идти в TUN)
   reserved_ips: &reserved_ips
+    - 0.0.0.0/8
+    - 224.0.0.0/3
+    - 10.0.0.0/8
+    - 127.0.0.0/8
+    - 100.64.0.0/10
+    - 172.16.0.0/12
+    - 169.254.0.0/16
+    - 192.168.0.0/16
+    - 192.0.0.0/24
+    - 192.0.2.0/24
+    - 192.88.99.0/24
+    - 198.51.100.0/24
+    - 203.0.113.0/24
+    - fc00::/7
+    - ff00::/8
+    - fe80::/10
+    - ::/127
+  # Сниффер: то же + fake-ip (домен уже в store, сниффить 198.18 незачем)
+  sniffer_skip_ips: &sniffer_skip_ips
+    - 198.18.0.0/15
     - 0.0.0.0/8
     - 224.0.0.0/3
     - 10.0.0.0/8
@@ -77,10 +96,11 @@ x-anchors:
     - ::/127
   # DNS для RU/DIRECT-трафика (Yandex + Google, запрос напрямую)
   dns_ru: &dns_ru
-    - https://77.88.8.8/dns-query#DIRECT
-    - https://8.8.8.8/dns-query#DIRECT
-    - https://94.140.14.14/dns-query#DIRECT
-    - https://1.1.1.1/dns-query#DIRECT
+    - https://77.88.8.8/dns-query#DIRECT   # Yandex — всегда доступен в РФ
+    - https://94.140.14.14/dns-query#DIRECT  # AdGuard — доступен в РФ
+    - https://8.8.8.8/dns-query#DIRECT      # Google — резерв
+    - https://1.1.1.1/dns-query#DIRECT      # Cloudflare — резерв
+    - system                                 # последний резерв при недоступности всех DoH
   # DNS для проксируемого трафика (резолв через узел группы PROXY)
   dns_proxy: &dns_proxy
     - https://8.8.8.8/dns-query#PROXY
@@ -89,8 +109,7 @@ x-anchors:
     - https://94.140.14.14/dns-query#PROXY
   # Шаблоны rule-providers (type/proxy/interval общие, behavior/format — по типу)
   # rp_* шаблоны развёрнуты в rule-providers (Remnawave/node-yaml alias limit)
-  rp_interval: &rp_interval 604800              # rule-sets: 7 дней — реже перезагрузка в память
-  rp_interval_static: &rp_interval_static 2592000 # meta/private: 30 дней — почти не меняются
+  rp_interval: &rp_interval 86400          # rule-sets: 1 день — своевременно подхватываем изменения upstream
 
 mixed-port: 7890
 mode: rule
@@ -111,8 +130,7 @@ tun:
   auto-route: true
   auto-detect-interface: true
   dns-hijack:
-    - any:53 # mihomo отбрасывает протокол из dns-hijack → any:53 уже перехватывает и UDP/53, и TCP/53
-    - tcp://any:53
+    - any:53 # перехватывает UDP/53 и TCP/53 одновременно
   strict-route: true
   route-exclude-address: *reserved_ips # приватные/зарезервированные IP (см. x-anchors)
   # Российские приложения исключены из TUN (как у Davoyan/ultimate-mihomo-ru).
@@ -166,6 +184,9 @@ dns:
     - "*.msftncsi.com"
     - "*.msftconnecttest.com"
     - "*.ipv6.microsoft.com"
+    - "captive.apple.com"                 # Apple captive portal — иначе iOS думает что нет сети
+    - "connectivitycheck.gstatic.com"     # Android/Chrome проверка сети
+    - "connectivitycheck.android.com"     # Android проверка сети
   default-nameserver: *dns_ru
   proxy-server-nameserver: *dns_ru
   direct-nameserver: *dns_ru
@@ -182,6 +203,8 @@ dns:
     "rule-set:youtube-meta,category-ban-ru,discord": *dns_proxy
     # RU-домены (идут DIRECT) — резолвим через RU DNS напрямую: верный CDN и меньше задержка
     "rule-set:summary-category-ru,category-ru-custom,wld": *dns_ru
+    # DIRECT-сервисы — резолвим напрямую: geo-detect, торрент-трекеры, игровые CDN
+    "rule-set:category-ip-geo-detect-meta,torrent-trackers,category-game-platforms-download": *dns_ru
 sniffer:
   enable: true
   override-destination: true
@@ -196,7 +219,7 @@ sniffer:
       ports:
         - 443
         - 8443
-  skip-dst-address: *reserved_ips # приватные/зарезервированные IP (см. x-anchors)
+  skip-dst-address: *sniffer_skip_ips # reserved + fake-ip 198.18.0.0/15 (не TUN-exclude)
 find-process-mode: strict
 profile:
   store-selected: true
@@ -422,13 +445,7 @@ proxy-groups:
       include-proxies: false
     proxies:
       - REJECT
-  - name: ⏭️ Пропуск
-    type: select
-    hidden: true
-    remnawave:
-      include-proxies: false
-    proxies:
-      - PASS
+
 rule-providers:
   private-domains-meta:
     type: http
@@ -437,7 +454,7 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geosite-private.mrs
     path: ./ruleset/meta-geosite-private.mrs
-    interval: *rp_interval_static
+    interval: *rp_interval
   private-domains-custom: # локальный mrs (source: rule-sets/mrs/text/private-domains-custom.list)
     type: http
     proxy: ⚡️ Авто
@@ -473,7 +490,7 @@ rule-providers:
   category-game-platforms-download:
     type: http
     proxy: ⚡️ Авто
-    interval: *rp_interval_static
+    interval: *rp_interval
     behavior: domain
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-game-platforms-download.mrs
@@ -481,7 +498,7 @@ rule-providers:
   category-games-meta:
     type: http
     proxy: ⚡️ Авто
-    interval: *rp_interval_static
+    interval: *rp_interval
     behavior: domain
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-games.mrs
@@ -489,7 +506,7 @@ rule-providers:
   discord:
     type: http
     proxy: ⚡️ Авто
-    interval: *rp_interval_static
+    interval: *rp_interval
     behavior: domain
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-discord.mrs
@@ -497,7 +514,7 @@ rule-providers:
   category-enhance-gaming:
     type: http
     proxy: ⚡️ Авто
-    interval: *rp_interval_static
+    interval: *rp_interval
     behavior: domain
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-enhance-gaming.mrs
@@ -517,7 +534,7 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geoip-private.mrs
     path: ./ruleset/meta-geoip-private.mrs
-    interval: *rp_interval_static
+    interval: *rp_interval
   summary-ips:
     type: http
     proxy: ⚡️ Авто
@@ -529,7 +546,7 @@ rule-providers:
   youtube-meta:
     type: http
     proxy: ⚡️ Авто
-    interval: *rp_interval_static
+    interval: *rp_interval
     behavior: domain
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-youtube.mrs
@@ -537,7 +554,7 @@ rule-providers:
   win-spy-meta:
     type: http
     proxy: ⚡️ Авто
-    interval: *rp_interval_static
+    interval: *rp_interval
     behavior: domain
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-win-spy.mrs
@@ -561,7 +578,7 @@ rule-providers:
   category-ip-geo-detect-meta:
     type: http
     proxy: ⚡️ Авто
-    interval: *rp_interval_static
+    interval: *rp_interval
     behavior: domain
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-ip-geo-detect.mrs
@@ -618,6 +635,13 @@ rule-providers:
     behavior: classical
     payload:
       - PROCESS-NAME-REGEX,(?i)^(wineserver|wine|wine64|wine-preloader|wine64-preloader)$
+  vpn-clients: # инлайн — другие VPN не туннелировать в mihomo
+    type: inline
+    behavior: classical
+    payload:
+      - PROCESS-NAME-REGEX,(?i).*tailscale.*
+      - PROCESS-NAME-REGEX,(?i).*wireguard.*
+      - PROCESS-NAME-REGEX,(?i).*netbird.*
   ai:
     type: http
     proxy: ⚡️ Авто
@@ -629,7 +653,7 @@ rule-providers:
   ai-meta:
     type: http
     proxy: ⚡️ Авто
-    interval: *rp_interval_static
+    interval: *rp_interval
     behavior: domain
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-ai.mrs
@@ -666,6 +690,14 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/discord_voiceips.mrs
     path: ./ruleset/discord_voiceips.mrs
+  cloudflare-ips:
+    type: http
+    proxy: ⚡️ Авто
+    interval: *rp_interval
+    behavior: ipcidr
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geoip-cloudflare.mrs
+    path: ./ruleset/meta-geoip-cloudflare.mrs
   mail-ports: # инлайн (мелкий список — без отдельной загрузки)
     type: inline
     behavior: classical
@@ -687,6 +719,7 @@ rules:
   - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT-DROP # QUIC — принудительно через TCP
   - RULE-SET,private-domains-meta,DIRECT           # локальные домены (MetaCubeX) — напрямую
   - RULE-SET,private-domains-custom,DIRECT         # локальные домены — напрямую (вне upstream)
+  - RULE-SET,vpn-clients,DIRECT                    # Tailscale/WireGuard/NetBird — не туннелировать в mihomo
 
   # --- Пуш-уведомления → DIRECT (через VPN APNs/FCM тормозят и жрут батарею) ---
   - IP-CIDR,17.0.0.0/8,DIRECT,no-resolve           # Apple CDN (legiz prod)
@@ -714,6 +747,8 @@ rules:
   - RULE-SET,youtube-meta,📺 Youtube               # YouTube-домены (MetaCubeX)
 
   # --- Discord ---
+  - AND,((RULE-SET,cloudflare-ips),(NETWORK,udp),(DST-PORT,19200-19500)),💬 Discord # голос Discord через Cloudflare (мобильные)
+  - AND,((RULE-SET,cloudflare-ips),(NETWORK,udp),(DST-PORT,50000-50100)),💬 Discord # голос Discord через Cloudflare
   - AND,((RULE-SET,discord_voiceips),(NETWORK,udp),(DST-PORT,50000-50100)),💬 Discord # голос Discord по IP (legiz)
   - RULE-SET,discord,💬 Discord                    # Discord-домены (MetaCubeX)
   - PROCESS-NAME-REGEX,discord,💬 Discord

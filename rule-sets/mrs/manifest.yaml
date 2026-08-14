@@ -35,6 +35,11 @@ sets:
     behavior: ipcidr
     file: discord_voiceips
     url: https://cdn.jsdelivr.net/gh/legiz-ru/mihomo-rule-sets@main/other/discord-voice-ip-list.mrs
+  - id: cloudflare-ips-meta
+    behavior: ipcidr
+    file: meta-geoip-cloudflare
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cloudflare.list
   - id: discord
     behavior: domain
     file: meta-discord
