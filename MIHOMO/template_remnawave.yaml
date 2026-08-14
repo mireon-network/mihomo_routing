@@ -149,6 +149,9 @@ dns:
   fake-ip-filter:
     - rule-set:private-domains-meta # исключить из fake-ip приватные домены (MetaCubeX)
     - rule-set:private-domains-custom # локальные/рабочие домены — реальный DNS
+    - rule-set:category-games-meta # игровые домены (MetaCubeX: Riot/Valorant, Steam, Epic, EA, Blizzard...) — всегда реальный IP
+    - rule-set:games-custom # локальные дополнения игр (PoE, Tarkov...) — реальный IP
+    - rule-set:games-proxy-rules # прокси-правила игр — реальный IP
     - "*.lan"
     - "+.local"
     # STUN/WebRTC, NTP/синхронизация времени, игровые консоли — нужен реальный IP, не fake-ip
@@ -199,6 +202,8 @@ dns:
     # Локальные/приватные домены — через системный резолвер
     "rule-set:private-domains-meta,private-domains-custom":
       - system
+    # Игровые домены — резолв через прямой DNS (быстрый пинг к CDN/серверам, без задержек `#PROXY`)
+    "rule-set:category-games-meta,games-custom,games-proxy-rules": *dns_ru
     # PROXY-сервисы — резолв через узел VPN (legiz/Davoyan nameserver-policy)
     "rule-set:youtube-meta,category-ban-ru,discord": *dns_proxy
     # RU-домены (идут DIRECT) — резолвим через RU DNS напрямую: верный CDN и меньше задержка
