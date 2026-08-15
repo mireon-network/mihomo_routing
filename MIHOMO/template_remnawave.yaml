@@ -804,6 +804,10 @@ rules:
   # --- Заблокированные в РФ → PROXY (legiz category-ban-ru; выше RU catch-all) ---
   - RULE-SET,category-ban-ru,PROXY
 
+  # RU-исключения вне geosite (.tech СБП и т.п.) — выше игр: иначе PROCESS-NAME PoE/Steam
+  # перехватывает кассу и СБП уезжает в 🎮 Игры (VPN).
+  - RULE-SET,category-ru-custom,DIRECT             # курируемые RU-домены вне MetaCubeX (иностр. банки .ru, IP-чек, p-way)
+
   # --- Игры: домены и процессы → PROXY (раньше лаунчеров и MRS steam/epic) ---
   - RULE-SET,games-proxy-rules,PROXY
 
@@ -823,7 +827,6 @@ rules:
   # --- Конкретные сервисы → DIRECT (выше широких catch-all внизу) ---
   - RULE-SET,category-ip-geo-detect-meta,DIRECT    # сервисы определения IP/гео (MetaCubeX) — напрямую
   - RULE-SET,summary-category-ru,DIRECT            # RU-домены (MetaCubeX geosite + Davoyan → summary, без +.ru/+.su) — напрямую
-  - RULE-SET,category-ru-custom,DIRECT             # курируемые RU-домены вне MetaCubeX (иностр. банки .ru, IP-чек) — напрямую
   - RULE-SET,wld,DIRECT                            # RU-белосписочный (legiz wld)
 
   # --- RU-приложения и IP → DIRECT (низкий приоритет) ---
