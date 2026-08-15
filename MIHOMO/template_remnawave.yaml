@@ -793,6 +793,10 @@ rules:
   - PROCESS-NAME-REGEX,discord,💬 Discord
   - PROCESS-NAME-REGEX,vesktop,💬 Discord
 
+  # RU-исключения вне geosite — выше Google IP и PROCESS-NAME (Cursor/PoE/Steam):
+  # иначе касса Xsolla/СБП уезжает в 🌐 Google / 🤖 ИИ / 🎮 Игры (VPN) → Xsolla 1092.
+  - RULE-SET,category-ru-custom,DIRECT             # курируемые DIRECT: банки .ru, p-way, xsolla
+
   # --- Google → 🌐 Google (google, Play, Gemini, DeepMind, Antigravity, …) ---
   - RULE-SET,summary-google,🌐 Google              # домены: google, google-play, gemini, deepmind, antigravity, cn, registry, trust-services
   - RULE-SET,google-ips-meta,🌐 Google            # IP Google (MetaCubeX geoip)
@@ -803,10 +807,6 @@ rules:
 
   # --- Заблокированные в РФ → PROXY (legiz category-ban-ru; выше RU catch-all) ---
   - RULE-SET,category-ban-ru,PROXY
-
-  # RU-исключения вне geosite (.tech СБП и т.п.) — выше игр: иначе PROCESS-NAME PoE/Steam
-  # перехватывает кассу и СБП уезжает в 🎮 Игры (VPN).
-  - RULE-SET,category-ru-custom,DIRECT             # курируемые RU-домены вне MetaCubeX (иностр. банки .ru, IP-чек, p-way)
 
   # --- Игры: домены и процессы → PROXY (раньше лаунчеров и MRS steam/epic) ---
   - RULE-SET,games-proxy-rules,PROXY
