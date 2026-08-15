@@ -15,10 +15,11 @@
 #                  lazy: false + expected-status: 204 — актуальный пинг и health-check
 #   📺 Youtube   — отдельный выбор узла для YouTube
 #   💬 Discord   — отдельный выбор узла для Discord / Vesktop
+#   🌐 Google    — Google, Play, Gemini, DeepMind, Antigravity, Search, Drive, Cloud…
+#   🤖 ИИ        — сервисы искусственного интеллекта (OpenAI, Claude, Gemini, Copilot…)
 #   🎮 Игры      — игровые сервисы (Steam, Epic, Origin, Riot, EfT, FaceIT…)
 #   🎮 Лаунчеры  — игровые лаунчеры (Win/macOS/Linux); по умолчанию DIRECT, можно переключить
 #   🍷 Wine      — Windows-софт/игры на Linux через Wine/Proton; по умолчанию DIRECT, можно переключить
-#   🤖 ИИ        — сервисы искусственного интеллекта (OpenAI, Claude, Gemini, Copilot…)
 #   🔓 Без VPN   — принудительный прямой доступ (DIRECT)
 #   ⛔ Блок      — блокировка (REJECT)
 #
@@ -27,12 +28,15 @@
 #   • Торренты (трекеры/DHT/клиенты)        → DIRECT; сайты — обычный роутинг (ban-ru/MATCH → PROXY)
 #   • Заблокированные в РФ (category-ban-ru) → PROXY (выше RU catch-all)
 #   • Российские домены (category-ru), ru-apps → DIRECT
-#   • YouTube / Discord → отдельные селекторы (голос Discord: Cloudflare UDP 19200–19500 + 50000–50100)
 #   • Telegram, GitHub и прочее     → PROXY (финальный MATCH)
 #   • Игровые лаунчеры (games-launchers)    → 🎮 Лаунчеры (по умолчанию DIRECT)
 #   • Игровые сервисы                       → 🎮 Игры
 #   • Wine/Proton                           → 🍷 Wine (по умолчанию DIRECT)
-#   • AI-сервисы                            → 🤖 ИИ (rule-sets/yaml/ai.yaml; выше прочих, чтобы *.googleapis.com не ушёл в PROXY)
+#   • YouTube → 📺 Youtube (выше Google: youtube ⊂ geosite google)
+#   • Discord → 💬 Discord (выше Google: вложения на storage.googleapis.com)
+#   • Google-сервисы                        → 🌐 Google
+#   • AI-сервисы                            → 🤖 ИИ (ниже Google)
+#   • Overlay LAN (Radmin, Hamachi, Porthole, ZeroTier…) → DIRECT
 #   • Остальное                             → PROXY
 #
 # UDP-порт 443 (QUIC) блокируется глобально — принудительный fallback на TCP.
@@ -70,6 +74,8 @@ x-anchors:
     - 192.88.99.0/24
     - 198.51.100.0/24
     - 203.0.113.0/24
+    - 25.0.0.0/8 # Hamachi virtual LAN
+    - 26.0.0.0/8 # Radmin VPN virtual LAN
     - fc00::/7
     - ff00::/8
     - fe80::/10
@@ -90,6 +96,8 @@ x-anchors:
     - 192.88.99.0/24
     - 198.51.100.0/24
     - 203.0.113.0/24
+    - 25.0.0.0/8 # Hamachi virtual LAN
+    - 26.0.0.0/8 # Radmin VPN virtual LAN
     - fc00::/7
     - ff00::/8
     - fe80::/10
@@ -153,6 +161,7 @@ dns:
     - rule-set:category-games-meta # игровые домены (MetaCubeX: Riot/Valorant, Steam, Epic, EA, Blizzard...) — всегда реальный IP
     - rule-set:games-custom # локальные дополнения игр (PoE, Tarkov...) — реальный IP
     - rule-set:games-proxy-rules # прокси-правила игр — реальный IP
+    - rule-set:youtube-meta # иначе googlevideo по IP может уехать в google-ips-meta
     - "*.lan"
     - "+.local"
     # STUN/WebRTC, NTP/синхронизация времени, игровые консоли — нужен реальный IP, не fake-ip
@@ -276,6 +285,18 @@ proxy-groups:
       - 🇺🇸 США
   - name: 🤖 ИИ
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bot.png
+    type: select
+    remnawave:
+      include-proxies: false
+    proxies:
+      - 🛡️ VPN
+      - 🇫🇮 Финляндия
+      - 🇩🇪 Германия
+      - 🇫🇷 Франция
+      - 🇳🇱 Нидерланды
+      - 🇺🇸 США
+  - name: 🌐 Google
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google.png
     type: select
     remnawave:
       include-proxies: false
@@ -541,14 +562,14 @@ rule-providers:
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geoip-private.mrs
     path: ./ruleset/meta-geoip-private.mrs
     interval: *rp_interval
-  summary-ips:
+  summary-ru-ips:
     type: http
     proxy: ⚡️ Авто
     interval: *rp_interval
     behavior: ipcidr
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/summary_ips.mrs
-    path: ./ruleset/summary_ips.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/summary_ru_ips.mrs
+    path: ./ruleset/summary_ru_ips.mrs
   youtube-meta:
     type: http
     proxy: ⚡️ Авто
@@ -641,13 +662,14 @@ rule-providers:
     behavior: classical
     payload:
       - PROCESS-NAME-REGEX,(?i)^(wineserver|wine|wine64|wine-preloader|wine64-preloader)$
-  vpn-clients: # инлайн — другие VPN не туннелировать в mihomo
-    type: inline
+  vpn-clients:
+    type: http
+    proxy: ⚡️ Авто
+    interval: *rp_interval
     behavior: classical
-    payload:
-      - PROCESS-NAME-REGEX,(?i).*tailscale.*
-      - PROCESS-NAME-REGEX,(?i).*wireguard.*
-      - PROCESS-NAME-REGEX,(?i).*netbird.*
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/vpn-clients.yaml
+    path: ./ruleset/vpn-clients.yaml
   ai:
     type: http
     proxy: ⚡️ Авто
@@ -664,6 +686,22 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-ai.mrs
     path: ./ruleset/meta-ai.mrs
+  summary-google: # google, google-play, gemini, deepmind, antigravity, google-cn, registry, trust-services
+    type: http
+    proxy: ⚡️ Авто
+    interval: *rp_interval
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/summary_google.mrs
+    path: ./ruleset/summary_google.mrs
+  google-ips-meta:
+    type: http
+    proxy: ⚡️ Авто
+    interval: *rp_interval
+    behavior: ipcidr
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geoip-google.mrs
+    path: ./ruleset/meta-geoip-google.mrs
   ru-apps-custom:
     type: http
     proxy: ⚡️ Авто
@@ -725,7 +763,7 @@ rules:
   - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT-DROP # QUIC — принудительно через TCP
   - RULE-SET,private-domains-meta,DIRECT           # локальные домены (MetaCubeX) — напрямую
   - RULE-SET,private-domains-custom,DIRECT         # локальные домены — напрямую (вне upstream)
-  - RULE-SET,vpn-clients,DIRECT                    # Tailscale/WireGuard/NetBird — не туннелировать в mihomo
+  - RULE-SET,vpn-clients,DIRECT                    # overlay LAN: Radmin/Hamachi/Porthole/ZeroTier/Tailscale/… — не туннелировать
 
   # --- Пуш-уведомления → DIRECT (через VPN APNs/FCM тормозят и жрут батарею) ---
   - IP-CIDR,17.0.0.0/8,DIRECT,no-resolve           # Apple CDN (legiz prod)
@@ -744,21 +782,24 @@ rules:
   - RULE-SET,torrent-clients,DIRECT                # торрент-клиенты по процессу
   - RULE-SET,torrent-clients-custom,DIRECT         # локальные дополнения торрент-клиентов
 
-  # --- AI / LLM → 🤖 ИИ (выше MATCH,PROXY: иначе *.googleapis.com уходит в PROXY) ---
-  - RULE-SET,ai,🤖 ИИ
-  - RULE-SET,ai-meta,🤖 ИИ                          # AI/LLM-домены (MetaCubeX, !cn)
-
-  # --- Сервисы через PROXY / селекторы ---
-  # telegram убран: домены попадают в финальный MATCH,PROXY
+  # --- YouTube → 📺 Youtube (выше Google: youtube ⊂ geosite google) ---
   - RULE-SET,youtube-meta,📺 Youtube               # YouTube-домены (MetaCubeX)
 
-  # --- Discord ---
+  # --- Discord (выше Google: вложения на storage.googleapis.com) ---
   - AND,((RULE-SET,cloudflare-ips),(NETWORK,udp),(DST-PORT,19200-19500)),💬 Discord # голос Discord через Cloudflare (мобильные)
   - AND,((RULE-SET,cloudflare-ips),(NETWORK,udp),(DST-PORT,50000-50100)),💬 Discord # голос Discord через Cloudflare
   - AND,((RULE-SET,discord_voiceips),(NETWORK,udp),(DST-PORT,50000-50100)),💬 Discord # голос Discord по IP (legiz)
   - RULE-SET,discord,💬 Discord                    # Discord-домены (MetaCubeX)
   - PROCESS-NAME-REGEX,discord,💬 Discord
   - PROCESS-NAME-REGEX,vesktop,💬 Discord
+
+  # --- Google → 🌐 Google (google, Play, Gemini, DeepMind, Antigravity, …) ---
+  - RULE-SET,summary-google,🌐 Google              # домены: google, google-play, gemini, deepmind, antigravity, cn, registry, trust-services
+  - RULE-SET,google-ips-meta,🌐 Google            # IP Google (MetaCubeX geoip)
+
+  # --- AI / LLM → 🤖 ИИ (ниже Google: пересечения Gemini/Antigravity уже сматчились) ---
+  - RULE-SET,ai,🤖 ИИ
+  - RULE-SET,ai-meta,🤖 ИИ                          # AI/LLM-домены (MetaCubeX, !cn)
 
   # --- Заблокированные в РФ → PROXY (legiz category-ban-ru; выше RU catch-all) ---
   - RULE-SET,category-ban-ru,PROXY
@@ -788,7 +829,7 @@ rules:
   # --- RU-приложения и IP → DIRECT (низкий приоритет) ---
   - RULE-SET,ru-app-list,DIRECT                    # RU-приложения Android (legiz-ru) — напрямую
   - RULE-SET,ru-apps-custom,DIRECT                 # локальные дополнения RU-приложений (вне legiz)
-  - RULE-SET,summary-ips,DIRECT                    # RU IP (meta-geoip-ru + ips-for-ru → summary_ips) — напрямую
+  - RULE-SET,summary-ru-ips,DIRECT                 # RU IP (meta-geoip-ru + ips-for-ru → summary_ru_ips) — напрямую
 
   # --- Всё остальное → PROXY ---
   - MATCH,PROXY

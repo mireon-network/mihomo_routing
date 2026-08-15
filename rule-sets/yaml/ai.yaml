@@ -55,12 +55,6 @@ payload:
   - PROCESS-NAME,google-antigravity-ide
   - PROCESS-NAME,agy-ide
   - PROCESS-NAME,antigravity-ide-server
-  # домены вне meta-ai: иначе oauth/sandbox резолвятся в Google IP из ips-for-ru → DIRECT → RU
-  - DOMAIN,oauth2.googleapis.com
-  - DOMAIN,cloudaicompanion-pa.googleapis.com
-  - DOMAIN,daily-cloudcode-pa.sandbox.googleapis.com
-  - DOMAIN,autopush-cloudcode-pa.sandbox.googleapis.com
-  - DOMAIN-SUFFIX,clients6.google.com
   # --- Google Gemini (отдельное приложение; на Android пакет всё ещё bard) ---
   - PROCESS-NAME,com.google.android.apps.bard
   - PROCESS-NAME,com.google.gemini

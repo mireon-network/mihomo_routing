@@ -1,0 +1,29 @@
+payload:
+  # Overlay LAN / mesh / port-sharing → DIRECT. Иначе TUN ломает P2P и NAT traversal.
+  # Не коммерческие VPN (Nord/Amnezia/Outline) — только виртуальные LAN и аналоги.
+  # Игровой трафик в 25.0.0.0/8 (Hamachi) и 26.0.0.0/8 (Radmin VPN) идёт от процесса
+  # игры: CIDR в reserved_ips (TUN exclude) и private-ips-custom, не здесь.
+
+  # --- Mesh VPN (уже были) ---
+  - PROCESS-NAME-REGEX,(?i).*tailscale.*
+  - PROCESS-NAME-REGEX,(?i).*wireguard.*
+  - PROCESS-NAME-REGEX,(?i).*netbird.*
+
+  # --- Radmin VPN + Radmin Viewer (Famatech) ---
+  - PROCESS-NAME-REGEX,(?i).*radmin.*
+  - PROCESS-NAME-REGEX,(?i)^RvControlSvc # сервис Radmin VPN (в имени нет "radmin")
+
+  # --- Hamachi ---
+  - PROCESS-NAME-REGEX,(?i).*hamachi.*
+
+  # --- ZeroTier ---
+  - PROCESS-NAME-REGEX,(?i).*zerotier.*
+
+  # --- Porthole (Steam: прокси портов, альтернатива Hamachi/Radmin) ---
+  - PROCESS-NAME-REGEX,(?i).*porthole.*
+
+  # --- GameRanger ---
+  - PROCESS-NAME-REGEX,(?i).*gameranger.*
+
+  # --- playit.gg ---
+  - PROCESS-NAME-REGEX,(?i).*playit.*
