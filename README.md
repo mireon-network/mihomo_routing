@@ -19,6 +19,7 @@
 | `rule-sets/yaml/ru-apps-custom.yaml` | Локальные дополнения RU-приложений (вне legiz `ru-app-list`) → DIRECT |
 | `rule-sets/yaml/wld-apps-custom.yaml` | Локальные дополнения для `wl.yaml` `tun.exclude-package` (домены из `wld.list`) |
 | `rule-sets/yaml/ai.yaml` | AI / LLM — **только локально**, upstream не синхронизируется |
+| `rule-sets/yaml/vpn-clients.yaml` | Overlay LAN (Radmin, Hamachi, Porthole, ZeroTier, Tailscale, playit.gg, GameRanger) → DIRECT |
 | `rule-sets/mrs/text/*.list` | Распакованные MRS-наборы (редактировать здесь) |
 | `rule-sets/mrs/bin/*.mrs` | Бинарные rule-set для Mihomo (собираются из `text/`) |
 | `scripts/upstream-sync.sh` | Обновление YAML из upstream-репозиториев |
@@ -30,7 +31,7 @@
 | `scripts/deploy-test-branches.sh` | Throwaway `<ветка>-cdn` и `<ветка>-debug` от текущего HEAD (CDN-URL + debug-патч) |
 | `scripts/patch-include-proxies.py` | Debug-патч: `include-all: true`, видимые хосты, без блокировки Remnawave |
 
-> Мелкие наборы (`wine`, `games-proxy-rules`, `mail-ports`) — `type: inline` rule-providers в шаблоне (без отдельных загрузок). Локальные MRS без upstream: `private-domains-custom`, `category-ru-custom`, `private-ips-custom`, `torrent-domains-custom` — правишь `rule-sets/mrs/text/<имя>.list`, `mrs-tool.sh pack` собирает `bin/*.mrs` (sync их пропускает).
+> Мелкие наборы (`wine`, `games-proxy-rules`, `mail-ports`) — `type: inline` rule-providers в шаблоне (без отдельных загрузок). `vpn-clients` — отдельный YAML. Локальные MRS без upstream: `private-domains-custom`, `category-ru-custom`, `private-ips-custom`, `torrent-domains-custom` — правишь `rule-sets/mrs/text/<имя>.list`, `mrs-tool.sh pack` собирает `bin/*.mrs` (sync их пропускает).
 
 ## CDN
 
@@ -45,6 +46,7 @@
 - `…/rule-sets/yaml/games-launchers.yaml`
 - `…/rule-sets/yaml/ru-apps-custom.yaml`
 - `…/rule-sets/yaml/ai.yaml`
+- `…/rule-sets/yaml/vpn-clients.yaml`
 - `…/rule-sets/mrs/bin/<имя>.mrs`
 
 Проверка URL для файла:
@@ -178,9 +180,15 @@ python3 scripts/generate-gfn-games-block.py
 
 ### 🤖 ИИ
 
-1. **proxy-groups** — группа `🤖 ИИ` (как у `📺 Youtube`: `remnawave.include-proxies: false`, прокси `🛡️ VPN` + переопределение стран).
+1. **proxy-groups** — группа `🤖 ИИ` (`remnawave.include-proxies: false`, прокси `🛡️ VPN` + переопределение стран).
 2. **rule-providers** — провайдер `ai` → `rule-sets/yaml/ai.yaml`.
-3. **rules** — `RULE-SET,ai,🤖 ИИ` и `RULE-SET,ai-meta,🤖 ИИ` **выше** финального `MATCH,PROXY` (иначе `*.googleapis.com` и пр. уходят в PROXY мимо группы ИИ).
+3. **rules** — `RULE-SET,ai,🤖 ИИ` и `RULE-SET,ai-meta,🤖 ИИ` (**ниже** YouTube и Google).
+
+### 🌐 Google
+
+1. **proxy-groups** — группа `🌐 Google` (`remnawave.include-proxies: false`, прокси `🛡️ VPN` + выбор стран).
+2. **rule-providers** — `summary-google` (merge `google`, `google-play`, `google-gemini`, `google-cn`, `google-registry`, `google-trust-services`; youtube/deepmind/fcm/scholar уже внутри `google`) и `google-ips-meta` (IP Google из `geo/geoip`).
+3. **rules** — `RULE-SET,youtube-meta` и `RULE-SET,discord` **выше** Google; затем `RULE-SET,summary-google,🌐 Google` и `RULE-SET,google-ips-meta,🌐 Google`.
 
 ### TUN exclude-package (RU-приложения мимо TUN)
 

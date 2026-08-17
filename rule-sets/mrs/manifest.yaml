@@ -35,6 +35,11 @@ sets:
     behavior: ipcidr
     file: discord_voiceips
     url: https://cdn.jsdelivr.net/gh/legiz-ru/mihomo-rule-sets@main/other/discord-voice-ip-list.mrs
+  - id: cloudflare-ips-meta
+    behavior: ipcidr
+    file: meta-geoip-cloudflare
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cloudflare.list
   - id: discord
     behavior: domain
     file: meta-discord
@@ -190,8 +195,43 @@ sets:
     file: meta-category-game-platforms-download
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-game-platforms-download.list
+  - id: google-meta
+    behavior: domain
+    file: meta-google
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.list
+  - id: google-play-meta
+    behavior: domain
+    file: meta-google-play
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google-play.list
+  - id: google-gemini-meta
+    behavior: domain
+    file: meta-google-gemini
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google-gemini.list
+  - id: google-cn-meta
+    behavior: domain
+    file: meta-google-cn
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google-cn.list
+  - id: google-registry-meta
+    behavior: domain
+    file: meta-google-registry
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google-registry.list
+  - id: google-trust-services-meta
+    behavior: domain
+    file: meta-google-trust-services
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google-trust-services.list
+  - id: google-ips-meta
+    behavior: ipcidr
+    file: meta-geoip-google
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/google.list
   # Локальные наборы без upstream: text/ — источник правды, pack → bin/, sync пропускает.
-  # summary_ips — генерируется из merge-from (meta-geoip-ru + ips-for-ru), не править вручную.
+  # summary_ru_ips — генерируется из merge-from (meta-geoip-ru + ips-for-ru), не править вручную.
   # summary_category_ru — merge всех RU geosite-зеркал + Davoyan, без +.ru/+.su.
   - id: private-domains-custom
     behavior: domain
@@ -210,9 +250,13 @@ sets:
   - id: torrent-domains-custom
     behavior: domain
     file: torrent-domains-custom
-  - id: summary-ips
+  - id: summary-google
+    behavior: domain
+    file: summary_google
+    merge-from: meta-google,meta-google-play,meta-google-gemini,meta-google-cn,meta-google-registry,meta-google-trust-services
+  - id: summary-ru-ips
     behavior: ipcidr
-    file: summary_ips
+    file: summary_ru_ips
     merge-from: meta-geoip-ru,ips-for-ru
   - id: private-domains-meta
     behavior: domain
