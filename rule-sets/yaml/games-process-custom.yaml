@@ -1,56 +1,8 @@
 payload:
-  # Локальные дополнения к games.yaml (апстрим: roscomvpn/custom-category).
-  # Оригинал не редактируем — он синхронизируется как есть. Здесь: игры вне
-  # каталога roscomvpn, нативные порты macOS/Linux, блок GeForce NOW и ручные игры.
-  # Блок «GeForce NOW» и «Добавленно вручную» ниже пересобирает
+  # Процессы: локальные дополнения к games.yaml (апстрим: roscomvpn).
+  # Домены — rule-sets/mrs/text/games-domain-custom.list (pack → bin/).
+  # Блок «GeForce NOW» и «Добавленно вручную» пересобирает
   # scripts/generate-gfn-games-block.py — правьте только часть ВЫШЕ маркера GFN.
-
-  # --- Игровые домены вне MetaCubeX category-games (classical: можно и DOMAIN, и PROCESS) ---
-  # Path of Exile
-  - DOMAIN-SUFFIX,pathofexile.com # Path of Exile (логин, торговля и игровые серверы)
-  - DOMAIN-SUFFIX,poecdn.com # CDN ассетов и патчей Path of Exile
-  - DOMAIN-SUFFIX,grindinggear.com # Сайт разработчиков Grinding Gear Games
-  - DOMAIN-SUFFIX,poewiki.net # Path of Exile wiki — CF режет VPN/DC IP (Attention Required)
-  # Escape from Tarkov
-  - DOMAIN-SUFFIX,eft-project.com # Escape from Tarkov
-  - DOMAIN-SUFFIX,tarkov.com # Escape from Tarkov
-  - DOMAIN-SUFFIX,escapefromtarkov.com # Escape from Tarkov
-  # Warframe
-  - DOMAIN-SUFFIX,warframe.com # Warframe
-  - DOMAIN-SUFFIX,digitalextremes.com # Digital Extremes
-  # Helldivers 2 / Arrowhead
-  - DOMAIN-SUFFIX,helldivers2.com # Helldivers 2
-  - DOMAIN-SUFFIX,arrowheadgs.com # Arrowhead Game Studios
-  # The Finals / Embark
-  - DOMAIN-SUFFIX,embark.games # The Finals
-  - DOMAIN-SUFFIX,embark-studios.com # Embark Studios
-  # Rust / Facepunch
-  - DOMAIN-SUFFIX,facepunch.com # Facepunch Studios (Rust)
-  # Palworld / Pocketpair
-  - DOMAIN-SUFFIX,pocketpair.jp # Pocketpair (Palworld)
-  # Dead by Daylight / BHVR
-  - DOMAIN-SUFFIX,deadbydaylight.com # Dead by Daylight
-  - DOMAIN-SUFFIX,bhvr.com # Behaviour Interactive
-  # Black Desert / Pearl Abyss
-  - DOMAIN-SUFFIX,blackdesertonline.com # Black Desert Online
-  - DOMAIN-SUFFIX,pearlabyss.com # Pearl Abyss
-  # Sea of Thieves
-  - DOMAIN-SUFFIX,seaofthieves.com # Sea of Thieves
-  # Eve Online / CCP
-  - DOMAIN-SUFFIX,eveonline.com # EVE Online
-  - DOMAIN-SUFFIX,ccpgames.com # CCP Games
-  # Minecraft
-  - DOMAIN-SUFFIX,minecraft.net # Minecraft
-  - DOMAIN-SUFFIX,mojang.com # Mojang Studios
-  # HoYoverse / miHoYo
-  - DOMAIN-SUFFIX,hoyoverse.com # HoYoverse
-  - DOMAIN-SUFFIX,mihoyo.com # miHoYo
-  - DOMAIN-SUFFIX,genshinimpact.com # Genshin Impact
-  - DOMAIN-SUFFIX,honkaistarrail.com # Honkai: Star Rail
-  - DOMAIN-SUFFIX,zenlesszonezero.com # Zenless Zone Zero
-  # Голосовые чаты и трекеры
-  - DOMAIN-SUFFIX,vivox.com # Голосовой чат Vivox — не зависит от определения процесса
-  - DOMAIN-SUFFIX,ewgf.gg # Tekken EWGF tracker — CF режет VPN/DC IP
 
   # --- Windows: игры из стандартных каталогов лаунчеров (любой диск) ---
   - PROCESS-PATH-REGEX,(?i).*\\steamapps\\common\\.*                 # Steam

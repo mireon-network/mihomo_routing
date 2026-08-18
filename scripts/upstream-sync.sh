@@ -23,7 +23,7 @@ Staging:    .sync-upstream/staging/
   $(basename "$0") sync
 
 Зеркала (перезаписываются из upstream): torrent-clients, games, ru-app-list.
-Локальные-only (не синхронизируются): ai.yaml, *-custom.yaml, MIHOMO/template_remnawave.yaml.
+Локальные-only (не синхронизируются): ai.yaml, google-process.yaml, *-custom.yaml, MIHOMO/template_remnawave.yaml.
 EOF
 }
 

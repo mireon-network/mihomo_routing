@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Собрать блок GeForce NOW для rule-sets/yaml/games-custom.yaml.
+"""Собрать блок GeForce NOW для rule-sets/yaml/games-process-custom.yaml.
 
 games.yaml — зеркало апстрима (roscomvpn), не редактируется. Наши добавления
-(GFN, ручные игры) живут в games-custom.yaml; апстримные процессы и лаунчеры
+(GFN, ручные игры) живут в games-process-custom.yaml; апстримные процессы и лаунчеры
 исключаются из блока, чтобы не плодить дубли между наборами.
 
 Источники:
@@ -19,7 +19,7 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-GAMES_CUSTOM_YAML = ROOT / "rule-sets/yaml/games-custom.yaml"
+GAMES_CUSTOM_YAML = ROOT / "rule-sets/yaml/games-process-custom.yaml"
 # Зеркала апстрима / соседние наборы — для дедупликации (их процессы не дублируем).
 DEDUP_SOURCES = (
     ROOT / "rule-sets/yaml/games.yaml",

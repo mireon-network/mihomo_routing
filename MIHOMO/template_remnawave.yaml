@@ -159,7 +159,7 @@ dns:
     - rule-set:private-domains-meta # исключить из fake-ip приватные домены (MetaCubeX)
     - rule-set:private-domains-custom # локальные/рабочие домены — реальный DNS
     - rule-set:category-games-meta # игровые домены (MetaCubeX: Riot/Valorant, Steam, Epic, EA, Blizzard...) — всегда реальный IP
-    - rule-set:games-custom # локальные дополнения игр (PoE, Tarkov...) — реальный IP
+    - rule-set:games-domain-custom # локальные игровые домены (PoE, Tarkov...) — реальный IP
     - rule-set:games-proxy-rules # прокси-правила игр — реальный IP
     - rule-set:youtube-meta # иначе googlevideo по IP может уехать в google-ips-meta
     - "*.lan"
@@ -213,7 +213,7 @@ dns:
     "rule-set:private-domains-meta,private-domains-custom":
       - system
     # Игровые домены — резолв через прямой DNS (быстрый пинг к CDN/серверам, без задержек `#PROXY`)
-    "rule-set:category-games-meta,games-custom,games-proxy-rules": *dns_ru
+    "rule-set:category-games-meta,games-domain-custom,games-proxy-rules": *dns_ru
     # PROXY-сервисы — резолв через узел VPN (legiz/Davoyan nameserver-policy)
     "rule-set:youtube-meta,category-ban-ru,discord": *dns_proxy
     # RU-домены (идут DIRECT) — резолвим через RU DNS напрямую: верный CDN и меньше задержка
@@ -649,14 +649,22 @@ rule-providers:
     format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/games.yaml
     path: ./ruleset/games.yaml
-  games-custom:
+  games-domain-custom: # локальный mrs (source: rule-sets/mrs/text/games-domain-custom.list)
+    type: http
+    proxy: ⚡️ Авто
+    interval: *rp_interval
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/games-domain-custom.mrs
+    path: ./ruleset/games-domain-custom.mrs
+  games-process-custom:
     type: http
     proxy: ⚡️ Авто
     interval: *rp_interval
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/games-custom.yaml
-    path: ./ruleset/games-custom.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/games-process-custom.yaml
+    path: ./ruleset/games-process-custom.yaml
   wine: # инлайн (мелкий список — без отдельной загрузки)
     type: inline
     behavior: classical
@@ -686,6 +694,14 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-ai.mrs
     path: ./ruleset/meta-ai.mrs
+  google-process: # Antigravity / agy / Gemini — процессы → 🌐 Google (не 🤖 ИИ)
+    type: http
+    proxy: ⚡️ Авто
+    interval: *rp_interval
+    behavior: classical
+    format: yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/google-process.yaml
+    path: ./ruleset/google-process.yaml
   summary-google: # google, google-play, gemini, deepmind, antigravity, google-cn, registry, trust-services
     type: http
     proxy: ⚡️ Авто
@@ -798,8 +814,11 @@ rules:
   - RULE-SET,category-ru-custom,DIRECT             # курируемые DIRECT: банки .ru, p-way, xsolla
 
   # --- Google → 🌐 Google (google, Play, Gemini, DeepMind, Antigravity, …) ---
+  - RULE-SET,google-process,🌐 Google              # процессы: Antigravity/agy, Gemini (выше 🤖 ИИ)
   - RULE-SET,summary-google,🌐 Google              # домены: google, google-play, gemini, deepmind, antigravity, cn, registry, trust-services
-  - RULE-SET,google-ips-meta,🌐 Google            # IP Google (MetaCubeX geoip)
+  # TCP only: ICMP на GCP (PoE *.speedtest.pathofexile.com → 34/35.x) иначе
+  # матчится сюда → 🌐 Google (VPN) → mihomo отвечает ICMP локально, в клиенте 0ms.
+  - AND,((RULE-SET,google-ips-meta),(NETWORK,tcp)),🌐 Google # IP Google (MetaCubeX geoip)
 
   # --- AI / LLM → 🤖 ИИ (ниже Google: пересечения Gemini/Antigravity уже сматчились) ---
   - RULE-SET,ai,🤖 ИИ
@@ -818,7 +837,8 @@ rules:
   - RULE-SET,games-launchers,🎮 Лаунчеры
 
   # --- Игровые платформы и сервисы → 🎮 Игры (по умолчанию DIRECT, можно переключить) ---
-  - RULE-SET,games-custom,🎮 Игры                  # локальные дополнения игр (процессы: GFN/нативные/ручные + домены вне category-games)
+  - RULE-SET,games-domain-custom,🎮 Игры            # локальные игровые домены вне category-games (PoE, Tarkov…)
+  - RULE-SET,games-process-custom,🎮 Игры           # локальные процессы: GFN / нативные / ручные
   - RULE-SET,category-enhance-gaming,🎮 Игры       # игровые сервисы, расширенный (MetaCubeX)
   - RULE-SET,games,🎮 Игры                         # игры по имени процесса — выше DIRECT: селектор игр приоритетнее
   - RULE-SET,category-games-meta,🎮 Игры           # игровые домены (MetaCubeX category-games: Steam/Epic/EA/Riot/Ubisoft/Blizzard/Rockstar/GOG/EfT/FACEIT/2K…)

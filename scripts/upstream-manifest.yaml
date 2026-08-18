@@ -1,5 +1,5 @@
 # Источники для ./scripts/upstream-sync.sh — зеркала upstream без локальных правок.
-# Локальные-only (сюда не добавлять): ai.yaml, vpn-clients.yaml, *-custom.yaml, MIHOMO/template_remnawave.yaml.
+# Локальные-only (сюда не добавлять): ai.yaml, google-process.yaml, vpn-clients.yaml, *-custom.yaml, MIHOMO/template_remnawave.yaml.
 
 sources:
   - id: torrent_clients
@@ -9,7 +9,8 @@ sources:
   - id: games
     url: https://raw.githubusercontent.com/roscomvpn/custom-category/release/mihomo/games.yaml
     path: rule-sets/yaml/games.yaml
-    # Локальные игры — rule-sets/yaml/games-custom.yaml;
+    # Локальные игры — rule-sets/yaml/games-process-custom.yaml
+    # и rule-sets/mrs/text/games-domain-custom.list;
     # блок GFN/ручные пересобирает post-hook.
     post:
       - regenerate_gfn_block

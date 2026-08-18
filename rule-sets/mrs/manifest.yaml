@@ -250,6 +250,9 @@ sets:
   - id: torrent-domains-custom
     behavior: domain
     file: torrent-domains-custom
+  - id: games-domain-custom
+    behavior: domain
+    file: games-domain-custom
   - id: summary-google
     behavior: domain
     file: summary_google
