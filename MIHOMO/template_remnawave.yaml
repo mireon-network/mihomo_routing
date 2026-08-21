@@ -15,11 +15,11 @@
 #                  lazy: false + expected-status: 204 — актуальный пинг и health-check
 #   📺 Youtube   — отдельный выбор узла для YouTube
 #   💬 Discord   — отдельный выбор узла для Discord / Vesktop
-#   🌐 Google    — Google, Play, Gemini, DeepMind, Antigravity, Search, Drive, Cloud…
-#   🤖 ИИ        — сервисы искусственного интеллекта (OpenAI, Claude, Gemini, Copilot…)
-#   🎮 Игры      — игровые сервисы (Steam, Epic, Origin, Riot, EfT, FaceIT…)
-#   🎮 Лаунчеры  — игровые лаунчеры (Win/macOS/Linux); по умолчанию DIRECT, можно переключить
-#   🍷 Wine      — Windows-софт/игры на Linux через Wine/Proton; по умолчанию DIRECT, можно переключить
+#   🌐 Google · Gemini · Antigravity — Google, Play, Drive, Cloud, Search, DeepMind…
+#   🤖 ИИ · ChatGPT · Claude — OpenAI, Claude, Copilot, Cursor, Perplexity… (Gemini — в Google)
+#   🎮 Игры      — трафик самих игр (матчи, античит, облачный гейминг)
+#   🎮 Лаунчеры  — клиенты магазинов (Steam, Epic, Battle.net); по умолчанию DIRECT
+#   🍷 Wine · Proton — Windows-софт/игры на Linux через Wine/Proton; по умолчанию DIRECT
 #   🔓 Без VPN   — принудительный прямой доступ (DIRECT)
 #   ⛔ Блок      — блокировка (REJECT)
 #
@@ -31,11 +31,11 @@
 #   • Telegram, GitHub и прочее     → PROXY (финальный MATCH)
 #   • Игровые лаунчеры (games-launchers)    → 🎮 Лаунчеры (по умолчанию DIRECT)
 #   • Игровые сервисы                       → 🎮 Игры
-#   • Wine/Proton                           → 🍷 Wine (по умолчанию DIRECT)
+#   • Wine/Proton                           → 🍷 Wine · Proton (по умолчанию DIRECT)
 #   • YouTube → 📺 Youtube (выше Google: youtube ⊂ geosite google)
 #   • Discord → 💬 Discord (выше Google: вложения на storage.googleapis.com)
-#   • Google-сервисы                        → 🌐 Google
-#   • AI-сервисы                            → 🤖 ИИ (ниже Google)
+#   • Google-сервисы                        → 🌐 Google · Gemini · Antigravity
+#   • AI-сервисы                            → 🤖 ИИ · ChatGPT · Claude (ниже Google)
 #   • Overlay LAN (Radmin, Hamachi, Porthole, ZeroTier…) → DIRECT
 #   • Остальное                             → PROXY
 #
@@ -244,6 +244,7 @@ proxy-groups:
   - name: 🛡️ VPN
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hijacking.png
     type: select
+    description: Автовыбор и страны
     remnawave:
       include-proxies: false
     proxies:
@@ -262,6 +263,7 @@ proxy-groups:
   - name: 📺 Youtube
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png
     type: select
+    description: YouTube, YouTube Music
     remnawave:
       include-proxies: false
     proxies:
@@ -274,6 +276,7 @@ proxy-groups:
   - name: 💬 Discord
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png
     type: select
+    description: Discord, Vesktop, голос
     remnawave:
       include-proxies: false
     proxies:
@@ -283,9 +286,10 @@ proxy-groups:
       - 🇫🇷 Франция
       - 🇳🇱 Нидерланды
       - 🇺🇸 США
-  - name: 🤖 ИИ
+  - name: 🤖 ИИ · ChatGPT · Claude
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bot.png
     type: select
+    description: OpenAI, Claude, Copilot, Cursor, Perplexity… Gemini и Antigravity — в Google
     remnawave:
       include-proxies: false
     proxies:
@@ -295,9 +299,10 @@ proxy-groups:
       - 🇫🇷 Франция
       - 🇳🇱 Нидерланды
       - 🇺🇸 США
-  - name: 🌐 Google
+  - name: 🌐 Google · Gemini · Antigravity
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google.png
     type: select
+    description: Google, Play, Drive, Cloud, Search, Gemini, DeepMind, Antigravity
     remnawave:
       include-proxies: false
     proxies:
@@ -310,6 +315,7 @@ proxy-groups:
   - name: 🎮 Игры
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png
     type: select
+    description: Трафик самих игр: матчи, античит, облачный гейминг
     remnawave:
       include-proxies: false
     proxies:
@@ -323,6 +329,7 @@ proxy-groups:
   - name: 🎮 Лаунчеры
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png
     type: select
+    description: Клиенты магазинов: Steam, Epic, Battle.net
     remnawave:
       include-proxies: false
     proxies:
@@ -333,9 +340,10 @@ proxy-groups:
       - 🇫🇷 Франция
       - 🇳🇱 Нидерланды
       - 🇺🇸 США
-  - name: 🍷 Wine
+  - name: 🍷 Wine · Proton
     icon: https://api.iconify.design/mdi/glass-wine.svg?color=%23B11226&width=128&height=128
     type: select
+    description: Windows-игры и софт через Wine/Proton; по умолчанию без VPN
     remnawave:
       include-proxies: false
     proxies:
@@ -460,6 +468,7 @@ proxy-groups:
       - 🛡️ VPN
   - name: 🔓 Без VPN
     type: select
+    description: Прямое подключение, без прокси
     hidden: true
     remnawave:
       include-proxies: false
@@ -467,6 +476,7 @@ proxy-groups:
       - DIRECT
   - name: ⛔ Блок
     type: select
+    description: Блокировка трафика
     hidden: true
     remnawave:
       include-proxies: false
@@ -694,7 +704,7 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-ai.mrs
     path: ./ruleset/meta-ai.mrs
-  google-process: # Antigravity / agy / Gemini — процессы → 🌐 Google (не 🤖 ИИ)
+  google-process: # Antigravity / agy / Gemini — процессы → 🌐 Google · Gemini · Antigravity (не 🤖 ИИ)
     type: http
     proxy: ⚡️ Авто
     interval: *rp_interval
@@ -810,19 +820,19 @@ rules:
   - PROCESS-NAME-REGEX,vesktop,💬 Discord
 
   # RU-исключения вне geosite — выше Google IP и PROCESS-NAME (Cursor/PoE/Steam):
-  # иначе касса Xsolla/СБП уезжает в 🌐 Google / 🤖 ИИ / 🎮 Игры (VPN) → Xsolla 1092.
+  # иначе касса Xsolla/СБП уезжает в 🌐 Google · Gemini · Antigravity / 🤖 ИИ · ChatGPT · Claude / 🎮 Игры (VPN) → Xsolla 1092.
   - RULE-SET,category-ru-custom,DIRECT             # курируемые DIRECT: банки .ru, p-way, xsolla
 
-  # --- Google → 🌐 Google (google, Play, Gemini, DeepMind, Antigravity, …) ---
-  - RULE-SET,google-process,🌐 Google              # процессы: Antigravity/agy, Gemini (выше 🤖 ИИ)
-  - RULE-SET,summary-google,🌐 Google              # домены: google, google-play, gemini, deepmind, antigravity, cn, registry, trust-services
+  # --- Google → 🌐 Google · Gemini · Antigravity (google, Play, Gemini, DeepMind, Antigravity, …) ---
+  - RULE-SET,google-process,🌐 Google · Gemini · Antigravity              # процессы: Antigravity/agy, Gemini (выше 🤖 ИИ)
+  - RULE-SET,summary-google,🌐 Google · Gemini · Antigravity              # домены: google, google-play, gemini, deepmind, antigravity, cn, registry, trust-services
   # TCP only: ICMP на GCP (PoE *.speedtest.pathofexile.com → 34/35.x) иначе
   # матчится сюда → 🌐 Google (VPN) → mihomo отвечает ICMP локально, в клиенте 0ms.
-  - AND,((RULE-SET,google-ips-meta),(NETWORK,tcp)),🌐 Google # IP Google (MetaCubeX geoip)
+  - AND,((RULE-SET,google-ips-meta),(NETWORK,tcp)),🌐 Google · Gemini · Antigravity # IP Google (MetaCubeX geoip)
 
-  # --- AI / LLM → 🤖 ИИ (ниже Google: пересечения Gemini/Antigravity уже сматчились) ---
-  - RULE-SET,ai,🤖 ИИ
-  - RULE-SET,ai-meta,🤖 ИИ                          # AI/LLM-домены (MetaCubeX, !cn)
+  # --- AI / LLM → 🤖 ИИ · ChatGPT · Claude (ниже Google: пересечения Gemini/Antigravity уже сматчились) ---
+  - RULE-SET,ai,🤖 ИИ · ChatGPT · Claude
+  - RULE-SET,ai-meta,🤖 ИИ · ChatGPT · Claude                          # AI/LLM-домены (MetaCubeX, !cn)
 
   # --- Заблокированные в РФ → PROXY (legiz category-ban-ru; выше RU catch-all) ---
   - RULE-SET,category-ban-ru,PROXY
@@ -830,7 +840,7 @@ rules:
   # --- Игры: домены и процессы → PROXY (раньше лаунчеров и MRS steam/epic) ---
   - RULE-SET,games-proxy-rules,PROXY
 
-  # --- Загрузочные CDN игровых платформ → DIRECT (выше 🎮 Игры/Лаунчеров: тяжёлые загрузки всегда напрямую, мимо VPN) ---
+  # --- Загрузочные CDN игровых платформ → DIRECT (выше игр и лаунчеров: тяжёлые загрузки всегда напрямую, мимо VPN) ---
   - RULE-SET,category-game-platforms-download,DIRECT # загрузочные CDN игровых платформ (MetaCubeX) — напрямую
 
   # --- Игровые лаунчеры → 🎮 Лаунчеры (по умолчанию DIRECT, можно переключить) ---
@@ -842,7 +852,7 @@ rules:
   - RULE-SET,category-enhance-gaming,🎮 Игры       # игровые сервисы, расширенный (MetaCubeX)
   - RULE-SET,games,🎮 Игры                         # игры по имени процесса — выше DIRECT: селектор игр приоритетнее
   - RULE-SET,category-games-meta,🎮 Игры           # игровые домены (MetaCubeX category-games: Steam/Epic/EA/Riot/Ubisoft/Blizzard/Rockstar/GOG/EfT/FACEIT/2K…)
-  - RULE-SET,wine,🍷 Wine
+  - RULE-SET,wine,🍷 Wine · Proton
 
   # --- Конкретные сервисы → DIRECT (выше широких catch-all внизу) ---
   - RULE-SET,category-ip-geo-detect-meta,DIRECT    # сервисы определения IP/гео (MetaCubeX) — напрямую
