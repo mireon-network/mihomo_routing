@@ -3,7 +3,7 @@
 # ============================================================
 # Весь трафик проксируется на узел с названием "🇷🇺 Белые списки".
 # Исключения: приватные/зарезервированные IP — напрямую,
-#             IPv6 (вне fake-ip) и QUIC (UDP 443) — блокируются.
+#             IPv6 (вне fake-ip) и QUIC (UDP 443) — REJECT (не DROP: браузер быстрее падает на TCP/IPv4).
 #
 # Основано на template_remnawave.yaml (mireon-network):
 # общие якоря и sniffer; routing — режим белых списков (gov/medicine/wld → DIRECT, остальное → PROXY).
@@ -283,8 +283,8 @@ rules:
   # --- Системные / приватные адреса ---
   - RULE-SET,private-ips-meta,DIRECT,no-resolve    # приватные IP (MetaCubeX) — без DNS
   - RULE-SET,private-ips-custom,DIRECT,no-resolve  # локальные/рабочие IP — напрямую (вне upstream)
-  - IP-CIDR,::/0,REJECT-DROP,no-resolve            # весь IPv6-трафик, не попавший в fake-ip — блок
-  - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT-DROP # QUIC — принудительно через TCP
+  - IP-CIDR,::/0,REJECT,no-resolve                 # весь IPv6-трафик, не попавший в fake-ip — блок; REJECT чтобы клиент сразу ушёл на IPv4
+  - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT      # QUIC → TCP; REJECT (не DROP), иначе Firefox/Zen висит на HTTP/3
   - RULE-SET,private-domains-meta,DIRECT           # локальные домены (MetaCubeX) — напрямую
   - RULE-SET,private-domains-custom,DIRECT         # локальные/рабочие домены — напрямую (вне upstream)
   - RULE-SET,vpn-clients,DIRECT                    # overlay LAN: Radmin/Hamachi/Porthole/ZeroTier/Tailscale/… — не туннелировать

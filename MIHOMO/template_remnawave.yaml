@@ -39,7 +39,7 @@
 #   • Overlay LAN (Radmin, Hamachi, Porthole, ZeroTier…) → DIRECT
 #   • Остальное                             → PROXY
 #
-# UDP-порт 443 (QUIC) блокируется глобально — принудительный fallback на TCP.
+# UDP-порт 443 (QUIC) блокируется глобально (REJECT, не DROP) — принудительный fallback на TCP.
 #
 # TCP keep-alive: пробные пакеты до idle-timeout балансировщика (Beget/Selectel/Reg.ru gateway).
 #
@@ -775,8 +775,8 @@ rules:
   # --- Системные / приватные адреса ---
   - RULE-SET,private-ips-meta,DIRECT,no-resolve    # приватные IP (MetaCubeX) — без DNS
   - RULE-SET,private-ips-custom,DIRECT,no-resolve  # локальные IP — напрямую (вне upstream)
-  - IP-CIDR,::/0,REJECT-DROP,no-resolve            # весь IPv6-трафик, не попавший в fake-ip — блок
-  - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT-DROP # QUIC — принудительно через TCP
+  - IP-CIDR,::/0,REJECT,no-resolve                 # весь IPv6-трафик, не попавший в fake-ip — блок; REJECT чтобы клиент сразу ушёл на IPv4
+  - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT      # QUIC → TCP; REJECT (не DROP), иначе Firefox/Zen висит на HTTP/3
   - RULE-SET,private-domains-meta,DIRECT           # локальные домены (MetaCubeX) — напрямую
   - RULE-SET,private-domains-custom,DIRECT         # локальные домены — напрямую (вне upstream)
   - RULE-SET,vpn-clients,DIRECT                    # overlay LAN: Radmin/Hamachi/Porthole/ZeroTier/Tailscale/… — не туннелировать
