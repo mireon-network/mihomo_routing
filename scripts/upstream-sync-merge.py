@@ -130,7 +130,14 @@ def fix_template_cdn(path: Path) -> bool:
 
 def run_post_hooks(root: Path, info: SourceInfo) -> None:
     for hook in info.post:
-        if hook == "regenerate_gfn_block":
+        if hook == "strip_launchers":
+            script = root / "scripts/strip-games-launchers.py"
+            if not script.is_file():
+                print(f"post {info.id}: нет {script}", file=sys.stderr)
+                continue
+            print(f"post {info.id}: strip_launchers…")
+            subprocess.run([sys.executable, str(script)], cwd=root, check=True)
+        elif hook == "regenerate_gfn_block":
             script = root / "scripts/generate-gfn-games-block.py"
             if not script.is_file():
                 print(f"post {info.id}: нет {script}", file=sys.stderr)
