@@ -19,7 +19,7 @@
 | `rule-sets/yaml/ru-apps-custom.yaml` | Локальные дополнения RU-приложений (вне legiz `ru-app-list`) → DIRECT |
 | `rule-sets/yaml/wld-apps-custom.yaml` | Локальные дополнения для `wl.yaml` `tun.exclude-package` (домены из `wld.list`) |
 | `rule-sets/yaml/ai.yaml` | AI / LLM — **только локально**, upstream не синхронизируется |
-| `rule-sets/yaml/google-process.yaml` | Процессы Google (Antigravity/agy, Gemini) → 🌐 Google — **только локально** |
+| `rule-sets/yaml/google-process.yaml` | Процессы Google (Antigravity/agy, Gemini) → 🌐 Google · Gemini · Antigravity — **только локально** |
 | `rule-sets/yaml/vpn-clients.yaml` | Overlay LAN (Radmin, Hamachi, Porthole, ZeroTier, Tailscale, playit.gg, GameRanger) → DIRECT |
 | `rule-sets/mrs/text/*.list` | Распакованные MRS-наборы (редактировать здесь) |
 | `rule-sets/mrs/bin/*.mrs` | Бинарные rule-set для Mihomo (собираются из `text/`) |
@@ -179,17 +179,17 @@ python3 scripts/generate-gfn-games-block.py
 
 `MIHOMO/template_remnawave.yaml` — **локальный** шаблон (не зеркало upstream). Локальные блоки:
 
-### 🤖 ИИ
+### 🤖 ИИ · ChatGPT · Claude
 
-1. **proxy-groups** — группа `🤖 ИИ` (`remnawave.include-proxies: false`, прокси `🛡️ VPN` + переопределение стран).
+1. **proxy-groups** — группа `🤖 ИИ · ChatGPT · Claude` (`remnawave.include-proxies: false`, прокси `🛡️ VPN` + переопределение стран).
 2. **rule-providers** — провайдер `ai` → `rule-sets/yaml/ai.yaml`.
-3. **rules** — `RULE-SET,ai,🤖 ИИ` и `RULE-SET,ai-meta,🤖 ИИ` (**ниже** YouTube и Google).
+3. **rules** — `RULE-SET,ai,🤖 ИИ · ChatGPT · Claude` и `RULE-SET,ai-meta,🤖 ИИ · ChatGPT · Claude` (**ниже** YouTube и Google).
 
-### 🌐 Google
+### 🌐 Google · Gemini · Antigravity
 
-1. **proxy-groups** — группа `🌐 Google` (`remnawave.include-proxies: false`, прокси `🛡️ VPN` + выбор стран).
+1. **proxy-groups** — группа `🌐 Google · Gemini · Antigravity` (`remnawave.include-proxies: false`, прокси `🛡️ VPN` + выбор стран).
 2. **rule-providers** — `google-process` → `rule-sets/yaml/google-process.yaml`; `summary-google` (merge `google`, `google-play`, `google-gemini`, `google-cn`, `google-registry`, `google-trust-services`; youtube/deepmind/fcm/scholar уже внутри `google`) и `google-ips-meta` (IP Google из `geo/geoip`).
-3. **rules** — `RULE-SET,youtube-meta` и `RULE-SET,discord` **выше** Google; затем `RULE-SET,google-process,🌐 Google`, `RULE-SET,summary-google,🌐 Google` и `RULE-SET,google-ips-meta,🌐 Google`.
+3. **rules** — `RULE-SET,youtube-meta` и `RULE-SET,discord` **выше** Google; затем `RULE-SET,google-process,🌐 Google · Gemini · Antigravity`, `RULE-SET,summary-google,🌐 Google · Gemini · Antigravity` и `RULE-SET,google-ips-meta,🌐 Google · Gemini · Antigravity`.
 
 ### TUN exclude-package (RU-приложения мимо TUN)
 
