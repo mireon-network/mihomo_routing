@@ -244,7 +244,7 @@ proxy-groups:
   - name: 🛡️ VPN
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hijacking.png
     type: select
-    description: Автовыбор и страны
+    description: "Автовыбор и страны"
     remnawave:
       include-proxies: false
     proxies:
@@ -263,7 +263,7 @@ proxy-groups:
   - name: 📺 Youtube
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png
     type: select
-    description: YouTube, YouTube Music
+    description: "YouTube, YouTube Music"
     remnawave:
       include-proxies: false
     proxies:
@@ -276,7 +276,7 @@ proxy-groups:
   - name: 💬 Discord
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png
     type: select
-    description: Discord, Vesktop, голос
+    description: "Discord, Vesktop, голос"
     remnawave:
       include-proxies: false
     proxies:
@@ -289,7 +289,7 @@ proxy-groups:
   - name: 🤖 ИИ · ChatGPT · Claude
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bot.png
     type: select
-    description: OpenAI, Claude, Copilot, Cursor, Perplexity… Gemini и Antigravity — в Google
+    description: "OpenAI, Claude, Copilot, Cursor, Perplexity… Gemini и Antigravity — в Google"
     remnawave:
       include-proxies: false
     proxies:
@@ -302,7 +302,7 @@ proxy-groups:
   - name: 🌐 Google · Gemini · Antigravity
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google.png
     type: select
-    description: Google, Play, Drive, Cloud, Search, Gemini, DeepMind, Antigravity
+    description: "Google, Play, Drive, Cloud, Search, Gemini, DeepMind, Antigravity"
     remnawave:
       include-proxies: false
     proxies:
@@ -315,7 +315,7 @@ proxy-groups:
   - name: 🎮 Игры
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png
     type: select
-    description: Трафик самих игр: матчи, античит, облачный гейминг
+    description: "Трафик самих игр — матчи, античит, облачный гейминг"
     remnawave:
       include-proxies: false
     proxies:
@@ -329,7 +329,7 @@ proxy-groups:
   - name: 🎮 Лаунчеры
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png
     type: select
-    description: Клиенты магазинов: Steam, Epic, Battle.net
+    description: "Клиенты магазинов — Steam, Epic, Battle.net"
     remnawave:
       include-proxies: false
     proxies:
@@ -343,7 +343,7 @@ proxy-groups:
   - name: 🍷 Wine · Proton
     icon: https://api.iconify.design/mdi/glass-wine.svg?color=%23B11226&width=128&height=128
     type: select
-    description: Windows-игры и софт через Wine/Proton; по умолчанию без VPN
+    description: "Windows-игры и софт через Wine/Proton; по умолчанию без VPN"
     remnawave:
       include-proxies: false
     proxies:
@@ -468,7 +468,7 @@ proxy-groups:
       - 🛡️ VPN
   - name: 🔓 Без VPN
     type: select
-    description: Прямое подключение, без прокси
+    description: "Прямое подключение, без прокси"
     hidden: true
     remnawave:
       include-proxies: false
@@ -476,7 +476,7 @@ proxy-groups:
       - DIRECT
   - name: ⛔ Блок
     type: select
-    description: Блокировка трафика
+    description: "Блокировка трафика"
     hidden: true
     remnawave:
       include-proxies: false
