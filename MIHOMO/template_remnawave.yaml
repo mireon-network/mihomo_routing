@@ -10,7 +10,7 @@
 #              IPv6 в DNS отключён, весь IPv6-трафик ядра блокируется на уровне правил
 #
 # Группы прокси:
-#   🛡️ VPN       — единственная видимая группа: Автовыбор / Финляндия / Германия / Франция / Нидерланды / США
+#   🛡️ VPN       — Автовыбор / Без VPN / страны
 #   (скрытые)    — load-balance sticky-sessions (Beget/Selectel/Reg.ru); Автовыбор — url-test
 #                  lazy: false + expected-status: 204 — актуальный пинг и health-check
 #   📺 Youtube   — отдельный выбор узла для YouTube
@@ -34,10 +34,14 @@
 #   • Wine/Proton                           → 🍷 Wine · Proton (по умолчанию DIRECT)
 #   • YouTube → 📺 Youtube (выше Google: youtube ⊂ geosite google)
 #   • Discord → 💬 Discord (выше Google: вложения на storage.googleapis.com)
-#   • Google-сервисы                        → 🌐 Google · Gemini · Antigravity
-#   • AI-сервисы                            → 🤖 ИИ · ChatGPT · Claude (ниже Google)
+#   • Google по домену/процессу             → 🌐 Google · Gemini · Antigravity
+#   • AI-сервисы                            → 🤖 ИИ · ChatGPT · Claude (ниже Google-доменов)
 #   • Overlay LAN (Radmin, Hamachi, Porthole, ZeroTier…) → DIRECT
+#   • google-ips (GCP leftover)             → 🌐 Google — строго после всех process/domain
 #   • Остальное                             → PROXY
+#
+# Принцип: identity (PROCESS-NAME / DOMAIN) всегда выше hosting-IP (google-ips, summary-ru-ips).
+# Иначе любой TCP на GCP (Sentry, PoE speedtest, Cursor) уезжает в 🌐 Google.
 #
 # UDP-порт 443 (QUIC) блокируется глобально — принудительный fallback на TCP.
 #
@@ -268,6 +272,7 @@ proxy-groups:
       include-proxies: false
     proxies:
       - 🛡️ VPN
+      - 🔓 Без VPN
       - 🇫🇮 Финляндия
       - 🇩🇪 Германия
       - 🇫🇷 Франция
@@ -281,6 +286,7 @@ proxy-groups:
       include-proxies: false
     proxies:
       - 🛡️ VPN
+      - 🔓 Без VPN
       - 🇫🇮 Финляндия
       - 🇩🇪 Германия
       - 🇫🇷 Франция
@@ -294,6 +300,7 @@ proxy-groups:
       include-proxies: false
     proxies:
       - 🛡️ VPN
+      - 🔓 Без VPN
       - 🇫🇮 Финляндия
       - 🇩🇪 Германия
       - 🇫🇷 Франция
@@ -307,6 +314,7 @@ proxy-groups:
       include-proxies: false
     proxies:
       - 🛡️ VPN
+      - 🔓 Без VPN
       - 🇫🇮 Финляндия
       - 🇩🇪 Германия
       - 🇫🇷 Франция
@@ -819,49 +827,50 @@ rules:
   - PROCESS-NAME-REGEX,discord,💬 Discord
   - PROCESS-NAME-REGEX,vesktop,💬 Discord
 
-  # RU-исключения вне geosite — выше Google IP и PROCESS-NAME (Cursor/PoE/Steam):
-  # иначе касса Xsolla/СБП уезжает в 🌐 Google · Gemini · Antigravity / 🤖 ИИ · ChatGPT · Claude / 🎮 Игры (VPN) → Xsolla 1092.
+  # RU-исключения вне geosite — выше Google/AI/Games:
+  # иначе касса Xsolla/СБП уезжает в 🌐 Google / 🤖 ИИ / 🎮 Игры (VPN) → Xsolla 1092.
   - RULE-SET,category-ru-custom,DIRECT             # курируемые DIRECT: банки .ru, p-way, xsolla
 
-  # --- Google → 🌐 Google · Gemini · Antigravity (google, Play, Gemini, DeepMind, Antigravity, …) ---
+  # --- Google по идентичности (процесс + домен). IP GCP — не сюда, а в google-ips ниже. ---
   - RULE-SET,google-process,🌐 Google · Gemini · Antigravity              # процессы: Antigravity/agy, Gemini (выше 🤖 ИИ)
   - RULE-SET,summary-google,🌐 Google · Gemini · Antigravity              # домены: google, google-play, gemini, deepmind, antigravity, cn, registry, trust-services
-  # TCP only: ICMP на GCP (PoE *.speedtest.pathofexile.com → 34/35.x) иначе
-  # матчится сюда → 🌐 Google (VPN) → mihomo отвечает ICMP локально, в клиенте 0ms.
-  - AND,((RULE-SET,google-ips-meta),(NETWORK,tcp)),🌐 Google · Gemini · Antigravity # IP Google (MetaCubeX geoip)
 
-  # --- AI / LLM → 🤖 ИИ · ChatGPT · Claude (ниже Google: пересечения Gemini/Antigravity уже сматчились) ---
+  # --- AI / LLM → 🤖 ИИ · ChatGPT · Claude (ниже Google-доменов: Gemini/Antigravity уже сматчились) ---
   - RULE-SET,ai,🤖 ИИ · ChatGPT · Claude
-  - RULE-SET,ai-meta,🤖 ИИ · ChatGPT · Claude                          # AI/LLM-домены (MetaCubeX, !cn)
+  - RULE-SET,ai-meta,🤖 ИИ · ChatGPT · Claude                          # AI/LLM-домены (MetaCubeX, !cn); Cursor Sentry иначе крадёт google-ips
 
   # --- Заблокированные в РФ → PROXY (legiz category-ban-ru; выше RU catch-all) ---
   - RULE-SET,category-ban-ru,PROXY
 
-  # --- Игры: домены и процессы → PROXY (раньше лаунчеров и MRS steam/epic) ---
+  # --- Игры: прокси-домены → PROXY (раньше лаунчеров и MRS steam/epic) ---
   - RULE-SET,games-proxy-rules,PROXY
 
   # --- Загрузочные CDN игровых платформ → DIRECT (выше игр и лаунчеров: тяжёлые загрузки всегда напрямую, мимо VPN) ---
   - RULE-SET,category-game-platforms-download,DIRECT # загрузочные CDN игровых платформ (MetaCubeX) — напрямую
 
-  # --- Игровые лаунчеры → 🎮 Лаунчеры (по умолчанию DIRECT, можно переключить) ---
+  # --- Игровые лаунчеры → 🎮 Лаунчеры (по умолчанию DIRECT; не дублировать в games.yaml) ---
   - RULE-SET,games-launchers,🎮 Лаунчеры
 
-  # --- Игровые платформы и сервисы → 🎮 Игры (по умолчанию DIRECT, можно переключить) ---
+  # --- Игровые платформы и сервисы → 🎮 Игры ---
   - RULE-SET,games-domain-custom,🎮 Игры            # локальные игровые домены вне category-games (PoE, Tarkov…)
   - RULE-SET,games-process-custom,🎮 Игры           # локальные процессы: GFN / нативные / ручные
   - RULE-SET,category-enhance-gaming,🎮 Игры       # игровые сервисы, расширенный (MetaCubeX)
-  - RULE-SET,games,🎮 Игры                         # игры по имени процесса — выше DIRECT: селектор игр приоритетнее
+  - RULE-SET,games,🎮 Игры                         # игры по имени процесса (в т.ч. *Win64-Shipping*)
   - RULE-SET,category-games-meta,🎮 Игры           # игровые домены (MetaCubeX category-games: Steam/Epic/EA/Riot/Ubisoft/Blizzard/Rockstar/GOG/EfT/FACEIT/2K…)
-  - RULE-SET,wine,🍷 Wine · Proton
+  - RULE-SET,wine,🍷 Wine · Proton                 # wineserver; иначе Proton→GCP уезжает в 🌐 Google
 
-  # --- Конкретные сервисы → DIRECT (выше широких catch-all внизу) ---
-  - RULE-SET,category-ip-geo-detect-meta,DIRECT    # сервисы определения IP/гео (MetaCubeX) — напрямую
+  # --- Конкретные сервисы → DIRECT (выше IP catch-all) ---
+  - RULE-SET,category-ip-geo-detect-meta,DIRECT    # сервисы определения IP/гео (MetaCubeX) — напрямую; иначе GCP→Google и «VPN IP»
   - RULE-SET,summary-category-ru,DIRECT            # RU-домены (MetaCubeX geosite + Davoyan → summary, без +.ru/+.su) — напрямую
   - RULE-SET,wld,DIRECT                            # RU-белосписочный (legiz wld)
 
-  # --- RU-приложения и IP → DIRECT (низкий приоритет) ---
+  # --- RU-приложения → DIRECT (выше google-ips: Firebase/GCP не должен уводить в 🌐 Google) ---
   - RULE-SET,ru-app-list,DIRECT                    # RU-приложения Android (legiz-ru) — напрямую
   - RULE-SET,ru-apps-custom,DIRECT                 # локальные дополнения RU-приложений (вне legiz)
+
+  # --- Hosting-IP leftover: только то, что не опознали process/domain. ---
+  # TCP only: ICMP на GCP иначе → 🌐 Google (VPN) → mihomo отвечает ICMP локально, в клиенте 0ms.
+  - AND,((RULE-SET,google-ips-meta),(NETWORK,tcp)),🌐 Google · Gemini · Antigravity # IP Google (MetaCubeX geoip)
   - RULE-SET,summary-ru-ips,DIRECT                 # RU IP (meta-geoip-ru + ips-for-ru → summary_ru_ips) — напрямую
 
   # --- Всё остальное → PROXY ---

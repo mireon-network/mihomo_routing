@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Собрать блок GeForce NOW для rule-sets/yaml/games-process-custom.yaml.
 
-games.yaml — зеркало апстрима (roscomvpn), не редактируется. Наши добавления
-(GFN, ручные игры) живут в games-process-custom.yaml; апстримные процессы и лаунчеры
-исключаются из блока, чтобы не плодить дубли между наборами.
+games.yaml — зеркало апстрима (roscomvpn). Лаунчеры вырезает strip-games-launchers.py
+в games-launchers.yaml. Наши добавления (GFN, ручные игры) живут в
+games-process-custom.yaml; апстримные процессы и лаунчеры исключаются из блока,
+чтобы не плодить дубли между наборами.
 
 Источники:
   - https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json

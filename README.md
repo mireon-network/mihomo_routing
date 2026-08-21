@@ -12,7 +12,7 @@
 | `MIHOMO/wl.yaml` | Режим «белые списки» |
 | `rule-sets/yaml/torrent-clients.yaml` | Торрент-клиенты — **зеркало** [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets/blob/main/other/torrent-clients.yaml) (без правок) |
 | `rule-sets/yaml/torrent-clients-custom.yaml` | Локальные дополнения торрент-клиентов → DIRECT |
-| `rule-sets/yaml/games.yaml` | Игры — **зеркало** [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category) (без правок) |
+| `rule-sets/yaml/games.yaml` | Игры — **зеркало** [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category); post-hook вырезает лаунчеры (они в `games-launchers.yaml`) |
 | `rule-sets/yaml/games-process-custom.yaml` | Локальные игровые процессы: [GeForce NOW](https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json), нативные macOS/Linux, ручные — **только локально** |
 | `rule-sets/yaml/games-launchers.yaml` | Игровые лаунчеры (Steam, Epic, VK Play…) — всегда DIRECT |
 | `rule-sets/yaml/ru-app-list.yaml` | RU Android-пакеты — **зеркало** [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets) (без правок) |
@@ -104,7 +104,7 @@ Live-тест — throwaway-ветки **`<ветка>-cdn`** и **`<ветка>
 
 1. скачивает upstream в `.sync-upstream/staging/`;
 2. **перезаписывает** зеркала из manifest (конфликтов нет — правки только в `*-custom`);
-3. post-hooks: GFN → `games-process-custom.yaml`, `tun.exclude-package` в обоих шаблонах, CDN URL в `template_remnawave.yaml`;
+3. post-hooks: лаунчеры вырезаются из `games.yaml`, GFN → `games-process-custom.yaml`, `tun.exclude-package` в обоих шаблонах, CDN URL в `template_remnawave.yaml`;
 4. вызывает `./scripts/mrs-tool.sh sync`.
 
 ### Источники (`scripts/upstream-manifest.yaml`)
@@ -112,7 +112,7 @@ Live-тест — throwaway-ветки **`<ветка>-cdn`** и **`<ветка>
 | id | Файл | Upstream |
 |----|------|----------|
 | `torrent_clients` | `rule-sets/yaml/torrent-clients.yaml` | [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets) |
-| `games` | `rule-sets/yaml/games.yaml` | [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category) (post → GFN в `games-process-custom.yaml`) |
+| `games` | `rule-sets/yaml/games.yaml` | [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category) (post → strip лаунчеров + GFN в `games-process-custom.yaml`) |
 | `ru_app_list` | `rule-sets/yaml/ru-app-list.yaml` | [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets) (post → `tun.exclude-package`) |
 
 **Не синхронизируется (только локально):** `MIHOMO/template_remnawave.yaml`, `MIHOMO/wl.yaml`, `rule-sets/yaml/ai.yaml`, `rule-sets/yaml/google-process.yaml`, все `*-custom.yaml`, локальные MRS `*-custom` (`rule-sets/mrs/text/<имя>.list`).
@@ -145,14 +145,12 @@ Upstream-наборы перезаписываются из CDN/MetaCubeX. Ло�
 
 ## games.yaml и GeForce NOW
 
-`games.yaml` — **зеркало апстрима без правок**. Локальные дополнения разделены:
+`games.yaml` — **зеркало апстрима**. Лаунчеры из апстрима вырезает `scripts/strip-games-launchers.py` (post-hook `strip_launchers`) — они живут только в `games-launchers.yaml`. Локальные дополнения:
 
 - `games-domain-custom` (MRS) — игровые домены вне MetaCubeX `category-games` (PoE, Tarkov…);
 - `games-process-custom.yaml` — процессы: блок GeForce NOW (пересобирается скриптом), нативные порты macOS/Linux, секция «Добавленно вручную» (R.E.P.O. и т.п.).
 
 Правьте только часть `games-process-custom.yaml` **выше** маркера `# --- GeForce NOW` — всё ниже перезаписывает скрипт.
-
-Лаунчеры, которые апстрим держит в `games.yaml`, в шаблоне перехватываются **раньше** правилом `games-launchers` (→ 🎮 Лаунчеры / DIRECT), поэтому отдельно вырезать их из зеркала не нужно.
 
 Исключения с фиксированной политикой (не попадают в 🎮 Игры) — отдельные YAML, подключаются в шаблоне **до** `games`:
 
@@ -181,15 +179,15 @@ python3 scripts/generate-gfn-games-block.py
 
 ### 🤖 ИИ · ChatGPT · Claude
 
-1. **proxy-groups** — группа `🤖 ИИ · ChatGPT · Claude` (`remnawave.include-proxies: false`, прокси `🛡️ VPN` + переопределение стран).
+1. **proxy-groups** — группа `🤖 ИИ · ChatGPT · Claude` (`remnawave.include-proxies: false`, прокси `🛡️ VPN` + `🔓 Без VPN` + переопределение стран).
 2. **rule-providers** — провайдер `ai` → `rule-sets/yaml/ai.yaml`.
 3. **rules** — `RULE-SET,ai,🤖 ИИ · ChatGPT · Claude` и `RULE-SET,ai-meta,🤖 ИИ · ChatGPT · Claude` (**ниже** YouTube и Google).
 
 ### 🌐 Google · Gemini · Antigravity
 
-1. **proxy-groups** — группа `🌐 Google · Gemini · Antigravity` (`remnawave.include-proxies: false`, прокси `🛡️ VPN` + выбор стран).
+1. **proxy-groups** — группа `🌐 Google · Gemini · Antigravity` (`remnawave.include-proxies: false`, прокси `🛡️ VPN` + `🔓 Без VPN` + выбор стран).
 2. **rule-providers** — `google-process` → `rule-sets/yaml/google-process.yaml`; `summary-google` (merge `google`, `google-play`, `google-gemini`, `google-cn`, `google-registry`, `google-trust-services`; youtube/deepmind/fcm/scholar уже внутри `google`) и `google-ips-meta` (IP Google из `geo/geoip`).
-3. **rules** — `RULE-SET,youtube-meta` и `RULE-SET,discord` **выше** Google; затем `RULE-SET,google-process,🌐 Google · Gemini · Antigravity`, `RULE-SET,summary-google,🌐 Google · Gemini · Antigravity` и `RULE-SET,google-ips-meta,🌐 Google · Gemini · Antigravity`.
+3. **rules** — `youtube-meta` и `discord` **выше** Google-доменов; затем `google-process` и `summary-google`. `google-ips-meta` — leftover GCP, **после** всех process/domain (игры, AI, лаунчеры, RU): иначе Sentry/PoE/Cursor на `34/35.x` уезжают в 🌐 Google.
 
 ### TUN exclude-package (RU-приложения мимо TUN)
 
