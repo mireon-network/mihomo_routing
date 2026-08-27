@@ -3,10 +3,9 @@
 
 include-proxies: false блокирует инъекцию Remnawave в # LEAVE THIS LINE!
 include-all-proxies недостаточен — используем стандартный mihomo include-all: true.
-
-Koala Clash рисует все proxies и proxy-groups (hidden: true не прячет карточки).
-Поэтому в debug: includeHiddenHosts: false (нет gateway_*), страны-LB вырезаются,
-⚡️ Автовыбор url-test'ит оставшиеся узлы.
+includeHiddenHosts: true не трогаем (gateway_* остаются в proxies: у load-balance).
+В селекторы их не тащим: exclude-filter по gateway_*_<код> и странам (🇫🇮…).
+Страны оставляем только в ⚡️ Автовыбор.
 
 📡 UDP в основной шаблон не кладём: inject_udp_selector вставляет группу и
 поднимает Discord выше NETWORK,UDP только при сборке *-debug.
@@ -21,8 +20,8 @@ import yaml
 
 INCLUDE_ALL = "    include-all: true"
 KEEP_COUNTRIES_IN = "⚡️ Автовыбор"
-# gateway_timeweb_101, gateway_timeweb-spb_105 — не ^gateway_[^_]+$
-GATEWAY_EXCLUDE = r"(?i)^gateway_"
+# hidden hosts Remnawave: gateway_<provider>_<код>, плюс страны из load-balance
+GATEWAY_EXCLUDE = r"(?i)^gateway_[^_]+_[0-9]+$"
 GATEWAY_COUNTRY_FILTER = re.compile(r"\^gateway_\[\^_\]\+_\d+\$")
 
 UDP_NAME = "📡 UDP"
@@ -80,35 +79,9 @@ def country_lb_names(text: str) -> list[str]:
     ]
 
 
-def exclude_filter_line() -> str:
-    return f'    exclude-filter: "{GATEWAY_EXCLUDE}"'
-
-
-def disable_hidden_hosts(text: str) -> str:
-    text, n = re.subn(
-        r"(remnawave:\n  includeHiddenHosts: )true",
-        r"\1false",
-        text,
-        count=1,
-    )
-    return text
-
-
-def drop_country_lb_groups(text: str, country_names: list[str]) -> str:
-    if not country_names:
-        return text
-    start = text.index("proxy-groups:\n")
-    end = text.index("\nrule-providers:")
-    head, body, tail = text[:start], text[start:end], text[end:]
-    drop = set(country_names)
-    chunks = re.split(r"(?=  - name: )", body)
-    kept = []
-    for chunk in chunks:
-        m = re.match(r"  - name: (.+)\n", chunk)
-        if m and m.group(1) in drop:
-            continue
-        kept.append(chunk)
-    return head + "".join(kept) + tail
+def exclude_filter_line(country_names: list[str]) -> str:
+    alts = [GATEWAY_EXCLUDE, *(f"^{name}$" for name in country_names)]
+    return f'    exclude-filter: "{"|".join(alts)}"'
 
 
 def _group_head(name: str) -> str:
@@ -119,28 +92,6 @@ def _group_head(name: str) -> str:
         rf"(?:    description: [^\n]+\n)?"
         rf")"
     )
-
-
-def patch_autoselect(text: str, exclude_line: str) -> str | None:
-    if f"  - name: {KEEP_COUNTRIES_IN}\n" not in text:
-        return text
-    pat = (
-        rf"(  - name: {re.escape(KEEP_COUNTRIES_IN)}\n"
-        rf"    type: url-test\n"
-        rf"(?:    (?!proxies:)(?!remnawave:)(?!include-all)[^\n]+\n)*)"
-        rf"(?:    remnawave:\n      include-proxies: false\n)?"
-        rf"(?:    include-all-proxies: true\n)?"
-        rf"(?:    include-all: true\n)?"
-        rf"(?:    exclude-filter: [^\n]+\n)?"
-        rf"(?:    remnawave:\n      include-proxies: false\n)?"
-        rf"(?:    proxies:\n(?:      - [^\n]+\n)*|    proxies: \[\]\n)"
-    )
-    insert = rf"\1    include-all-proxies: true\n{exclude_line}\n    proxies: []\n"
-    text, n = re.subn(pat, insert, text, count=1)
-    if n != 1:
-        print("patch-include-proxies: не найден ⚡️ Автовыбор", file=sys.stderr)
-        return None
-    return text
 
 
 def patch_group(text: str, name: str, exclude_line: str) -> str | None:
@@ -169,11 +120,14 @@ def strip_countries_from_selectors(text: str, country_names: list[str]) -> str:
     start = text.index("proxy-groups:\n")
     end = text.index("\nrule-providers:")
     head, body, tail = text[:start], text[start:end], text[end:]
+    skip = {KEEP_COUNTRIES_IN, *country_names}
     chunks = re.split(r"(?=  - name: )", body)
     out = []
     for chunk in chunks:
-        for name in country_names:
-            chunk = chunk.replace(f"      - {name}\n", "")
+        m = re.match(r"  - name: (.+)\n", chunk)
+        if m and m.group(1) not in skip:
+            for name in country_names:
+                chunk = chunk.replace(f"      - {name}\n", "")
         out.append(chunk)
     return head + "".join(out) + tail
 
@@ -239,10 +193,7 @@ def patch_text(text: str, *, is_wl: bool = False) -> str | None:
             return None
 
     countries = country_lb_names(text)
-    exclude_line = exclude_filter_line()
-    text = disable_hidden_hosts(text)
-    text = drop_country_lb_groups(text, countries)
-    text = strip_countries_from_selectors(text, countries)
+    exclude_line = exclude_filter_line(countries)
 
     names = visible_select_groups(text)
     if not names:
@@ -254,9 +205,7 @@ def patch_text(text: str, *, is_wl: bool = False) -> str | None:
         if text is None:
             return None
 
-    text = patch_autoselect(text, exclude_line)
-    if text is None:
-        return None
+    text = strip_countries_from_selectors(text, countries)
 
     if is_wl:
         text = patch_wl_whitelist_filter(text)
@@ -294,24 +243,20 @@ def self_check() -> None:
     assert UDP_NAME in names
     udp = next(g for g in doc["proxy-groups"] if g["name"] == UDP_NAME)
     yt = next(g for g in doc["proxy-groups"] if g["name"] == YOUTUBE_NAME)
-    countries_src = country_lb_names(src)
-    assert countries_src, "в шаблоне должны быть country load-balance"
-    assert "includeHiddenHosts: true" in src
-    assert "includeHiddenHosts: false" in out
-    assert country_lb_names(out) == []
-    assert all(f"  - name: {c}\n" not in out for c in countries_src)
+    countries = country_lb_names(out)
+    assert countries, "в шаблоне должны быть country load-balance"
+    want_excl = "|".join([GATEWAY_EXCLUDE, *(f"^{n}$" for n in countries)])
     assert udp.get("include-all") is True
-    assert udp.get("exclude-filter") == GATEWAY_EXCLUDE
-    assert yt.get("exclude-filter") == GATEWAY_EXCLUDE
+    assert udp.get("exclude-filter") == want_excl
+    assert yt.get("exclude-filter") == want_excl
     assert udp.get("proxies") == yt.get("proxies")
     assert names.index(UDP_NAME) < names.index(YOUTUBE_NAME)
-    assert all(c not in (yt.get("proxies") or []) for c in countries_src)
+    assert all(c not in (yt.get("proxies") or []) for c in countries)
     auto = next(g for g in doc["proxy-groups"] if g["name"] == KEEP_COUNTRIES_IN)
-    assert auto.get("include-all-proxies") is True
-    assert auto.get("exclude-filter") == GATEWAY_EXCLUDE
-    assert auto.get("proxies") == []
+    assert auto.get("proxies") == countries
     vpn = next(g for g in doc["proxy-groups"] if g["name"] == "🛡️ VPN")
     assert vpn.get("proxies") == ["⚡️ Автовыбор"]
+    assert {g["name"] for g in doc["proxy-groups"]}.issuperset(countries)
 
     rules = [str(r) for r in doc["rules"]]
     assert sum("vesktop" in r for r in rules) == 1
