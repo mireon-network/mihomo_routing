@@ -30,7 +30,7 @@
 | `scripts/generate-tun-exclude-package.py` | Пересборка `tun.exclude-package` в обоих шаблонах |
 | `scripts/test-config-local.sh` | Локальная проверка rule-providers без CDN (`mihomo -t` + convert-ruleset) |
 | `scripts/deploy-test-branches.sh` | Throwaway `<ветка>-cdn` и `<ветка>-debug` от текущего HEAD (CDN-URL + debug-патч) |
-| `scripts/patch-include-proxies.py` | Debug-патч: `include-all: true`, видимые хосты, без блокировки Remnawave |
+| `scripts/patch-include-proxies.py` | Debug-патч: `include-all: true`, селектор `📡 UDP`, без блокировки Remnawave |
 
 > Мелкие наборы (`wine`, `games-proxy-rules`, `mail-ports`) — `type: inline` rule-providers в шаблоне (без отдельных загрузок). `vpn-clients` — отдельный YAML. Локальные MRS без upstream: `private-domains-custom`, `category-ru-custom`, `private-ips-custom`, `torrent-domains-custom`, `games-domain-custom` — правишь `rule-sets/mrs/text/<имя>.list`, `mrs-tool.sh pack` собирает `bin/*.mrs` (sync их пропускает).
 
@@ -80,7 +80,7 @@ Live-тест — throwaway-ветки **`<ветка>-cdn`** и **`<ветка>
 Пример для `routing-v2`:
 
 - CDN: `https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@routing-v2-cdn/MIHOMO/template_remnawave.yaml`
-- Debug: `https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@routing-v2-debug/MIHOMO/template_remnawave.yaml` — все узлы в селекторах (`include-all` + инъекция Remnawave)
+- Debug: `https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@routing-v2-debug/MIHOMO/template_remnawave.yaml` — все узлы в селекторах (`include-all` + инъекция Remnawave) и селектор `📡 UDP`
 
 ## Обновление из upstream
 

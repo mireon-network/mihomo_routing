@@ -6,7 +6,7 @@
 #   ./scripts/deploy-test-branches.sh routing-v2   # явная исходная ветка
 #
 # *-cdn   — CDN-URL rule-sets → <owner>/<repo>@<ветка>-cdn
-# *-debug — то же + include-all для Remnawave (patch-include-proxies.py)
+# *-debug — то же + include-all для Remnawave и селектор 📡 UDP (patch-include-proxies.py)
 #
 # При push в любую ветку (кроме *-cdn/*-debug) CI обновляет обе throwaway-ветки.
 set -euo pipefail
@@ -107,7 +107,7 @@ deploy_debug_branch() {
 
   git -C "$wt" add -A
   if ! git -C "$wt" diff --cached --quiet; then
-    git -C "$wt" commit -q -m "test(debug): CDN → ${OWNER_REPO}@${br}, include-all + Remnawave inject (throwaway, do NOT merge)"
+    git -C "$wt" commit -q -m "test(debug): CDN → ${OWNER_REPO}@${br}, include-all + UDP selector (throwaway, do NOT merge)"
   fi
   git -C "$wt" push -f "$REMOTE" "$br"
   print_client_urls "$br"
