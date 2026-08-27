@@ -3,7 +3,9 @@
 
 include-proxies: false блокирует инъекцию Remnawave в # LEAVE THIS LINE!
 include-all-proxies недостаточен — используем стандартный mihomo include-all: true.
-includeHiddenHosts: true не трогаем (gateway_* остаются в proxies:).
+includeHiddenHosts: true не трогаем (gateway_* остаются в proxies: у load-balance).
+В селекторы их не тащим: exclude-filter по gateway_*_<код> и странам (🇫🇮…).
+Страны оставляем только в ⚡️ Автовыбор.
 
 📡 UDP в основной шаблон не кладём: inject_udp_selector вставляет группу и
 поднимает Discord выше NETWORK,UDP только при сборке *-debug.
@@ -17,6 +19,10 @@ from pathlib import Path
 import yaml
 
 INCLUDE_ALL = "    include-all: true"
+KEEP_COUNTRIES_IN = "⚡️ Автовыбор"
+# hidden hosts Remnawave: gateway_<provider>_<код>, плюс страны из load-balance
+GATEWAY_EXCLUDE = r"(?i)^gateway_[^_]+_[0-9]+$"
+GATEWAY_COUNTRY_FILTER = re.compile(r"\^gateway_\[\^_\]\+_\d+\$")
 
 UDP_NAME = "📡 UDP"
 YOUTUBE_NAME = "📺 Youtube"
@@ -64,6 +70,20 @@ def visible_select_groups(text: str) -> list[str]:
     ]
 
 
+def country_lb_names(text: str) -> list[str]:
+    doc = yaml.safe_load(text)
+    return [
+        g["name"]
+        for g in doc.get("proxy-groups") or []
+        if GATEWAY_COUNTRY_FILTER.search(str(g.get("filter") or ""))
+    ]
+
+
+def exclude_filter_line(country_names: list[str]) -> str:
+    alts = [GATEWAY_EXCLUDE, *(f"^{name}$" for name in country_names)]
+    return f'    exclude-filter: "{"|".join(alts)}"'
+
+
 def _group_head(name: str) -> str:
     return (
         rf"(  - name: {re.escape(name)}\n"
@@ -74,30 +94,42 @@ def _group_head(name: str) -> str:
     )
 
 
-def patch_group(text: str, name: str) -> str | None:
+def patch_group(text: str, name: str, exclude_line: str) -> str | None:
+    insert = f"{INCLUDE_ALL}\n{exclude_line}\n"
     pat = (
         _group_head(name)
-        + rf"(?:    include-all-proxies: true\n)?"
-        + rf"(?:    include-all: true\n)?"
-        + rf"(?:    remnawave:\n      include-proxies: false\n)?"
-        + rf"(?!    include-all: true\n)"
+        + r"(?:    remnawave:\n      include-proxies: false\n)?"
+        + r"(?:    include-all-proxies: true\n)?"
+        + r"(?:    include-all: true\n)?"
+        + r"(?:    exclude-filter: [^\n]+\n)?"
+        + r"(?:    remnawave:\n      include-proxies: false\n)?"
+        + r"(?:    include-all-proxies: true\n)?"
+        + r"(?:    include-all: true\n)?"
+        + r"(?:    exclude-filter: [^\n]+\n)?"
     )
-    text, n = re.subn(pat, rf"\1{INCLUDE_ALL}\n", text, count=1)
+    text, n = re.subn(pat, rf"\1{insert}", text, count=1)
     if n != 1:
-        if f"  - name: {name}\n" in text:
-            text = re.sub(
-                _group_head(name)
-                + rf"(?:    include-all-proxies: true\n)?"
-                + rf"(?:    include-all: true\n)"
-                + rf"    remnawave:\n      include-proxies: false\n",
-                rf"\1{INCLUDE_ALL}\n",
-                text,
-                count=1,
-            )
-            return text
         print(f"patch-include-proxies: не найдена группа {name!r}", file=sys.stderr)
         return None
     return text
+
+
+def strip_countries_from_selectors(text: str, country_names: list[str]) -> str:
+    if not country_names:
+        return text
+    start = text.index("proxy-groups:\n")
+    end = text.index("\nrule-providers:")
+    head, body, tail = text[:start], text[start:end], text[end:]
+    skip = {KEEP_COUNTRIES_IN, *country_names}
+    chunks = re.split(r"(?=  - name: )", body)
+    out = []
+    for chunk in chunks:
+        m = re.match(r"  - name: (.+)\n", chunk)
+        if m and m.group(1) not in skip:
+            for name in country_names:
+                chunk = chunk.replace(f"      - {name}\n", "")
+        out.append(chunk)
+    return head + "".join(out) + tail
 
 
 def insert_udp_group(text: str) -> str | None:
@@ -145,7 +177,8 @@ def inject_udp_selector(text: str) -> str | None:
 
 def patch_wl_whitelist_filter(text: str) -> str:
     return re.sub(
-        r"(  - name: 🇷🇺 Белые списки\n(?:.*\n)*?    include-all: true\n)"
+        r"(  - name: 🇷🇺 Белые списки\n(?:.*\n)*?    include-all: true\n"
+        r"(?:    exclude-filter: [^\n]+\n)?)"
         r"    filter: [^\n]+\n",
         r"\1",
         text,
@@ -159,15 +192,20 @@ def patch_text(text: str, *, is_wl: bool = False) -> str | None:
         if text is None:
             return None
 
+    countries = country_lb_names(text)
+    exclude_line = exclude_filter_line(countries)
+
     names = visible_select_groups(text)
     if not names:
         print("patch-include-proxies: нет видимых select-групп", file=sys.stderr)
         return None
 
     for name in names:
-        text = patch_group(text, name)
+        text = patch_group(text, name, exclude_line)
         if text is None:
             return None
+
+    text = strip_countries_from_selectors(text, countries)
 
     if is_wl:
         text = patch_wl_whitelist_filter(text)
@@ -205,9 +243,20 @@ def self_check() -> None:
     assert UDP_NAME in names
     udp = next(g for g in doc["proxy-groups"] if g["name"] == UDP_NAME)
     yt = next(g for g in doc["proxy-groups"] if g["name"] == YOUTUBE_NAME)
+    countries = country_lb_names(out)
+    assert countries, "в шаблоне должны быть country load-balance"
+    want_excl = "|".join([GATEWAY_EXCLUDE, *(f"^{n}$" for n in countries)])
     assert udp.get("include-all") is True
+    assert udp.get("exclude-filter") == want_excl
+    assert yt.get("exclude-filter") == want_excl
     assert udp.get("proxies") == yt.get("proxies")
     assert names.index(UDP_NAME) < names.index(YOUTUBE_NAME)
+    assert all(c not in (yt.get("proxies") or []) for c in countries)
+    auto = next(g for g in doc["proxy-groups"] if g["name"] == KEEP_COUNTRIES_IN)
+    assert auto.get("proxies") == countries
+    vpn = next(g for g in doc["proxy-groups"] if g["name"] == "🛡️ VPN")
+    assert vpn.get("proxies") == ["⚡️ Автовыбор"]
+    assert {g["name"] for g in doc["proxy-groups"]}.issuperset(countries)
 
     rules = [str(r) for r in doc["rules"]]
     assert sum("vesktop" in r for r in rules) == 1
@@ -225,6 +274,10 @@ def self_check() -> None:
     wl_out = patch_text(wl, is_wl=True)
     assert wl_out is not None
     assert UDP_NAME not in wl_out
+    wl_sel = next(g for g in yaml.safe_load(wl_out)["proxy-groups"] if g["name"] == "🇷🇺 Белые списки")
+    assert wl_sel.get("include-all") is True
+    assert wl_sel.get("exclude-filter") == GATEWAY_EXCLUDE
+    assert "filter" not in wl_sel
     print("patch-include-proxies: self-check ok")
 
 
