@@ -23,25 +23,17 @@
 #   🔓 Без VPN   — принудительный прямой доступ (DIRECT)
 #   ⛔ Блок      — блокировка (REJECT)
 #
-# Rule-sets (MetaCubeX geosite/geoip, legiz-ru, Davoyan и локальные наборы mireon):
-#   • Слежка Windows                        → REJECT-DROP
-#   • Торренты (трекеры/DHT/клиенты)        → DIRECT; сайты — обычный роутинг (ban-ru/MATCH → PROXY)
-#   • Заблокированные в РФ (category-ban-ru) → PROXY (выше RU catch-all)
-#   • Российские домены (category-ru), ru-apps → DIRECT
-#   • Telegram, GitHub и прочее     → PROXY (финальный MATCH)
-#   • Игровые лаунчеры (games-launchers)    → 🎮 Лаунчеры (по умолчанию DIRECT)
-#   • Игровые сервисы                       → 🎮 Игры
-#   • Wine/Proton                           → 🍷 Wine · Proton (по умолчанию DIRECT)
-#   • YouTube → 📺 Youtube (выше Google: youtube ⊂ geosite google)
-#   • Discord → 💬 Discord (выше Google: вложения на storage.googleapis.com)
-#   • Google по домену/процессу             → 🌐 Google · Gemini · Antigravity
-#   • AI-сервисы                            → 🤖 ИИ · ChatGPT · Claude (ниже Google-доменов)
-#   • Overlay LAN (Radmin, Hamachi, Porthole, ZeroTier…) → DIRECT
-#   • google-ips (GCP leftover)             → 🌐 Google — строго после всех process/domain
-#   • Остальное                             → PROXY
-#
-# Принцип: identity (PROCESS-NAME / DOMAIN) всегда выше hosting-IP (google-ips, summary-ru-ips).
-# Иначе любой TCP на GCP (Sentry, PoE speedtest, Cursor) уезжает в 🌐 Google.
+# Rule-sets (MetaCubeX geosite/geoip, legiz-ru, Davoyan и локальные наборы mireon).
+# Порядок — по пересечениям (кто выше, тот выигрывает):
+#   YouTube / Discord / FCM     → выше Google-доменов (googleapis, googleusercontent)
+#   games-proxy-rules → PROXY   → выше игровых процессов (иначе steamapps PATH)
+#   download-CDN → DIRECT       → выше games-meta (steamcontent, steampipe, blzddist)
+#   процессы игр/лаунчеров/Wine/Cursor/ru-apps → выше Google-доменов
+#   игровые домены              → рядом с процессами; выше Google и ban-ru (nintendo.ru)
+#   google-process              → Gemini/Antigravity не в 🤖 ИИ
+#   Google-домены               → выше ai-meta (gemini/antigravity ∩ google)
+#   ban-ru → PROXY              → выше RU catch-all
+#   google-ips leftover         → после всех process/domain (GCP без SNI)
 #
 # UDP-порт 443 (QUIC) блокируется глобально — принудительный fallback на TCP.
 #
@@ -816,62 +808,49 @@ rules:
   - RULE-SET,torrent-clients,DIRECT                # торрент-клиенты по процессу
   - RULE-SET,torrent-clients-custom,DIRECT         # локальные дополнения торрент-клиентов
 
-  # --- YouTube → 📺 Youtube (выше Google: youtube ⊂ geosite google) ---
-  - RULE-SET,youtube-meta,📺 Youtube               # YouTube-домены (MetaCubeX)
+  # --- YouTube ⊂ google (googleapis / googleusercontent) ---
+  - RULE-SET,youtube-meta,📺 Youtube
 
-  # --- Discord (выше Google: вложения на storage.googleapis.com) ---
+  # --- Discord (storage.googleapis.com ⊂ google) ---
   - AND,((RULE-SET,cloudflare-ips),(NETWORK,udp),(DST-PORT,19200-19500)),💬 Discord # голос Discord через Cloudflare (мобильные)
   - AND,((RULE-SET,cloudflare-ips),(NETWORK,udp),(DST-PORT,50000-50100)),💬 Discord # голос Discord через Cloudflare
   - AND,((RULE-SET,discord_voiceips),(NETWORK,udp),(DST-PORT,50000-50100)),💬 Discord # голос Discord по IP (legiz)
-  - RULE-SET,discord,💬 Discord                    # Discord-домены (MetaCubeX)
+  - RULE-SET,discord,💬 Discord
   - PROCESS-NAME-REGEX,discord,💬 Discord
   - PROCESS-NAME-REGEX,vesktop,💬 Discord
 
-  # RU-исключения вне geosite — выше Google/AI/Games:
-  # иначе касса Xsolla/СБП уезжает в 🌐 Google / 🤖 ИИ / 🎮 Игры (VPN) → Xsolla 1092.
-  - RULE-SET,category-ru-custom,DIRECT             # курируемые DIRECT: банки .ru, p-way, xsolla
+  - RULE-SET,category-ru-custom,DIRECT             # xsolla, p-way, банки .ru
 
-  # --- Google по идентичности (процесс + домен). IP GCP — не сюда, а в google-ips ниже. ---
-  - RULE-SET,google-process,🌐 Google · Gemini · Antigravity              # процессы: Antigravity/agy, Gemini (выше 🤖 ИИ)
-  - RULE-SET,summary-google,🌐 Google · Gemini · Antigravity              # домены: google, google-play, gemini, deepmind, antigravity, cn, registry, trust-services
+  - RULE-SET,google-process,🌐 Google · Gemini · Antigravity  # Gemini/Antigravity-процессы, не 🤖 ИИ
 
-  # --- AI / LLM → 🤖 ИИ · ChatGPT · Claude (ниже Google-доменов: Gemini/Antigravity уже сматчились) ---
-  - RULE-SET,ai,🤖 ИИ · ChatGPT · Claude
-  - RULE-SET,ai-meta,🤖 ИИ · ChatGPT · Claude                          # AI/LLM-домены (MetaCubeX, !cn); Cursor Sentry иначе крадёт google-ips
+  - RULE-SET,games-proxy-rules,PROXY               # easebar/deadorbit: иначе steamapps PATH → 🎮 Игры
+  - RULE-SET,category-game-platforms-download,DIRECT # steamcontent ⊂ games-meta — патчи всегда DIRECT
 
-  # --- Заблокированные в РФ → PROXY (legiz category-ban-ru; выше RU catch-all) ---
-  - RULE-SET,category-ban-ru,PROXY
-
-  # --- Игры: прокси-домены → PROXY (раньше лаунчеров и MRS steam/epic) ---
-  - RULE-SET,games-proxy-rules,PROXY
-
-  # --- Загрузочные CDN игровых платформ → DIRECT (выше игр и лаунчеров: тяжёлые загрузки всегда напрямую, мимо VPN) ---
-  - RULE-SET,category-game-platforms-download,DIRECT # загрузочные CDN игровых платформ (MetaCubeX) — напрямую
-
-  # --- Игровые лаунчеры → 🎮 Лаунчеры (по умолчанию DIRECT; не дублировать в games.yaml) ---
+  # процесс бьёт +.googleusercontent.com / +.googleapis.com
   - RULE-SET,games-launchers,🎮 Лаунчеры
+  - RULE-SET,games-process-custom,🎮 Игры           # Polaris-Win64-Shipping.exe (Tekken 8)
+  - RULE-SET,games,🎮 Игры                         # в т.ч. *Win64-Shipping*
+  - RULE-SET,wine,🍷 Wine · Proton
+  - RULE-SET,games-domain-custom,🎮 Игры            # выше Google и ban-ru (nintendo.ru ⊂ оба)
+  - RULE-SET,category-enhance-gaming,🎮 Игры
+  - RULE-SET,category-games-meta,🎮 Игры
+  - RULE-SET,ai,🤖 ИИ · ChatGPT · Claude           # Cursor.exe → googleapis
+  - RULE-SET,ru-app-list,DIRECT                    # ru-app → firebase.googleapis.com
+  - RULE-SET,ru-apps-custom,DIRECT
 
-  # --- Игровые платформы и сервисы → 🎮 Игры ---
-  - RULE-SET,games-domain-custom,🎮 Игры            # локальные игровые домены вне category-games (PoE, Tarkov…)
-  - RULE-SET,games-process-custom,🎮 Игры           # локальные процессы: GFN / нативные / ручные
-  - RULE-SET,category-enhance-gaming,🎮 Игры       # игровые сервисы, расширенный (MetaCubeX)
-  - RULE-SET,games,🎮 Игры                         # игры по имени процесса (в т.ч. *Win64-Shipping*)
-  - RULE-SET,category-games-meta,🎮 Игры           # игровые домены (MetaCubeX category-games: Steam/Epic/EA/Riot/Ubisoft/Blizzard/Rockstar/GOG/EfT/FACEIT/2K…)
-  - RULE-SET,wine,🍷 Wine · Proton                 # wineserver; иначе Proton→GCP уезжает в 🌐 Google
+  - RULE-SET,summary-google,🌐 Google · Gemini · Antigravity  # браузер; leftover IP — ниже
 
-  # --- Конкретные сервисы → DIRECT (выше IP catch-all) ---
-  - RULE-SET,category-ip-geo-detect-meta,DIRECT    # сервисы определения IP/гео (MetaCubeX) — напрямую; иначе GCP→Google и «VPN IP»
-  - RULE-SET,summary-category-ru,DIRECT            # RU-домены (MetaCubeX geosite + Davoyan → summary, без +.ru/+.su) — напрямую
-  - RULE-SET,wld,DIRECT                            # RU-белосписочный (legiz wld)
+  - RULE-SET,ai-meta,🤖 ИИ · ChatGPT · Claude      # gemini/antigravity ⊂ google — домены ИИ после
 
-  # --- RU-приложения → DIRECT (выше google-ips: Firebase/GCP не должен уводить в 🌐 Google) ---
-  - RULE-SET,ru-app-list,DIRECT                    # RU-приложения Android (legiz-ru) — напрямую
-  - RULE-SET,ru-apps-custom,DIRECT                 # локальные дополнения RU-приложений (вне legiz)
+  - RULE-SET,category-ban-ru,PROXY                 # выше RU catch-all (rnd.ru ⊂ оба)
 
-  # --- Hosting-IP leftover: только то, что не опознали process/domain. ---
-  # TCP only: ICMP на GCP иначе → 🌐 Google (VPN) → mihomo отвечает ICMP локально, в клиенте 0ms.
-  - AND,((RULE-SET,google-ips-meta),(NETWORK,tcp)),🌐 Google · Gemini · Antigravity # IP Google (MetaCubeX geoip)
-  - RULE-SET,summary-ru-ips,DIRECT                 # RU IP (meta-geoip-ru + ips-for-ru → summary_ru_ips) — напрямую
+  - RULE-SET,category-ip-geo-detect-meta,DIRECT
+  - RULE-SET,summary-category-ru,DIRECT
+  - RULE-SET,wld,DIRECT
+
+  # google-ips leftover: GCP без SNI/процесса (TCP; ICMP иначе 0ms в клиенте)
+  - AND,((RULE-SET,google-ips-meta),(NETWORK,tcp)),🌐 Google · Gemini · Antigravity
+  - RULE-SET,summary-ru-ips,DIRECT
 
   # --- Всё остальное → PROXY ---
   - MATCH,PROXY
