@@ -67,13 +67,36 @@ print_client_urls() {
   echo "    | sed 's#mireon-network/mihomo_routing@main#${OWNER_REPO}@${br}#' | sort -u | xargs ./scripts/cdn-purge.sh --url"
 }
 
+unlock_branch_worktree() {
+  local br="$1" path
+  path="$(git -C "$ROOT" worktree list --porcelain | awk -v ref="refs/heads/$br" '
+    /^worktree / { p=$2 }
+    $0 == "branch " ref { print p }
+  ')"
+  if [[ -n "${path:-}" ]]; then
+    git -C "$ROOT" worktree remove --force "$path" 2>/dev/null || true
+    rm -rf "$path"
+  fi
+  git -C "$ROOT" worktree prune
+}
+
+cleanup_wt() {
+  if [[ -n "${_WT:-}" ]]; then
+    git -C "$ROOT" worktree remove --force "$_WT" 2>/dev/null || true
+    rm -rf "$_WT"
+    _WT=""
+  fi
+}
+
+trap cleanup_wt EXIT
+
 deploy_cdn_branch() {
   local br="$1" wt
   owner_repo_from_remote
+  unlock_branch_worktree "$br"
   wt="$(mktemp -d)"
-  trap 'git -C "$ROOT" worktree remove --force "$wt" 2>/dev/null || true; rm -rf "$wt"' EXIT
+  _WT="$wt"
 
-  git -C "$ROOT" worktree prune
   git -C "$ROOT" worktree add -f -B "$br" "$wt" HEAD >/dev/null
 
   rewrite_cdn_urls_in_files "$OWNER_REPO" "$br" "$wt"/MIHOMO/*.yaml
@@ -86,16 +109,16 @@ deploy_cdn_branch() {
   print_client_urls "$br"
   git -C "$ROOT" worktree remove --force "$wt" 2>/dev/null || true
   rm -rf "$wt"
-  trap - EXIT
+  _WT=""
 }
 
 deploy_debug_branch() {
   local br="$1" wt
   owner_repo_from_remote
+  unlock_branch_worktree "$br"
   wt="$(mktemp -d)"
-  trap 'git -C "$ROOT" worktree remove --force "$wt" 2>/dev/null || true; rm -rf "$wt"' EXIT
+  _WT="$wt"
 
-  git -C "$ROOT" worktree prune
   git -C "$ROOT" worktree add -f -B "$br" "$wt" HEAD >/dev/null
 
   local templates=(
@@ -113,7 +136,7 @@ deploy_debug_branch() {
   print_client_urls "$br"
   git -C "$ROOT" worktree remove --force "$wt" 2>/dev/null || true
   rm -rf "$wt"
-  trap - EXIT
+  _WT=""
 }
 
 deploy_cdn_branch "${SRC}-cdn"
