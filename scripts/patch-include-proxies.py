@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Патч debug-шаблона: все узлы подписки в видимых select-группах + селектор UDP.
 
-include-proxies: false блокирует инъекцию Remnawave в # LEAVE THIS LINE!
-include-all-proxies недостаточен — используем стандартный mihomo include-all: true.
-includeHiddenHosts: true не трогаем (gateway_* остаются в proxies:).
+include-all: true подтягивает узлы из общего proxies: (туда Remnawave пишет
+по # LEAVE THIS LINE!). include-proxies: false не снимаем — иначе та же
+инъекция ещё раз в группу и в клиенте дубли карточек.
 
 📡 UDP в основной шаблон не кладём: inject_udp_selector вставляет группу и
 поднимает Discord выше NETWORK,UDP только при сборке *-debug.
@@ -74,30 +74,41 @@ def _group_head(name: str) -> str:
     )
 
 
+def _group_chunk(text: str, name: str) -> tuple[int, int] | None:
+    marker = f"  - name: {name}\n"
+    start = text.find(marker)
+    if start < 0:
+        return None
+    rel = text[start + len(marker) :]
+    m = re.search(r"\n  - name: |\nrule-providers:", rel)
+    if not m:
+        return None
+    return start, start + len(marker) + m.start()
+
+
 def patch_group(text: str, name: str) -> str | None:
-    pat = (
-        _group_head(name)
-        + rf"(?:    include-all-proxies: true\n)?"
-        + rf"(?:    include-all: true\n)?"
-        + rf"(?:    remnawave:\n      include-proxies: false\n)?"
-        + rf"(?!    include-all: true\n)"
-    )
-    text, n = re.subn(pat, rf"\1{INCLUDE_ALL}\n", text, count=1)
-    if n != 1:
-        if f"  - name: {name}\n" in text:
-            text = re.sub(
-                _group_head(name)
-                + rf"(?:    include-all-proxies: true\n)?"
-                + rf"(?:    include-all: true\n)"
-                + rf"    remnawave:\n      include-proxies: false\n",
-                rf"\1{INCLUDE_ALL}\n",
-                text,
-                count=1,
-            )
-            return text
+    span = _group_chunk(text, name)
+    if span is None:
         print(f"patch-include-proxies: не найдена группа {name!r}", file=sys.stderr)
         return None
-    return text
+    start, end = span
+    chunk = text[start:end]
+    if "    include-all: true\n" not in chunk:
+        chunk, n = re.subn(_group_head(name), rf"\1{INCLUDE_ALL}\n", chunk, count=1)
+        if n != 1:
+            print(f"patch-include-proxies: не вставить include-all в {name!r}", file=sys.stderr)
+            return None
+    if "include-proxies: false" not in chunk:
+        chunk, n = re.subn(
+            rf"({INCLUDE_ALL}\n)",
+            r"\1    remnawave:\n      include-proxies: false\n",
+            chunk,
+            count=1,
+        )
+        if n != 1:
+            print(f"patch-include-proxies: не вернуть include-proxies в {name!r}", file=sys.stderr)
+            return None
+    return text[:start] + chunk + text[end:]
 
 
 def insert_udp_group(text: str) -> str | None:
@@ -206,8 +217,17 @@ def self_check() -> None:
     udp = next(g for g in doc["proxy-groups"] if g["name"] == UDP_NAME)
     yt = next(g for g in doc["proxy-groups"] if g["name"] == YOUTUBE_NAME)
     assert udp.get("include-all") is True
+    assert (udp.get("remnawave") or {}).get("include-proxies") is False
     assert udp.get("proxies") == yt.get("proxies")
     assert names.index(UDP_NAME) < names.index(YOUTUBE_NAME)
+    for name in names:
+        g = next(x for x in doc["proxy-groups"] if x["name"] == name)
+        assert g.get("include-all") is True, name
+        assert (g.get("remnawave") or {}).get("include-proxies") is False, name
+    vpn_raw = out[out.index("  - name: 🛡️ VPN\n") : out.index("  - name: 📡 UDP\n")]
+    assert "include-all: true" in vpn_raw
+    assert "include-proxies: false" in vpn_raw
+    assert "# LEAVE THIS LINE!" in vpn_raw
 
     rules = [str(r) for r in doc["rules"]]
     assert sum("vesktop" in r for r in rules) == 1
