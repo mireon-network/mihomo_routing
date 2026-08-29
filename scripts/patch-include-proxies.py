@@ -5,8 +5,8 @@ include-all: true подтягивает узлы из общего proxies: (т
 по # LEAVE THIS LINE!). include-proxies: false не снимаем — иначе та же
 инъекция ещё раз в группу и в клиенте дубли карточек.
 
-hidden hosts gateway_*_* в debug не нужны: includeHiddenHosts: false, плюс
-exclude-filter ^gateway_ на селекторах (Koala рисует всё из proxies:).
+gateway_* не трогаем: hidden hosts и filter стран остаются как в основном
+шаблоне (иначе страны пустые → COMPATIBLE).
 
 📡 UDP в основной шаблон не кладём: inject_udp_selector вставляет группу и
 поднимает Discord выше NETWORK,UDP только при сборке *-debug.
@@ -20,8 +20,6 @@ from pathlib import Path
 import yaml
 
 INCLUDE_ALL = "    include-all: true"
-GATEWAY_EXCLUDE = r"(?i)^gateway_"
-EXCLUDE_FILTER = f'    exclude-filter: "{GATEWAY_EXCLUDE}"'
 
 UDP_NAME = "📡 UDP"
 YOUTUBE_NAME = "📺 Youtube"
@@ -103,16 +101,7 @@ def patch_group(text: str, name: str) -> str | None:
         if n != 1:
             print(f"patch-include-proxies: не вставить include-all в {name!r}", file=sys.stderr)
             return None
-    if "    exclude-filter:" not in chunk:
-        chunk, n = re.subn(
-            rf"({INCLUDE_ALL}\n)",
-            rf"\1{EXCLUDE_FILTER}\n",
-            chunk,
-            count=1,
-        )
-        if n != 1:
-            print(f"patch-include-proxies: не вставить exclude-filter в {name!r}", file=sys.stderr)
-            return None
+    chunk = re.sub(r'    exclude-filter: "\(\?i\)\^gateway_"\n', "", chunk)
     if "include-proxies: false" not in chunk:
         chunk, n = re.subn(
             rf"({INCLUDE_ALL}\n)",
@@ -169,20 +158,20 @@ def inject_udp_selector(text: str) -> str | None:
     return move_discord_above_udp(text)
 
 
-def disable_hidden_hosts(text: str) -> str:
-    text, n = re.subn(
-        r"(remnawave:\n  includeHiddenHosts: )true",
-        r"\1false",
+def restore_hidden_hosts(text: str) -> str:
+    """Debug больше не выключает hidden hosts — вернуть true, если старый патч уже прогнался."""
+    return re.sub(
+        r"(remnawave:\n  includeHiddenHosts: )false",
+        r"\1true",
         text,
         count=1,
     )
-    return text
 
 
 def patch_wl_whitelist_filter(text: str) -> str:
     return re.sub(
-        r"(  - name: 🇷🇺 Белые списки\n(?:.*\n)*?    include-all: true\n"
-        r"(?:    exclude-filter: [^\n]+\n)?)"
+        r"(  - name: 🇷🇺 Белые списки\n(?:.*\n)*?    include-all: true\n)"
+        r"(?:    exclude-filter: [^\n]+\n)?"
         r"    filter: [^\n]+\n",
         r"\1",
         text,
@@ -201,12 +190,14 @@ def patch_text(text: str, *, is_wl: bool = False) -> str | None:
         print("patch-include-proxies: нет видимых select-групп", file=sys.stderr)
         return None
 
-    text = disable_hidden_hosts(text)
+    text = restore_hidden_hosts(text)
 
     for name in names:
         text = patch_group(text, name)
         if text is None:
             return None
+
+    text = re.sub(r'    exclude-filter: "\(\?i\)\^gateway_"\n', "", text)
 
     if is_wl:
         text = patch_wl_whitelist_filter(text)
@@ -249,19 +240,23 @@ def self_check() -> None:
     assert udp.get("proxies") == yt.get("proxies")
     assert names.index(UDP_NAME) < names.index(YOUTUBE_NAME)
     assert "includeHiddenHosts: true" in src
-    assert "includeHiddenHosts: false" in out
-    assert doc["remnawave"]["includeHiddenHosts"] is False
+    assert "includeHiddenHosts: false" not in out
+    assert doc["remnawave"]["includeHiddenHosts"] is True
     for name in names:
         g = next(x for x in doc["proxy-groups"] if x["name"] == name)
         assert g.get("include-all") is True, name
-        assert g.get("exclude-filter") == GATEWAY_EXCLUDE, name
+        assert g.get("exclude-filter") is None, name
         assert (g.get("remnawave") or {}).get("include-proxies") is False, name
     vpn_raw = out[out.index("  - name: 🛡️ VPN\n") : out.index("  - name: 📡 UDP\n")]
     assert "include-all: true" in vpn_raw
     assert "include-proxies: false" in vpn_raw
     assert "# LEAVE THIS LINE!" in vpn_raw
-    assert 'exclude-filter: "(?i)^gateway_"' in vpn_raw
+    assert "exclude-filter" not in vpn_raw
     assert "  - name: 🇫🇮 Финляндия\n" in out
+    fi = next(g for g in doc["proxy-groups"] if g["name"] == "🇫🇮 Финляндия")
+    assert fi.get("filter") == r"(?i)^gateway_[^_]+_101$"
+    assert fi.get("exclude-filter") is None
+    assert fi.get("include-all") is True
 
     rules = [str(r) for r in doc["rules"]]
     assert sum("vesktop" in r for r in rules) == 1
@@ -281,7 +276,7 @@ def self_check() -> None:
     assert UDP_NAME not in wl_out
     wl_sel = next(g for g in yaml.safe_load(wl_out)["proxy-groups"] if g["name"] == "🇷🇺 Белые списки")
     assert wl_sel.get("include-all") is True
-    assert wl_sel.get("exclude-filter") == GATEWAY_EXCLUDE
+    assert wl_sel.get("exclude-filter") is None
     assert "filter" not in wl_sel
     print("patch-include-proxies: self-check ok")
 

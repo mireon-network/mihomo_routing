@@ -1,15 +1,98 @@
 payload:
-  # --- Десктоп: исполняемый файл ---
+  # --- Десктоп: исполняемый файл (macOS/Linux имя + Windows .exe) ---
   - PROCESS-NAME,ChatGPT
   - PROCESS-NAME,ChatGPT.exe
+  - PROCESS-NAME,chatgpt
+  - PROCESS-NAME,codex
+  - PROCESS-NAME,codex.exe
+  - PROCESS-NAME,Codex
+  - PROCESS-NAME,Codex.exe
   - PROCESS-NAME,Claude
   - PROCESS-NAME,Claude.exe
+  - PROCESS-NAME,claude
+  - PROCESS-NAME,cowork-svc.exe
   - PROCESS-NAME,Cursor
   - PROCESS-NAME,Cursor.exe
+  - PROCESS-NAME,cursor
   - PROCESS-NAME,Windsurf
   - PROCESS-NAME,Windsurf.exe
+  - PROCESS-NAME,windsurf
   - PROCESS-NAME,CherryStudio
   - PROCESS-NAME,CherryStudio.exe
+  - PROCESS-NAME,Cherry Studio
+  - PROCESS-NAME,Cherry Studio.exe
+  - PROCESS-NAME,cherry-studio
+  - PROCESS-NAME,Perplexity
+  - PROCESS-NAME,Perplexity.exe
+  - PROCESS-NAME,perplexity
+  - PROCESS-NAME,Grok
+  - PROCESS-NAME,Grok.exe
+  - PROCESS-NAME,grok
+  - PROCESS-NAME,Copilot
+  - PROCESS-NAME,Copilot.exe
+  - PROCESS-NAME,copilot
+  - PROCESS-NAME,M365Copilot.exe
+  - PROCESS-NAME,Trae
+  - PROCESS-NAME,Trae.exe
+  - PROCESS-NAME,trae
+  - PROCESS-NAME,Kiro
+  - PROCESS-NAME,Kiro.exe
+  - PROCESS-NAME,kiro
+  - PROCESS-NAME,LM Studio
+  - PROCESS-NAME,LM Studio.exe
+  - PROCESS-NAME,Ollama
+  - PROCESS-NAME,Ollama.exe
+  - PROCESS-NAME,ollama
+  - PROCESS-NAME,Jan
+  - PROCESS-NAME,Jan.exe
+  - PROCESS-NAME,jan
+  - PROCESS-NAME,Chatbox
+  - PROCESS-NAME,Chatbox.exe
+  - PROCESS-NAME,chatbox
+  - PROCESS-NAME,Msty
+  - PROCESS-NAME,Msty.exe
+  - PROCESS-NAME,msty
+  - PROCESS-NAME,AnythingLLM
+  - PROCESS-NAME,AnythingLLM.exe
+  - PROCESS-NAME,Goose
+  - PROCESS-NAME,Goose.exe
+  - PROCESS-NAME,goose
+  - PROCESS-NAME,OpenCode
+  - PROCESS-NAME,OpenCode.exe
+  - PROCESS-NAME,opencode
+  - PROCESS-NAME,aider
+  - PROCESS-NAME,aider.exe
+  - PROCESS-NAME,cline
+  - PROCESS-NAME,cline.exe
+  - PROCESS-NAME,PearAI
+  - PROCESS-NAME,PearAI.exe
+  - PROCESS-NAME,pearai
+  - PROCESS-NAME,Void
+  - PROCESS-NAME,Void.exe
+  - PROCESS-NAME,void
+  - PROCESS-NAME,GPT4All
+  - PROCESS-NAME,gpt4all.exe
+  - PROCESS-NAME,gpt4all
+  - PROCESS-NAME,Pinokio
+  - PROCESS-NAME,Pinokio.exe
+  - PROCESS-NAME,pinokio
+  - PROCESS-NAME,Kimi
+  - PROCESS-NAME,Kimi.exe
+  - PROCESS-NAME,kimi
+  - PROCESS-NAME,Doubao
+  - PROCESS-NAME,Doubao.exe
+  - PROCESS-NAME,doubao
+  # AI-браузеры
+  - PROCESS-NAME,Comet
+  - PROCESS-NAME,Comet.exe
+  - PROCESS-NAME,comet
+  - PROCESS-NAME,Atlas
+  - PROCESS-NAME,Atlas.exe
+  - PROCESS-NAME,ChatGPT Atlas
+  - PROCESS-NAME,Dia
+  - PROCESS-NAME,Dia.exe
+  # macOS: Electron helper'ы (GPU/Renderer/Plugin) — PROCESS-NAME точное совпадение, родитель не ловит
+  - PROCESS-NAME-REGEX,(?i)^(ChatGPT|Claude|Cursor|Windsurf|CherryStudio|Cherry Studio|Trae|Perplexity|Copilot|Grok|Kiro|Comet|Atlas|Dia|LM Studio|Chatbox|Msty|Jan|AnythingLLM|Goose|PearAI|Void|Kimi|Doubao) Helper
   # --- Android: package name ---
   - PROCESS-NAME,com.openai.chatgpt
   - PROCESS-NAME,com.anthropic.claude
@@ -21,7 +104,19 @@ payload:
   - PROCESS-NAME,ai.character.app
   - PROCESS-NAME,ai.mistral.chat
   - PROCESS-NAME,com.facebook.stella
-  # --- iOS: bundle identifier (часть совпадает с Android) ---
+  - PROCESS-NAME,com.larus.nova
+  - PROCESS-NAME,com.moonshot.kimichat
+  - PROCESS-NAME,com.tencent.hunyuan.app.chat
+  - PROCESS-NAME,com.aliyun.tongyi
+  - PROCESS-NAME,com.tongyi.intl
+  - PROCESS-NAME,com.zhipuai.qingyan
+  - PROCESS-NAME,com.bytedance.trae.overseas
+  - PROCESS-NAME,ai.inflection.pi
+  - PROCESS-NAME,ai.mainfunc.genspark
+  - PROCESS-NAME,ai.replika.app
+  - PROCESS-NAME,com.education.android.h.intelligence
+  - PROCESS-NAME,kling.ai.video.chat
+  # --- iOS: bundle identifier (совпадающие с Android не дублируем) ---
   - PROCESS-NAME,com.openai.chat
   - PROCESS-NAME,ai.perplexity.app
   - PROCESS-NAME,ai.x.GrokApp
