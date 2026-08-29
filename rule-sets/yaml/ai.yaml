@@ -82,6 +82,49 @@ payload:
   - PROCESS-NAME,Doubao
   - PROCESS-NAME,Doubao.exe
   - PROCESS-NAME,doubao
+  # --- CLI / TUI (не Google: gemini/agy → google-process.yaml) ---
+  - PROCESS-NAME,cursor-agent
+  - PROCESS-NAME,cursor-agent.exe
+  - PROCESS-NAME,claude-code
+  - PROCESS-NAME,claude-code.exe
+  - PROCESS-NAME,crush
+  - PROCESS-NAME,crush.exe
+  - PROCESS-NAME,droid
+  - PROCESS-NAME,droid.exe
+  - PROCESS-NAME,qwen
+  - PROCESS-NAME,qwen.exe
+  - PROCESS-NAME,qwen-code
+  - PROCESS-NAME,qwen-code.exe
+  - PROCESS-NAME,iflow
+  - PROCESS-NAME,iflow.exe
+  - PROCESS-NAME,iflow-cli
+  - PROCESS-NAME,iflow-cli.exe
+  - PROCESS-NAME,traecli
+  - PROCESS-NAME,traecli.exe
+  - PROCESS-NAME,kiro-cli-chat
+  - PROCESS-NAME,kiro-cli-chat.exe
+  - PROCESS-NAME,qodercli
+  - PROCESS-NAME,qodercli.exe
+  - PROCESS-NAME,kilocode
+  - PROCESS-NAME,kilocode.exe
+  - PROCESS-NAME,plandex
+  - PROCESS-NAME,plandex.exe
+  - PROCESS-NAME,aichat
+  - PROCESS-NAME,aichat.exe
+  - PROCESS-NAME,sgpt
+  - PROCESS-NAME,sgpt.exe
+  - PROCESS-NAME,tgpt
+  - PROCESS-NAME,tgpt.exe
+  - PROCESS-NAME,gptme
+  - PROCESS-NAME,gptme.exe
+  - PROCESS-NAME,llm
+  - PROCESS-NAME,llm.exe
+  - PROCESS-NAME,openai
+  - PROCESS-NAME,openai.exe
+  - PROCESS-NAME,openhands
+  - PROCESS-NAME,openhands.exe
+  - PROCESS-NAME,oterm
+  - PROCESS-NAME,oterm.exe
   # AI-браузеры
   - PROCESS-NAME,Comet
   - PROCESS-NAME,Comet.exe
