@@ -821,8 +821,6 @@ rules:
 
   - RULE-SET,category-ru-custom,DIRECT             # xsolla, p-way, банки .ru
 
-  - RULE-SET,google-process,🌐 Google · Gemini · Antigravity  # Gemini/Antigravity-процессы, не 🤖 ИИ
-
   - RULE-SET,games-proxy-rules,PROXY               # easebar/deadorbit: иначе steamapps PATH → 🎮 Игры
   - RULE-SET,category-game-platforms-download,DIRECT # steamcontent ⊂ games-meta — патчи всегда DIRECT
 
@@ -834,11 +832,12 @@ rules:
   - RULE-SET,games-domain-custom,🎮 Игры            # выше Google и ban-ru (nintendo.ru ⊂ оба)
   - RULE-SET,category-enhance-gaming,🎮 Игры
   - RULE-SET,category-games-meta,🎮 Игры
+  - RULE-SET,google-process,🌐 Google · Gemini · Antigravity  # Gemini/Antigravity-процессы, не 🤖 ИИ
+  - RULE-SET,summary-google,🌐 Google · Gemini · Antigravity  # браузер; leftover IP — ниже
   - RULE-SET,ai,🤖 ИИ · ChatGPT · Claude           # Cursor.exe → googleapis
   - RULE-SET,ru-app-list,DIRECT                    # ru-app → firebase.googleapis.com
   - RULE-SET,ru-apps-custom,DIRECT
 
-  - RULE-SET,summary-google,🌐 Google · Gemini · Antigravity  # браузер; leftover IP — ниже
 
   - RULE-SET,ai-meta,🤖 ИИ · ChatGPT · Claude      # gemini/antigravity ⊂ google — домены ИИ после
 
