@@ -9,26 +9,37 @@ payload:
 
   # --- Epic Games ---
   - PROCESS-NAME,EpicGamesLauncher.exe,DIRECT
+  - PROCESS-NAME,EpicWebHelper.exe,DIRECT            # CEF-хелпер витрины
 
   # --- EA / Origin ---
   - PROCESS-NAME,Origin.exe,DIRECT
   - PROCESS-NAME,EADesktop.exe,DIRECT
+  - PROCESS-NAME,EABackgroundService.exe,DIRECT      # загрузки/обновления/DRM
 
   # --- Ubisoft Connect ---
   - PROCESS-NAME,upc.exe,DIRECT
   - PROCESS-NAME,UbisoftConnect.exe,DIRECT
+  - PROCESS-NAME,UplayWebCore.exe,DIRECT             # CEF-хелпер витрины/оверлея
+  - PROCESS-NAME,UbisoftGameLauncher.exe,DIRECT      # шим запуска игр (Steam → Ubisoft)
+  - PROCESS-NAME,UbisoftGameLauncher64.exe,DIRECT
 
   # --- GOG / Playnite ---
   - PROCESS-NAME,GOGGalaxy.exe,DIRECT
+  - PROCESS-NAME,GalaxyClient.exe,DIRECT             # главный процесс GOG Galaxy
+  - PROCESS-NAME,GalaxyClientService.exe,DIRECT
+  - PROCESS-NAME,GalaxyClient Helper.exe,DIRECT      # CEF-хелпер
   - PROCESS-NAME,playnite.exe,DIRECT
 
   # --- Blizzard / Battle.net ---
   - PROCESS-NAME,Battle.net.exe,DIRECT
   - PROCESS-NAME,BlizzardBrowser.exe,DIRECT
+  - PROCESS-PATH-REGEX,(?i).*\\Battle\.net\\Agent\\.*,DIRECT # Agent.exe — установка/обновления (имя generic, матчим по пути)
 
   # --- Riot Games ---
   - PROCESS-NAME,LeagueClient.exe,DIRECT
   - PROCESS-NAME,RiotClientServices.exe,DIRECT
+  - PROCESS-NAME,RiotClientUx.exe,DIRECT             # UI/логин/магазин Riot Client
+  - PROCESS-NAME,LeagueClientUx.exe,DIRECT           # UI клиента LoL
 
   # --- Rockstar Games / Social Club ---
   - PROCESS-NAME-REGEX,(?i).*Rockstar.*,DIRECT
@@ -49,6 +60,12 @@ payload:
   # --- Xbox (Microsoft Store / PC Game Pass) ---
   - PROCESS-NAME,XboxApp.exe,DIRECT
   - PROCESS-NAME,XboxPcApp.exe,DIRECT
+  - PROCESS-NAME,GamingServices.exe,DIRECT           # установка/обновления Game Pass
+  - PROCESS-NAME,GamingServicesNet.exe,DIRECT
+
+  # --- Wargaming / Lesta Game Center ---
+  - PROCESS-NAME,wgc.exe,DIRECT                      # Wargaming Game Center
+  - PROCESS-NAME,lgc.exe,DIRECT                      # Lesta Game Center (Мир танков/корабли RU)
 
   # --- Bethesda ---
   - PROCESS-NAME,BethesdaNetLauncher.exe,DIRECT
