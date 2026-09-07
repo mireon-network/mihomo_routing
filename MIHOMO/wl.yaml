@@ -130,7 +130,11 @@ dns:
   nameserver: *dns_proxy
   nameserver-policy:
     # Локальные/приватные домены — через системный резолвер
-    "rule-set:private-domains-meta,private-domains-custom":
+    "rule-set:private-domains-meta":
+      - system
+    # private-домены — отдельный резолвер, fallback system при недоступности
+    "rule-set:private-domains-custom":
+      - 10.183.1.63
       - system
     # RU-домены (идут DIRECT) — резолвим через RU DNS напрямую: верный CDN и меньше задержка
     "rule-set:category-gov-ru,category-medicine-ru,wld": *dns_ru

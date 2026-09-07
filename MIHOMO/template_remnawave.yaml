@@ -206,7 +206,11 @@ dns:
       - 192.168.1.1
       - system
     # Локальные/приватные домены — через системный резолвер
-    "rule-set:private-domains-meta,private-domains-custom":
+    "rule-set:private-domains-meta":
+      - system
+    # private-домены — отдельный резолвер, fallback system при недоступности
+    "rule-set:private-domains-custom":
+      - 10.183.1.63
       - system
     # Игровые домены — резолв через прямой DNS (быстрый пинг к CDN/серверам, без задержек `#PROXY`)
     "rule-set:category-games-meta,games-domain-custom,games-proxy-rules": *dns_ru
