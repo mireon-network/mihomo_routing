@@ -56,7 +56,7 @@ remnawave:
 # rule-providers развёрнуты явно (без <<: *rp_*); при правках — полные блоки type/behavior/format.
 # ============================================================
 x-anchors:
-  # Приватные и зарезервированные IP — TUN route-exclude (без fake-ip: 198.18 должен идти в TUN)
+  # Приватные/зарезервированные IP + Vivox — TUN route-exclude (без fake-ip: 198.18 должен идти в TUN)
   reserved_ips: &reserved_ips
     - 0.0.0.0/8
     - 224.0.0.0/3
@@ -73,6 +73,8 @@ x-anchors:
     - 203.0.113.0/24
     - 25.0.0.0/8 # Hamachi virtual LAN
     - 26.0.0.0/8 # Radmin VPN virtual LAN
+    - 85.236.96.0/21 # Unity Vivox — вне TUN (логин 5003 через gVisor)
+    - 85.236.104.0/23
     - fc00::/7
     - ff00::/8
     - fe80::/10
@@ -138,7 +140,7 @@ tun:
   dns-hijack:
     - any:53 # перехватывает UDP/53 и TCP/53 одновременно
   strict-route: true
-  route-exclude-address: *reserved_ips # приватные/зарезервированные IP (см. x-anchors)
+  route-exclude-address: *reserved_ips # приватные + Vivox (см. x-anchors)
   # Российские приложения исключены из TUN (как у Davoyan/ultimate-mihomo-ru).
   # Источники: rule-sets/yaml/ru-app-list.yaml + ru-apps-custom.yaml.
   # Строка генерируется scripts/generate-tun-exclude-package.py — править вручную не нужно.
