@@ -37,10 +37,10 @@ YOUTUBE_GROUP = re.compile(
 
 DISCORD_BLOCK = re.compile(
     r"\n  # --- Discord[^\n]*\n"
-    r"  - AND,\(\(RULE-SET,cloudflare-ips\),\(NETWORK,udp\),\(DST-PORT,19200-19500\)\),[^\n]+\n"
-    r"  - AND,\(\(RULE-SET,cloudflare-ips\),\(NETWORK,udp\),\(DST-PORT,50000-50100\)\),[^\n]+\n"
+    r"  - AND,\(\(RULE-SET,meta-geoip-cloudflare\),\(NETWORK,udp\),\(DST-PORT,19200-19500\)\),[^\n]+\n"
+    r"  - AND,\(\(RULE-SET,meta-geoip-cloudflare\),\(NETWORK,udp\),\(DST-PORT,50000-50100\)\),[^\n]+\n"
     r"  - AND,\(\(RULE-SET,discord_voiceips\),\(NETWORK,udp\),\(DST-PORT,50000-50100\)\),[^\n]+\n"
-    r"  - RULE-SET,discord,[^\n]+\n"
+    r"  - RULE-SET,meta-discord,[^\n]+\n"
     r"  - PROCESS-NAME-REGEX,discord,[^\n]+\n"
     r"  - PROCESS-NAME-REGEX,vesktop,[^\n]+\n"
 )
@@ -263,7 +263,7 @@ def self_check() -> None:
     i_vpn = next(i for i, r in enumerate(rules) if "vpn-clients" in r)
     i_vesktop = next(i for i, r in enumerate(rules) if "vesktop" in r)
     i_udp = next(i for i, r in enumerate(rules) if "NETWORK" in r and "UDP" in r and "📡" in r)
-    i_yt = next(i for i, r in enumerate(rules) if "youtube-meta" in r)
+    i_yt = next(i for i, r in enumerate(rules) if "meta-youtube" in r)
     assert i_vpn < i_vesktop < i_udp < i_yt
 
     again = patch_text(out, is_wl=False)

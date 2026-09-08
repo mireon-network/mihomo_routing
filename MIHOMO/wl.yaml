@@ -103,7 +103,7 @@ dns:
   enhanced-mode: fake-ip # fake-ip/redir-host
   fake-ip-range: 198.18.0.1/16
   fake-ip-filter:
-    - rule-set:private-domains-meta # исключить из fake-ip приватные домены (MetaCubeX)
+    - rule-set:meta-geosite-private # исключить из fake-ip приватные домены (MetaCubeX)
     - rule-set:private-domains-custom # локальные/рабочие домены — реальный DNS
     # STUN/WebRTC, NTP/синхронизация времени, игровые консоли — нужен реальный IP, не fake-ip
     - "stun.*.*"
@@ -130,10 +130,10 @@ dns:
   nameserver: *dns_proxy
   nameserver-policy:
     # Локальные/приватные домены — через системный резолвер
-    "rule-set:private-domains-meta,private-domains-custom":
+    "rule-set:meta-geosite-private,private-domains-custom":
       - system
     # RU-домены (идут DIRECT) — резолвим через RU DNS напрямую: верный CDN и меньше задержка
-    "rule-set:category-gov-ru,category-medicine-ru,wld": *dns_ru
+    "rule-set:meta-category-gov-ru,meta-category-medicine-ru,wld": *dns_ru
 sniffer:
   enable: true
   override-destination: false
@@ -170,7 +170,7 @@ proxy-groups:
     proxies:
       - 🇷🇺 Белые списки
 rule-providers:
-  private-domains-meta:
+  meta-geosite-private:
     type: http
     proxy: PROXY
     behavior: domain
@@ -186,7 +186,7 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/private-domains-custom.mrs
     path: ./ruleset/private-domains-custom.mrs
-  private-ips-meta:
+  meta-geoip-private:
     type: http
     proxy: PROXY
     interval: *rp_interval_static
@@ -202,7 +202,7 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/private-ips-custom.mrs
     path: ./ruleset/private-ips-custom.mrs
-  category-gov-ru:
+  meta-category-gov-ru:
     type: http
     proxy: PROXY
     interval: *rp_interval_static
@@ -210,7 +210,7 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-gov-ru.mrs
     path: ./ruleset/meta-category-gov-ru.mrs
-  category-medicine-ru:
+  meta-category-medicine-ru:
     type: http
     proxy: PROXY
     interval: *rp_interval_static
@@ -281,11 +281,11 @@ rule-providers:
 
 rules:
   # --- Системные / приватные адреса ---
-  - RULE-SET,private-ips-meta,DIRECT,no-resolve    # приватные IP (MetaCubeX) — без DNS
+  - RULE-SET,meta-geoip-private,DIRECT,no-resolve    # приватные IP (MetaCubeX) — без DNS
   - RULE-SET,private-ips-custom,DIRECT,no-resolve  # локальные/рабочие IP — напрямую (вне upstream)
   - IP-CIDR,::/0,REJECT-DROP,no-resolve            # весь IPv6-трафик, не попавший в fake-ip — блок
   - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT-DROP # QUIC — принудительно через TCP
-  - RULE-SET,private-domains-meta,DIRECT           # локальные домены (MetaCubeX) — напрямую
+  - RULE-SET,meta-geosite-private,DIRECT           # локальные домены (MetaCubeX) — напрямую
   - RULE-SET,private-domains-custom,DIRECT         # локальные/рабочие домены — напрямую (вне upstream)
   - RULE-SET,vpn-clients,DIRECT                    # overlay LAN: Radmin/Hamachi/Porthole/ZeroTier/Tailscale/… — не туннелировать
 
@@ -293,8 +293,8 @@ rules:
   - RULE-SET,mail-ports,DIRECT
 
   # --- Госуслуги/госсайты и медицина РФ → DIRECT (MetaCubeX) ---
-  - RULE-SET,category-gov-ru,DIRECT
-  - RULE-SET,category-medicine-ru,DIRECT
+  - RULE-SET,meta-category-gov-ru,DIRECT
+  - RULE-SET,meta-category-medicine-ru,DIRECT
   - RULE-SET,wld,DIRECT                            # RU-белосписочный (legiz wld)
 
   # --- Торренты: только P2P (сайты — обычный MATCH/PROXY; клиент всё равно DIRECT по процессу) ---

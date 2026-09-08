@@ -14,9 +14,9 @@
 | `rule-sets/yaml/torrent-clients-custom.yaml` | Локальные дополнения торрент-клиентов → DIRECT |
 | `rule-sets/yaml/games.yaml` | Игры — **зеркало** [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category); post-hook вырезает лаунчеры (они в `games-launchers.yaml`) |
 | `rule-sets/yaml/games-process-custom.yaml` | Локальные игровые процессы: [GeForce NOW](https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json), нативные macOS/Linux, ручные — **только локально** |
-| `rule-sets/yaml/games-launchers.yaml` | Игровые лаунчеры (Steam, Epic, VK Play…) — всегда DIRECT |
+| `rule-sets/yaml/games-launchers.yaml` | Процессы лаунчеров (Steam, Epic, Battle.net…) → 🎮 Лаунчеры · сайты |
 | `rule-sets/yaml/ru-app-list.yaml` | RU Android-пакеты — **зеркало** [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets) (без правок) |
-| `rule-sets/yaml/ru-apps-custom.yaml` | Локальные дополнения RU-приложений (вне legiz `ru-app-list`) → DIRECT |
+| `rule-sets/yaml/ru-apps-custom.yaml` | Локальные дополнения RU-приложений (вне legiz `ru-app-list`, в т.ч. VK Play) → DIRECT |
 | `rule-sets/yaml/wld-apps-custom.yaml` | Локальные дополнения для `wl.yaml` `tun.exclude-package` (домены из `wld.list`) |
 | `rule-sets/yaml/ai.yaml` | AI / LLM — **только локально**, upstream не синхронизируется |
 | `rule-sets/yaml/google-process.yaml` | Процессы Google (Antigravity/agy, Gemini) → 🌐 Google · Gemini · Antigravity — **только локально** |
@@ -155,10 +155,11 @@ Upstream-наборы перезаписываются из CDN/MetaCubeX. Ло�
 Исключения с фиксированной политикой (не попадают в 🎮 Игры) — в шаблоне **выше** игровых процессов:
 
 - `games-proxy-rules` — домены/IP (easebar, deadorbit, Warframe chat) → PROXY; иначе `steamapps` PATH уводит их в 🎮 Игры
-- `category-game-platforms-download` — патч-CDN Steam/Epic/Blizzard → DIRECT; пересекается с `category-games-meta` (`steamcontent`, steampipe…)
-- `games-launchers.yaml` — процессы лаунчеров → 🎮 Лаунчеры (выше `games.yaml`, если strip промахнётся)
+- `meta-category-game-platforms-download` — патч-CDN Steam/Epic/Blizzard → DIRECT; пересекается с `meta-category-games` (`steamcontent`, steampipe…)
+- `games-launchers.yaml` — процессы лаунчеров → 🎮 Лаунчеры · сайты (выше `games.yaml`, если strip промахнётся)
+- `summary_launchers` — магазины Steam/Epic/Battle.net/Origin/Ubisoft/GOG → 🎮 Лаунчеры · сайты; матчи/античит (`exclude` в manifest) остаются в leftover `meta-category-games`
 
-Игровые **домены** (`games-domain-custom`, `category-enhance-gaming`, `category-games-meta`) стоят рядом с игровыми процессами: **выше** Google-доменов и `category-ban-ru` (`nintendo.ru` есть в games-meta и ban-ru). С `summary-google` пересечений нет.
+Игровые **домены** (`games-domain-custom`, `meta-category-enhance-gaming`, leftover `meta-category-games`) стоят рядом с игровыми процессами: **выше** Google-доменов и `category-ban-ru` (`nintendo.ru` есть в `meta-category-games` и ban-ru). С `summary_google` пересечений нет.
 
 После sync с апстримом скрипт автоматически пересобирает блок GFN в `games-process-custom.yaml` (`regenerate_gfn_block`), дедуплицируя против `games.yaml` и `games-launchers.yaml`. Вручную:
 
@@ -184,17 +185,17 @@ python3 scripts/generate-gfn-games-block.py
 
 1. **proxy-groups** — группа `🤖 ИИ · ChatGPT · Claude` (`remnawave.include-proxies: false`, прокси `🛡️ VPN` + `🔓 Без VPN` + переопределение стран).
 2. **rule-providers** — провайдер `ai` → `rule-sets/yaml/ai.yaml`.
-3. **rules** — `RULE-SET,ai` (процессы Cursor/ChatGPT/Claude) **выше** Google-доменов: иначе Cursor на `*.googleapis.com` уезжает в 🌐 Google. `RULE-SET,ai-meta` (домены) **ниже** `summary-google`: gemini/antigravity есть в обоих, остаются в Google.
+3. **rules** — `RULE-SET,ai` (процессы Cursor/ChatGPT/Claude) **выше** Google-доменов: иначе Cursor на `*.googleapis.com` уезжает в 🌐 Google. `RULE-SET,meta-ai` (домены) **ниже** `summary_google`: gemini/antigravity есть в обоих, остаются в Google.
 
 ### 🌐 Google · Gemini · Antigravity
 
 1. **proxy-groups** — группа `🌐 Google · Gemini · Antigravity` (`remnawave.include-proxies: false`, прокси `🛡️ VPN` + `🔓 Без VPN` + выбор стран).
-2. **rule-providers** — `google-process` → `rule-sets/yaml/google-process.yaml`; `summary-google` (merge `google`, `google-play`, `google-gemini`, `google-cn`, `google-registry`, `google-trust-services`; youtube/deepmind/fcm/scholar уже внутри `google`) и `google-ips-meta` (IP Google из `geo/geoip`).
+2. **rule-providers** — `google-process` → `rule-sets/yaml/google-process.yaml`; `summary_google` (merge `meta-google`, `meta-google-play`, `meta-google-gemini`, `meta-google-cn`, `meta-google-registry`, `meta-google-trust-services`; youtube/deepmind/fcm/scholar уже внутри `google`) и `meta-geoip-google` (IP Google из `geo/geoip`).
 3. **rules** — пересечения с Google-доменами (`+.googleapis.com`, `+.googleusercontent.com`):
-   - YouTube, Discord (вложения на `storage.googleapis.com`), FCM → **выше** `summary-google`;
-   - процессы игр/лаунчеров/Wine/Cursor/ru-apps и `google-process` → **выше** `summary-google` (Tekken на `*.bc.googleusercontent.com`);
-   - `ai-meta` → **ниже** (`gemini`/`antigravity` ⊂ google);
-   - `google-ips-meta` leftover (TCP) → **после** всех process/domain, иначе Sentry/PoE/Cursor на `34/35.x` без SNI уезжают в 🌐 Google.
+   - YouTube, Discord (вложения на `storage.googleapis.com`), FCM → **выше** `summary_google`;
+   - процессы игр/лаунчеров/Wine/Cursor/ru-apps и `google-process` → **выше** `summary_google` (Tekken на `*.bc.googleusercontent.com`);
+   - `meta-ai` → **ниже** (`gemini`/`antigravity` ⊂ google);
+   - `meta-geoip-google` leftover (TCP) → **после** всех process/domain, иначе Sentry/PoE/Cursor на `34/35.x` без SNI уезжают в 🌐 Google.
 
 ### TUN exclude-package (RU-приложения мимо TUN)
 

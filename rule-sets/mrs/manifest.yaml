@@ -5,7 +5,7 @@
 #   берётся как есть в text/*.list и пакуется в bin/*.mrs локально.
 version: 1
 sets:
-  - id: category-ru-meta
+  - id: meta-category-ru
     behavior: domain
     file: meta-category-ru
     src: mihomo-list
@@ -31,201 +31,231 @@ sets:
     file: category-ban-ru
     src: mihomo-list
     url: https://raw.githubusercontent.com/legiz-ru/mihomo-rule-sets/main/other/category-ban-ru.list
-  - id: discord-voiceips
+  - id: discord_voiceips
     behavior: ipcidr
     file: discord_voiceips
     url: https://cdn.jsdelivr.net/gh/legiz-ru/mihomo-rule-sets@main/other/discord-voice-ip-list.mrs
-  - id: cloudflare-ips-meta
+  - id: meta-geoip-cloudflare
     behavior: ipcidr
     file: meta-geoip-cloudflare
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cloudflare.list
-  - id: discord
+  - id: meta-discord
     behavior: domain
     file: meta-discord
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/discord.list
-  - id: win-spy-meta
+  - id: meta-win-spy
     behavior: domain
     file: meta-win-spy
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/win-spy.list
-  - id: ai-meta
+  - id: meta-ai
     behavior: domain
     file: meta-ai
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ai-!cn.list
-  - id: category-enhance-gaming
+  - id: meta-category-enhance-gaming
     behavior: domain
     file: meta-category-enhance-gaming
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-enhance-gaming.list
-  - id: category-games-meta
+  - id: meta-category-games
     behavior: domain
     file: meta-category-games
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-games.list
-  - id: youtube-meta
+  - id: meta-youtube
     behavior: domain
     file: meta-youtube
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.list
-  - id: category-ecommerce-ru
+  - id: meta-category-ecommerce-ru
     behavior: domain
     file: meta-category-ecommerce-ru
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ecommerce-ru.list
-  - id: category-entertainment-ru
+  - id: meta-category-entertainment-ru
     behavior: domain
     file: meta-category-entertainment-ru
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-entertainment-ru.list
-  - id: category-bank-ru
+  - id: meta-category-bank-ru
     behavior: domain
     file: meta-category-bank-ru
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-bank-ru.list
-  - id: t2-ru
+  - id: meta-t2-ru
     behavior: domain
     file: meta-t2-ru
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/t2-ru.list
-  - id: mts-ru
+  - id: meta-mts-ru
     behavior: domain
     file: meta-mts-ru
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/mts-ru.list
-  - id: megafon
+  - id: meta-megafon
     behavior: domain
     file: meta-megafon
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/megafon.list
-  - id: mailru-group
+  - id: meta-mailru-group
     behavior: domain
     file: meta-mailru-group
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/mailru-group.list
-  - id: yandex
+  - id: meta-yandex
     behavior: domain
     file: meta-yandex
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/yandex.list
-  - id: nic-ru
+  - id: meta-nic-ru
     behavior: domain
     file: meta-nic-ru
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/nic-ru.list
-  - id: selectel
+  - id: meta-selectel
     behavior: domain
     file: meta-selectel
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/selectel.list
-  - id: regru
+  - id: meta-regru
     behavior: domain
     file: meta-regru
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/regru.list
-  - id: rostelecom
+  - id: meta-rostelecom
     behavior: domain
     file: meta-rostelecom
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/rostelecom.list
-  - id: myoffice-ru
+  - id: meta-myoffice-ru
     behavior: domain
     file: meta-myoffice-ru
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/myoffice-ru.list
-  - id: headhunter
+  - id: meta-headhunter
     behavior: domain
     file: meta-headhunter
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/headhunter.list
-  - id: cdek
+  - id: meta-cdek
     behavior: domain
     file: meta-cdek
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cdek.list
-  - id: ideco-ru
+  - id: meta-ideco-ru
     behavior: domain
     file: meta-ideco-ru
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/ideco-ru.list
-  - id: beget
+  - id: meta-beget
     behavior: domain
     file: meta-beget
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/beget.list
-  - id: timeweb
+  - id: meta-timeweb
     behavior: domain
     file: meta-timeweb
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/timeweb.list
-  - id: category-gov-ru
+  - id: meta-category-gov-ru
     behavior: domain
     file: meta-category-gov-ru
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-gov-ru.list
-  - id: category-media-ru
+  - id: meta-category-media-ru
     behavior: domain
     file: meta-category-media-ru
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-media-ru.list
-  - id: category-retail-ru
+  - id: meta-category-retail-ru
     behavior: domain
     file: meta-category-retail-ru
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-retail-ru.list
-  - id: category-travel-ru
+  - id: meta-category-travel-ru
     behavior: domain
     file: meta-category-travel-ru
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-travel-ru.list
-  - id: category-medicine-ru
+  - id: meta-category-medicine-ru
     behavior: domain
     file: meta-category-medicine-ru
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-medicine-ru.list
-  - id: category-ip-geo-detect-meta
+  - id: meta-category-ip-geo-detect
     behavior: domain
     file: meta-category-ip-geo-detect
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ip-geo-detect.list
-  - id: category-game-platforms-download
+  - id: meta-category-game-platforms-download
     behavior: domain
     file: meta-category-game-platforms-download
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-game-platforms-download.list
-  - id: google-meta
+  - id: meta-steam
+    behavior: domain
+    file: meta-steam
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/steam.list
+  - id: meta-epicgames
+    behavior: domain
+    file: meta-epicgames
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/epicgames.list
+  - id: meta-blizzard
+    behavior: domain
+    file: meta-blizzard
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/blizzard.list
+  - id: meta-origin
+    behavior: domain
+    file: meta-origin
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/origin.list
+  - id: meta-ubisoft
+    behavior: domain
+    file: meta-ubisoft
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/ubisoft.list
+  - id: meta-gog
+    behavior: domain
+    file: meta-gog
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/gog.list
+  - id: meta-google
     behavior: domain
     file: meta-google
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.list
-  - id: google-play-meta
+  - id: meta-google-play
     behavior: domain
     file: meta-google-play
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google-play.list
-  - id: google-gemini-meta
+  - id: meta-google-gemini
     behavior: domain
     file: meta-google-gemini
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google-gemini.list
-  - id: google-cn-meta
+  - id: meta-google-cn
     behavior: domain
     file: meta-google-cn
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google-cn.list
-  - id: google-registry-meta
+  - id: meta-google-registry
     behavior: domain
     file: meta-google-registry
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google-registry.list
-  - id: google-trust-services-meta
+  - id: meta-google-trust-services
     behavior: domain
     file: meta-google-trust-services
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google-trust-services.list
-  - id: google-ips-meta
+  - id: meta-geoip-google
     behavior: ipcidr
     file: meta-geoip-google
     src: mihomo-list
@@ -233,13 +263,14 @@ sets:
   # Локальные наборы без upstream: text/ — источник правды, pack → bin/, sync пропускает.
   # summary_ru_ips — генерируется из merge-from (meta-geoip-ru + ips-for-ru), не править вручную.
   # summary_category_ru — merge всех RU geosite-зеркал + Davoyan, без +.ru/+.su.
+  # summary_launchers — магазины Steam/Epic/Battle.net/Origin/Ubisoft/GOG; матчи/античит — leftover meta-category-games.
   - id: private-domains-custom
     behavior: domain
     file: private-domains-custom
   - id: category-ru-custom
     behavior: domain
     file: category-ru-custom
-  - id: summary-category-ru
+  - id: summary_category_ru
     behavior: domain
     file: summary_category_ru
     merge-from: meta-category-ru,category-ru-davoyan,meta-category-ecommerce-ru,meta-category-entertainment-ru,meta-category-bank-ru,meta-t2-ru,meta-mts-ru,meta-megafon,meta-mailru-group,meta-yandex,meta-nic-ru,meta-selectel,meta-regru,meta-rostelecom,meta-myoffice-ru,meta-headhunter,meta-cdek,meta-ideco-ru,meta-beget,meta-timeweb,meta-category-gov-ru,meta-category-media-ru,meta-category-retail-ru,meta-category-travel-ru,meta-category-medicine-ru
@@ -253,25 +284,30 @@ sets:
   - id: games-domain-custom
     behavior: domain
     file: games-domain-custom
-  - id: summary-google
+  - id: summary_google
     behavior: domain
     file: summary_google
     merge-from: meta-google,meta-google-play,meta-google-gemini,meta-google-cn,meta-google-registry,meta-google-trust-services
-  - id: summary-ru-ips
+  - id: summary_launchers
+    behavior: domain
+    file: summary_launchers
+    merge-from: meta-steam,meta-epicgames,meta-blizzard,meta-origin,meta-ubisoft,meta-gog
+    exclude: +.battlebreakers.com,+.csgo.com.cn,+.csgo.wmsj.cn,+.dawngate.com,+.diablo.com,+.diablo3.com,+.diablo4.com,+.diabloimmortal.com,+.dota2.com,+.dota2.com.cn,+.dota2.wmsj.cn,+.eac-cdn.com,+.easy.ac,+.easyanticheat.net,+.firesidegatherings.com,+.fortnite-vod.akamaized.net,+.fortnite.com,+.heroesofthestorm.com,+.lordofultima.com,+.paragon.com,+.playartifact.com,+.playhearthstone.com,+.playoverwatch.com,+.playparagon.com,+.playwarcraft3.com,+.roborecall.com,+.shadowcomplex.com,+.spyjinx.com,+.starcraft.com,+.starcraft2.com,+.steamserver.net,+.underlords.com,+.unrealtournament.com,+.valve.net,+.worldofwarcraft.com
+  - id: summary_ru_ips
     behavior: ipcidr
     file: summary_ru_ips
     merge-from: meta-geoip-ru,ips-for-ru
-  - id: private-domains-meta
+  - id: meta-geosite-private
     behavior: domain
     file: meta-geosite-private
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.list
-  - id: private-ips-meta
+  - id: meta-geoip-private
     behavior: ipcidr
     file: meta-geoip-private
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.list
-  - id: ru-ips
+  - id: meta-geoip-ru
     behavior: ipcidr
     file: meta-geoip-ru
     src: mihomo-list
