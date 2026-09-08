@@ -1,6 +1,5 @@
 end-api.shallow.ink
 end.shallow.ink
-opgg-static.akamaized.net
 supercell.helpshift.com
 supercell.zendesk.com
 blizzard.nefficient.co.kr
@@ -348,7 +347,6 @@ gog-cdn.akamaized.net
 +.tiancitycdn.com
 +.needforspeed.com
 +.riot-games.com
-+.fabricmc.net
 +.roblox.jp
 +.roblox.it
 +.roblox.hu
@@ -358,28 +356,13 @@ gog-cdn.akamaized.net
 +.game-repack.site
 +.joinsquad.com
 +.loverslab.com
-+.minecraft.wiki
-+.minecraftforge.net
 +.gogalaxy.com
 +.muvluv-girls-garden.com
-+.namemc.com
-+.neoforged.net
-+.nexus-cdn.com
-+.nexusmods.com
 +.noxygames.com
 +.kiwi.jp
 +.offworldindustries.net
-+.optifine.net
-+.papermc.io
-+.planetminecraft.com
-+.prismlauncher.org
-+.protondb.com
-+.quiltmc.org
 +.rayark.download
 +.rayark.net
-+.speedrun.com
-+.spigotmc.org
-+.steamdb.info
 +.lowiro.com
 +.nikke-de.com
 +.nikke-en.com
@@ -387,7 +370,6 @@ gog-cdn.akamaized.net
 +.nikke-jp.com
 +.nikke-kr.com
 +.nikke-sea.com
-+.op.gg
 +.steamunlocked.net
 +.boombeach.com
 +.brawlstars.com
@@ -468,9 +450,6 @@ gog-cdn.akamaized.net
 +.gog.com
 +.ylands.com
 +.vigorgame.com
-+.sih-db.com
-+.sih.app
-+.steaminventoryhelper.com
 +.masteroforion.com
 +.wargaming.com
 +.wargaming.net
@@ -768,7 +747,6 @@ gog-cdn.akamaized.net
 +.tarkov.com
 +.eft-store.com
 +.escapefromtarkov.com
-+.modrinth.com
 +.kraftonde.com
 +.playbattlegrounds.com
 +.pubg.com
@@ -786,8 +764,6 @@ gog-cdn.akamaized.net
 +.zynga.com
 +.zyngaplayersupport.com
 +.zyngapoker.com
-+.curseforge.com
-+.forgecdn.net
 +.awayoutgame.com
 +.battlefieldbadcompany2.com
 +.battlefront2.com
@@ -896,7 +872,6 @@ gog-cdn.akamaized.net
 +.mirrorsedge2d.com
 +.blackboxgames.com
 +.eablackbox.com
-+.chunkbase.com
 +.needforspeedboost.com
 +.needforspeeddriftkings.com
 +.needforspeedeliminator.com

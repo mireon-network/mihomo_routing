@@ -65,6 +65,8 @@ sets:
     file: meta-category-games
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-games.list
+    # справочники/вики/моды — не 🎮 Игры, падают в MATCH
+    exclude: opgg-static.akamaized.net,+.chunkbase.com,+.curseforge.com,+.fabricmc.net,+.forgecdn.net,+.minecraft.wiki,+.minecraftforge.net,+.modrinth.com,+.namemc.com,+.neoforged.net,+.nexus-cdn.com,+.nexusmods.com,+.op.gg,+.optifine.net,+.papermc.io,+.planetminecraft.com,+.prismlauncher.org,+.protondb.com,+.quiltmc.org,+.sih-db.com,+.sih.app,+.speedrun.com,+.spigotmc.org,+.steamdb.info,+.steaminventoryhelper.com
   - id: meta-youtube
     behavior: domain
     file: meta-youtube
