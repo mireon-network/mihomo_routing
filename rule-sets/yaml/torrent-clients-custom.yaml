@@ -11,6 +11,7 @@ payload:
   - PROCESS-NAME,Motrix.exe
   - PROCESS-NAME,aria2.exe
   - PROCESS-NAME,aria2c.exe
+  - PROCESS-NAME,torrent_pp.exe # Sirus Launcher: libtorrent-хелпер (resources/bin)
 
   # --- macOS ---
   - PROCESS-NAME,Tribler
@@ -24,6 +25,7 @@ payload:
   - PROCESS-NAME,LIII
   - PROCESS-NAME,aria2
   - PROCESS-NAME,aria2c
+  - PROCESS-NAME,torrent_pp # Sirus Launcher, Linux/macOS
 
   # --- Android (package name) ---
   - PROCESS-NAME,com.delphicoder.flud.plus

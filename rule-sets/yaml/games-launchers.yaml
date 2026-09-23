@@ -62,6 +62,16 @@ payload:
   # --- Bethesda ---
   - PROCESS-NAME,BethesdaNetLauncher.exe
 
+  # --- Sirus (sirus.one) ---
+  # exe: «Sirus Launcher.exe»; AppImage: SirusLauncher-*. Патчи: s-patches.* → update.scourge.tech
+  - PROCESS-NAME-REGEX,(?i)sirus.?launcher
+  - DOMAIN-SUFFIX,sirus.one
+  - DOMAIN-SUFFIX,sirus.su
+  - DOMAIN-SUFFIX,sirus.world
+  - DOMAIN-SUFFIX,s-patches.ru
+  - DOMAIN-SUFFIX,s-patches.pro
+  - DOMAIN-SUFFIX,scourge.tech
+
   # --- Прочие лаунчеры (отдельные игры / платформы) ---
   - PROCESS-NAME,ApexLauncher.exe
   - PROCESS-NAME,ExecPubg.exe
