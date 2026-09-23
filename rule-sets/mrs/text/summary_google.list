@@ -253,11 +253,13 @@ download.tensorflow.google.com
 +.financeleadsonline.com
 firebase-settings.crashlytics.com
 +.firebase.com
-firebase.google.com
++.firebase.dev
 firebase.googleapis.com
 +.firebase.io
 +.firebaseapp.com
 firebaseappcheck.googleapis.com
+firebaseappdistribution.googleapis.com
+firebaseapptesters.googleapis.com
 firebasedynamiclinks-ipv4.googleapis.com
 firebasedynamiclinks-ipv6.googleapis.com
 firebasedynamiclinks.googleapis.com
@@ -270,6 +272,7 @@ firebaseperusertopics-pa.googleapis.com
 firebaseremoteconfig.googleapis.com
 +.fitbit.com
 +.flow.google
++.flow.google.com
 +.flutter.dev
 +.flutterapp.com
 fontfiles.googleapis.com
@@ -683,6 +686,7 @@ mtalk4.google.com
 +.new.day
 +.nexus
 +.nomulus.foo
++.notebook.google
 +.notebook.google.com
 notebooklm-pa.googleapis.com
 +.notebooklm.google
