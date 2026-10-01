@@ -254,7 +254,7 @@ proxy-groups:
       - 🇳🇱 Нидерланды
       - 🇺🇸 США
     # LEAVE THIS LINE!
-    url: https://www.gstatic.com/generate_204
+    url: https://www.youtube.com/generate_204
     interval: 600
     lazy: false
     timeout: 3000
@@ -357,7 +357,7 @@ proxy-groups:
     hidden: true
     lazy: false
     strategy: sticky-sessions
-    url: https://www.gstatic.com/generate_204
+    url: https://www.youtube.com/generate_204
     interval: 600
     expected-status: 204
     max-failed-times: 3
@@ -373,7 +373,7 @@ proxy-groups:
     hidden: true
     lazy: false
     strategy: sticky-sessions
-    url: https://www.gstatic.com/generate_204
+    url: https://www.youtube.com/generate_204
     interval: 600
     expected-status: 204
     max-failed-times: 3
@@ -389,7 +389,7 @@ proxy-groups:
     hidden: true
     lazy: false
     strategy: sticky-sessions
-    url: https://www.gstatic.com/generate_204
+    url: https://www.youtube.com/generate_204
     interval: 600
     expected-status: 204
     max-failed-times: 3
@@ -405,7 +405,7 @@ proxy-groups:
     hidden: true
     lazy: false
     strategy: sticky-sessions
-    url: https://www.gstatic.com/generate_204
+    url: https://www.youtube.com/generate_204
     interval: 600
     expected-status: 204
     max-failed-times: 3
@@ -421,7 +421,7 @@ proxy-groups:
     hidden: true
     lazy: false
     strategy: sticky-sessions
-    url: https://www.gstatic.com/generate_204
+    url: https://www.youtube.com/generate_204
     interval: 600
     expected-status: 204
     max-failed-times: 3
@@ -436,7 +436,7 @@ proxy-groups:
     type: url-test
     hidden: true
     tolerance: 80
-    url: https://www.gstatic.com/generate_204
+    url: https://www.youtube.com/generate_204
     interval: 600
     lazy: false
     timeout: 3000
