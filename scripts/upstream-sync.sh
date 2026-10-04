@@ -38,6 +38,9 @@ cmd_sync() {
     echo "upstream-sync: пропуск MRS (нет $MRS_TOOL)" >&2
   fi
 
+  echo "upstream-sync: XRAY…"
+  python3 "$ROOT/scripts/build-xray.py"
+
   echo "upstream-sync: готово"
 }
 

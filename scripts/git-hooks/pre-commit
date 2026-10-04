@@ -26,15 +26,30 @@ while IFS= read -r -d '' f; do
   fi
 done < <(find "$TEXT_DIR" -name '*.list' -print0 2>/dev/null || true)
 
-if [[ "$needs_pack" -eq 0 ]]; then
-  exit 0
+should_xray=0
+if git diff --cached --name-only --diff-filter=ACMR | grep -qE '^(MIHOMO/|rule-sets/|scripts/build-xray.py)'; then
+  should_xray=1
+fi
+if [[ "$needs_pack" -eq 1 ]]; then
+  should_xray=1
 fi
 
-echo "pre-commit: упаковка rule-sets/mrs…"
-"$ROOT/scripts/mrs-tool.sh" pack
+if [[ "$should_xray" -eq 1 ]] && git diff --name-only -- MIHOMO rule-sets scripts/build-xray.py | grep -q .; then
+  echo "pre-commit: незастейдженные исходники (MIHOMO/, rule-sets/, scripts/build-xray.py)." >&2
+  echo "pre-commit: добавь их в коммит или убери из рабочей копии — иначе XRAY соберётся не из индекса." >&2
+  exit 1
+fi
 
-if [[ -d "$BIN_DIR" ]]; then
-  git add "$BIN_DIR"/*.mrs 2>/dev/null || true
+if [[ "$needs_pack" -eq 1 ]]; then
+  echo "pre-commit: упаковка rule-sets/mrs…"
+  "$ROOT/scripts/mrs-tool.sh" pack
+  git add "$BIN_DIR"/*.mrs rule-sets/mrs/text
+fi
+
+if [[ "$should_xray" -eq 1 ]]; then
+  echo "pre-commit: сборка XRAY…"
+  python3 "$ROOT/scripts/build-xray.py"
+  git add XRAY
 fi
 
 exit 0

@@ -10,6 +10,10 @@
 |------|----------|
 | `MIHOMO/template_remnawave.yaml` | Шаблон для Remnawave (страны + gateway LB) |
 | `MIHOMO/wl.yaml` | Режим «белые списки» |
+| `XRAY/geosite.dat` | Категории доменов, имя = id rule-set |
+| `XRAY/geoip.dat` | Категории IP |
+| `XRAY/template_remnawave.json` | Правила Xray: `geosite:` / `geoip:` (процессы в `*.skipped.txt`) |
+| `XRAY/wl.json` | Белые списки для Xray |
 | `rule-sets/yaml/torrent-clients.yaml` | Торрент-клиенты — **зеркало** [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets/blob/main/other/torrent-clients.yaml) (без правок) |
 | `rule-sets/yaml/torrent-clients-custom.yaml` | Локальные дополнения торрент-клиентов → DIRECT |
 | `rule-sets/yaml/games.yaml` | Игры — **зеркало** [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category); post-hook вырезает лаунчеры (они в `games-launchers.yaml`) |
@@ -25,6 +29,7 @@
 | `rule-sets/mrs/bin/*.mrs` | Бинарные rule-set для Mihomo (собираются из `text/`) |
 | `scripts/upstream-sync.sh` | Обновление YAML из upstream-репозиториев |
 | `scripts/mrs-tool.sh` | Обновление MRS rule-sets |
+| `scripts/build-xray.py` | Сборка `XRAY/geosite.dat`, `geoip.dat` и JSON из `MIHOMO/*.yaml` и `rule-sets/` |
 | `scripts/upstream-manifest.yaml` | Список upstream-источников для `upstream-sync.sh` |
 | `scripts/generate-gfn-games-block.py` | Пересборка блока GeForce NOW в `games-process-custom.yaml` |
 | `scripts/generate-tun-exclude-package.py` | Пересборка `tun.exclude-package` в обоих шаблонах |
@@ -33,6 +38,49 @@
 | `scripts/patch-include-proxies.py` | Debug-патч: `include-all: true`, селектор `📡 UDP`, без блокировки Remnawave |
 
 > Мелкие наборы (`wine`, `games-proxy-rules`, `mail-ports`) — `type: inline` rule-providers в шаблоне (без отдельных загрузок). `vpn-clients` — отдельный YAML. Локальные MRS без upstream: `private-domains-custom`, `category-ru-custom`, `private-ips-custom`, `torrent-domains-custom`, `games-domain-custom` — правишь `rule-sets/mrs/text/<имя>.list`, `mrs-tool.sh pack` собирает `bin/*.mrs` (sync их пропускает).
+
+## Категории Xray
+
+Имя категории совпадает с id rule-set. В правилах: `geosite:<имя>` и `geoip:<имя>`. Файлы лежат в каталоге ассетов Xray (`XRAY_LOCATION_ASSET`). `meta-reddit` есть в `geosite.dat`, в правила не входит.
+
+`outboundTag` — имя политики mihomo (`DIRECT`, `PROXY`, `REJECT-DROP` или группа с эмодзи): в Xray нужен outbound с тем же тегом. `domainStrategy: AsIs`, чтобы `::/0` с `no-resolve` не резал AAAA. `summary_ru_ips` и `meta-geoip-google` без `no-resolve` поэтому совпадают только с уже известным IP.
+
+### geosite
+
+- `category-ban-ru`
+- `category-ru-custom`
+- `games-domain-custom`
+- `games-launchers`
+- `games-proxy-rules`
+- `meta-ai`
+- `meta-category-enhance-gaming`
+- `meta-category-game-platforms-download`
+- `meta-category-games`
+- `meta-category-gov-ru`
+- `meta-category-ip-geo-detect`
+- `meta-category-medicine-ru`
+- `meta-discord`
+- `meta-geosite-private`
+- `meta-reddit`
+- `meta-win-spy`
+- `meta-youtube`
+- `private-domains-custom`
+- `summary_category_ru`
+- `summary_google`
+- `summary_launchers`
+- `torrent-domains-custom`
+- `torrent-trackers`
+- `wld`
+
+### geoip
+
+- `discord_voiceips`
+- `games-proxy-rules`
+- `meta-geoip-cloudflare`
+- `meta-geoip-google`
+- `meta-geoip-private`
+- `private-ips-custom`
+- `summary_ru_ips`
 
 ## CDN
 

@@ -45,6 +45,12 @@ sets:
     file: meta-discord
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/discord.list
+  # только зеркало, в rule-providers шаблонов не входит
+  - id: meta-reddit
+    behavior: domain
+    file: meta-reddit
+    src: mihomo-list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/reddit.list
   - id: meta-win-spy
     behavior: domain
     file: meta-win-spy

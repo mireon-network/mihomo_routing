@@ -1,0 +1,284 @@
+{
+  "routing": {
+    "domainStrategy": "AsIs",
+    "rules": [
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "ip": [
+          "geoip:meta-geoip-private"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "ip": [
+          "geoip:private-ips-custom"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "REJECT-DROP",
+        "ip": [
+          "::/0"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "REJECT-DROP",
+        "network": "udp",
+        "port": "443"
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "geosite:meta-geosite-private"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "geosite:private-domains-custom"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "ip": [
+          "17.0.0.0/8"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "port": "5223"
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "domain:push.apple.com"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "port": "5228-5230"
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "keyword:mtalk"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "domain:fcm.googleapis.com"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "domain:fcm-xmpp.googleapis.com"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "port": "25,465,587,2525,110,995,143,993"
+      },
+      {
+        "type": "field",
+        "outboundTag": "REJECT-DROP",
+        "domain": [
+          "geosite:meta-win-spy"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "geosite:torrent-trackers"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "geosite:torrent-domains-custom"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "📺 Youtube",
+        "domain": [
+          "geosite:meta-youtube"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "💬 Discord",
+        "ip": [
+          "geoip:meta-geoip-cloudflare"
+        ],
+        "network": "udp",
+        "port": "19200-19500"
+      },
+      {
+        "type": "field",
+        "outboundTag": "💬 Discord",
+        "ip": [
+          "geoip:meta-geoip-cloudflare"
+        ],
+        "network": "udp",
+        "port": "50000-50100"
+      },
+      {
+        "type": "field",
+        "outboundTag": "💬 Discord",
+        "ip": [
+          "geoip:discord_voiceips"
+        ],
+        "network": "udp",
+        "port": "50000-50100"
+      },
+      {
+        "type": "field",
+        "outboundTag": "💬 Discord",
+        "domain": [
+          "geosite:meta-discord"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "geosite:category-ru-custom"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "PROXY",
+        "domain": [
+          "geosite:games-proxy-rules"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "PROXY",
+        "ip": [
+          "geoip:games-proxy-rules"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "geosite:meta-category-game-platforms-download"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "🎮 Лаунчеры · сайты",
+        "domain": [
+          "geosite:games-launchers"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "🎮 Игры",
+        "domain": [
+          "geosite:games-domain-custom"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "🎮 Лаунчеры · сайты",
+        "domain": [
+          "geosite:summary_launchers"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "🎮 Игры",
+        "domain": [
+          "geosite:meta-category-enhance-gaming"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "🎮 Игры",
+        "domain": [
+          "geosite:meta-category-games"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "🌐 Google · Gemini · Antigravity",
+        "domain": [
+          "geosite:summary_google"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "🤖 ИИ · ChatGPT · Claude",
+        "domain": [
+          "geosite:meta-ai"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "PROXY",
+        "domain": [
+          "geosite:category-ban-ru"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "geosite:meta-category-ip-geo-detect"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "geosite:summary_category_ru"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "geosite:wld"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "🌐 Google · Gemini · Antigravity",
+        "ip": [
+          "geoip:meta-geoip-google"
+        ],
+        "network": "tcp"
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "ip": [
+          "geoip:summary_ru_ips"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "PROXY"
+      }
+    ]
+  }
+}
