@@ -473,7 +473,7 @@ def main() -> None:
     assert not any(r.get("domain") == ["geosite:meta-reddit"] for r in rules)
     assert all(len(r.get("domain", [])) < 8 for r in rules)
     assert rules[-1] == {"type": "field", "outboundTag": "PROXY"}
-    assert (REGEX, r"(^|\.)tinkoff\.[^.]+$") in decoded_site["summary_category_ru"]
+    assert (REGEX, r"(^|\.)tinkoff\.[^.]+$") in decoded_site["summary-category-ru"]
     print(
         f"geosite: {len(GEOSITE)} категорий, {len(site)} байт; geoip: {len(GEOIP)} категорий, {len(ipdat)} байт",
         file=sys.stderr,

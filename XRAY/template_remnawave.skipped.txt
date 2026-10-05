@@ -13,4 +13,4 @@ RULE-SET,ai → 🤖 ИИ · ChatGPT · Claude: пропущено процес�
 RULE-SET,ru-app-list → DIRECT: пропущено процессов 531
 RULE-SET,ru-apps-custom → DIRECT: пропущено процессов 488
 meta-geoip-google: geoip без no-resolve — только уже известный IP
-summary_ru_ips: geoip без no-resolve — только уже известный IP
+summary-ru-ips: geoip без no-resolve — только уже известный IP

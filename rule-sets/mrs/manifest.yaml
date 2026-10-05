@@ -31,9 +31,9 @@ sets:
     file: category-ban-ru
     src: mihomo-list
     url: https://raw.githubusercontent.com/legiz-ru/mihomo-rule-sets/main/other/category-ban-ru.list
-  - id: discord_voiceips
+  - id: discord-voiceips
     behavior: ipcidr
-    file: discord_voiceips
+    file: discord-voiceips
     url: https://cdn.jsdelivr.net/gh/legiz-ru/mihomo-rule-sets@main/other/discord-voice-ip-list.mrs
   - id: meta-geoip-cloudflare
     behavior: ipcidr
@@ -269,18 +269,18 @@ sets:
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/google.list
   # Локальные наборы без upstream: text/ — источник правды, pack → bin/, sync пропускает.
-  # summary_ru_ips — генерируется из merge-from (meta-geoip-ru + ips-for-ru), не править вручную.
-  # summary_category_ru — merge всех RU geosite-зеркал + Davoyan, без +.ru/+.su.
-  # summary_launchers — магазины Steam/Epic/Battle.net/Origin/Ubisoft/GOG; матчи/античит — leftover meta-category-games.
+  # summary-ru-ips — генерируется из merge-from (meta-geoip-ru + ips-for-ru), не править вручную.
+  # summary-category-ru — merge всех RU geosite-зеркал + Davoyan, без +.ru/+.su.
+  # summary-launchers — магазины Steam/Epic/Battle.net/Origin/Ubisoft/GOG; матчи/античит — leftover meta-category-games.
   - id: private-domains-custom
     behavior: domain
     file: private-domains-custom
   - id: category-ru-custom
     behavior: domain
     file: category-ru-custom
-  - id: summary_category_ru
+  - id: summary-category-ru
     behavior: domain
-    file: summary_category_ru
+    file: summary-category-ru
     merge-from: meta-category-ru,category-ru-davoyan,meta-category-ecommerce-ru,meta-category-entertainment-ru,meta-category-bank-ru,meta-t2-ru,meta-mts-ru,meta-megafon,meta-mailru-group,meta-yandex,meta-nic-ru,meta-selectel,meta-regru,meta-rostelecom,meta-myoffice-ru,meta-headhunter,meta-cdek,meta-ideco-ru,meta-beget,meta-timeweb,meta-category-gov-ru,meta-category-media-ru,meta-category-retail-ru,meta-category-travel-ru,meta-category-medicine-ru
     exclude: +.ru,+.su
   - id: private-ips-custom
@@ -292,18 +292,18 @@ sets:
   - id: games-domain-custom
     behavior: domain
     file: games-domain-custom
-  - id: summary_google
+  - id: summary-google
     behavior: domain
-    file: summary_google
+    file: summary-google
     merge-from: meta-google,meta-google-play,meta-google-gemini,meta-google-cn,meta-google-registry,meta-google-trust-services
-  - id: summary_launchers
+  - id: summary-launchers
     behavior: domain
-    file: summary_launchers
+    file: summary-launchers
     merge-from: meta-steam,meta-epicgames,meta-blizzard,meta-origin,meta-ubisoft,meta-gog
     exclude: +.battlebreakers.com,+.csgo.com.cn,+.csgo.wmsj.cn,+.dawngate.com,+.diablo.com,+.diablo3.com,+.diablo4.com,+.diabloimmortal.com,+.dota2.com,+.dota2.com.cn,+.dota2.wmsj.cn,+.eac-cdn.com,+.easy.ac,+.easyanticheat.net,+.firesidegatherings.com,+.fortnite-vod.akamaized.net,+.fortnite.com,+.heroesofthestorm.com,+.lordofultima.com,+.paragon.com,+.playartifact.com,+.playhearthstone.com,+.playoverwatch.com,+.playparagon.com,+.playwarcraft3.com,+.roborecall.com,+.shadowcomplex.com,+.spyjinx.com,+.starcraft.com,+.starcraft2.com,+.steamserver.net,+.underlords.com,+.unrealtournament.com,+.valve.net,+.worldofwarcraft.com
-  - id: summary_ru_ips
+  - id: summary-ru-ips
     behavior: ipcidr
-    file: summary_ru_ips
+    file: summary-ru-ips
     merge-from: meta-geoip-ru,ips-for-ru
   - id: meta-geosite-private
     behavior: domain

@@ -28,7 +28,7 @@
 #   YouTube / Discord / FCM     → выше Google-доменов (googleapis, googleusercontent)
 #   games-proxy-rules → PROXY   → выше игровых процессов (иначе steamapps PATH)
 #   download-CDN → DIRECT       → выше meta-category-games (steamcontent, steampipe, blzddist)
-#   summary_launchers           → Steam/Epic/Battle.net/Origin/Ubisoft/GOG → лаунчеры; выше leftover games
+#   summary-launchers           → Steam/Epic/Battle.net/Origin/Ubisoft/GOG → лаунчеры; выше leftover games
 #   процессы игр/лаунчеров/Wine/Cursor/ru-apps → выше Google-доменов
 #   игровые домены              → рядом с процессами; выше Google и ban-ru (nintendo.ru)
 #   google-process              → Gemini/Antigravity не в 🤖 ИИ
@@ -157,7 +157,7 @@ dns:
   fake-ip-filter:
     - rule-set:meta-geosite-private # исключить из fake-ip приватные домены (MetaCubeX)
     - rule-set:private-domains-custom # локальные/рабочие домены — реальный DNS
-    - rule-set:meta-category-games # leftover игр (Riot, Roblox, Nintendo…) — всегда реальный IP; ⊂ сюда и summary_launchers
+    - rule-set:meta-category-games # leftover игр (Riot, Roblox, Nintendo…) — всегда реальный IP; ⊂ сюда и summary-launchers
     - rule-set:games-domain-custom # локальные игровые домены (PoE, Tarkov...) — реальный IP
     - rule-set:games-proxy-rules # прокси-правила игр — реальный IP
     - rule-set:meta-youtube # иначе googlevideo по IP может уехать в meta-geoip-google
@@ -216,7 +216,7 @@ dns:
     # PROXY-сервисы — резолв через узел VPN (legiz/Davoyan nameserver-policy)
     "rule-set:meta-youtube,category-ban-ru,meta-discord": *dns_proxy
     # RU-домены (идут DIRECT) — резолвим через RU DNS напрямую: верный CDN и меньше задержка
-    "rule-set:summary_category_ru,category-ru-custom,wld": *dns_ru
+    "rule-set:summary-category-ru,category-ru-custom,wld": *dns_ru
     # DIRECT-сервисы — резолвим напрямую: geo-detect, торрент-трекеры, игровые CDN
     "rule-set:meta-category-ip-geo-detect,torrent-trackers,meta-category-game-platforms-download": *dns_ru
 sniffer:
@@ -506,14 +506,14 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/category-ru-custom.mrs
     path: ./ruleset/category-ru-custom.mrs
-  summary_category_ru:
+  summary-category-ru:
     type: http
     proxy: ⚡️ Авто
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/summary_category_ru.mrs
-    path: ./ruleset/summary_category_ru.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/summary-category-ru.mrs
+    path: ./ruleset/summary-category-ru.mrs
   wld:
     type: http
     proxy: ⚡️ Авто
@@ -570,14 +570,14 @@ rule-providers:
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geoip-private.mrs
     path: ./ruleset/meta-geoip-private.mrs
     interval: *rp_interval
-  summary_ru_ips:
+  summary-ru-ips:
     type: http
     proxy: ⚡️ Авто
     interval: *rp_interval
     behavior: ipcidr
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/summary_ru_ips.mrs
-    path: ./ruleset/summary_ru_ips.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/summary-ru-ips.mrs
+    path: ./ruleset/summary-ru-ips.mrs
   meta-youtube:
     type: http
     proxy: ⚡️ Авто
@@ -665,14 +665,14 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/games-domain-custom.mrs
     path: ./ruleset/games-domain-custom.mrs
-  summary_launchers: # steam, epicgames, blizzard, origin, ubisoft, gog
+  summary-launchers: # steam, epicgames, blizzard, origin, ubisoft, gog
     type: http
     proxy: ⚡️ Авто
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/summary_launchers.mrs
-    path: ./ruleset/summary_launchers.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/summary-launchers.mrs
+    path: ./ruleset/summary-launchers.mrs
   games-process-custom:
     type: http
     proxy: ⚡️ Авто
@@ -718,14 +718,14 @@ rule-providers:
     format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/google-process.yaml
     path: ./ruleset/google-process.yaml
-  summary_google: # google, google-play, gemini, deepmind, antigravity, google-cn, registry, trust-services
+  summary-google: # google, google-play, gemini, deepmind, antigravity, google-cn, registry, trust-services
     type: http
     proxy: ⚡️ Авто
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/summary_google.mrs
-    path: ./ruleset/summary_google.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/summary-google.mrs
+    path: ./ruleset/summary-google.mrs
   meta-geoip-google:
     type: http
     proxy: ⚡️ Авто
@@ -758,14 +758,14 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/category-ban-ru.mrs
     path: ./ruleset/category-ban-ru.mrs
-  discord_voiceips:
+  discord-voiceips:
     type: http
     proxy: ⚡️ Авто
     interval: *rp_interval
     behavior: ipcidr
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/discord_voiceips.mrs
-    path: ./ruleset/discord_voiceips.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/discord-voiceips.mrs
+    path: ./ruleset/discord-voiceips.mrs
   meta-geoip-cloudflare:
     type: http
     proxy: ⚡️ Авто
@@ -820,7 +820,7 @@ rules:
   # --- Discord (storage.googleapis.com ⊂ google) ---
   - AND,((RULE-SET,meta-geoip-cloudflare),(NETWORK,udp),(DST-PORT,19200-19500)),💬 Discord # голос Discord через Cloudflare (мобильные)
   - AND,((RULE-SET,meta-geoip-cloudflare),(NETWORK,udp),(DST-PORT,50000-50100)),💬 Discord # голос Discord через Cloudflare
-  - AND,((RULE-SET,discord_voiceips),(NETWORK,udp),(DST-PORT,50000-50100)),💬 Discord # голос Discord по IP (legiz)
+  - AND,((RULE-SET,discord-voiceips),(NETWORK,udp),(DST-PORT,50000-50100)),💬 Discord # голос Discord по IP (legiz)
   - RULE-SET,meta-discord,💬 Discord
   - PROCESS-NAME-REGEX,discord,💬 Discord
   - PROCESS-NAME-REGEX,vesktop,💬 Discord
@@ -836,11 +836,11 @@ rules:
   - RULE-SET,games,🎮 Игры                          # в т.ч. *Win64-Shipping*
   - RULE-SET,wine,🍷 Wine · Proton
   - RULE-SET,games-domain-custom,🎮 Игры            # выше Google и ban-ru (nintendo.ru ⊂ оба)
-  - RULE-SET,summary_launchers,🎮 Лаунчеры · сайты  # магазины; матчи/EAC — leftover games
+  - RULE-SET,summary-launchers,🎮 Лаунчеры · сайты  # магазины; матчи/EAC — leftover games
   - RULE-SET,meta-category-enhance-gaming,🎮 Игры
   - RULE-SET,meta-category-games,🎮 Игры            # leftover: riot, roblox, nintendo, dota2, fortnite, wow…
   - RULE-SET,google-process,🌐 Google · Gemini · Antigravity  # Gemini/Antigravity-процессы, не 🤖 ИИ
-  - RULE-SET,summary_google,🌐 Google · Gemini · Antigravity  # браузер; leftover IP — ниже
+  - RULE-SET,summary-google,🌐 Google · Gemini · Antigravity  # браузер; leftover IP — ниже
   - RULE-SET,ai,🤖 ИИ · ChatGPT · Claude           # Cursor.exe → googleapis
   - RULE-SET,ru-app-list,DIRECT                    # ru-app → firebase.googleapis.com
   - RULE-SET,ru-apps-custom,DIRECT
@@ -851,12 +851,12 @@ rules:
   - RULE-SET,category-ban-ru,PROXY                 # выше RU catch-all (rnd.ru ⊂ оба)
 
   - RULE-SET,meta-category-ip-geo-detect,DIRECT
-  - RULE-SET,summary_category_ru,DIRECT
+  - RULE-SET,summary-category-ru,DIRECT
   - RULE-SET,wld,DIRECT
 
   # google-ips leftover: GCP без SNI/процесса (TCP; ICMP иначе 0ms в клиенте)
   - AND,((RULE-SET,meta-geoip-google),(NETWORK,tcp)),🌐 Google · Gemini · Antigravity
-  - RULE-SET,summary_ru_ips,DIRECT
+  - RULE-SET,summary-ru-ips,DIRECT
 
   # --- Всё остальное → PROXY ---
   - MATCH,PROXY

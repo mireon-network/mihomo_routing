@@ -43,7 +43,7 @@
 
 Имя категории совпадает с id rule-set. В правилах: `geosite:<имя>` и `geoip:<имя>`. Файлы лежат в каталоге ассетов Xray (`XRAY_LOCATION_ASSET`). `meta-reddit` есть в `geosite.dat`, в правила не входит.
 
-`outboundTag` — имя политики mihomo (`DIRECT`, `PROXY`, `REJECT-DROP` или группа с эмодзи): в Xray нужен outbound с тем же тегом. `domainStrategy: AsIs`, чтобы `::/0` с `no-resolve` не резал AAAA. `summary_ru_ips` и `meta-geoip-google` без `no-resolve` поэтому совпадают только с уже известным IP.
+`outboundTag` — имя политики mihomo (`DIRECT`, `PROXY`, `REJECT-DROP` или группа с эмодзи): в Xray нужен outbound с тем же тегом. `domainStrategy: AsIs`, чтобы `::/0` с `no-resolve` не резал AAAA. `summary-ru-ips` и `meta-geoip-google` без `no-resolve` поэтому совпадают только с уже известным IP.
 
 ### geosite
 
@@ -65,22 +65,22 @@
 - `meta-win-spy`
 - `meta-youtube`
 - `private-domains-custom`
-- `summary_category_ru`
-- `summary_google`
-- `summary_launchers`
+- `summary-category-ru`
+- `summary-google`
+- `summary-launchers`
 - `torrent-domains-custom`
 - `torrent-trackers`
 - `wld`
 
 ### geoip
 
-- `discord_voiceips`
+- `discord-voiceips`
 - `games-proxy-rules`
 - `meta-geoip-cloudflare`
 - `meta-geoip-google`
 - `meta-geoip-private`
 - `private-ips-custom`
-- `summary_ru_ips`
+- `summary-ru-ips`
 
 ## CDN
 
@@ -205,9 +205,9 @@ Upstream-наборы перезаписываются из CDN/MetaCubeX. Ло�
 - `games-proxy-rules` — домены/IP (easebar, deadorbit, Warframe chat) → PROXY; иначе `steamapps` PATH уводит их в 🎮 Игры
 - `meta-category-game-platforms-download` — патч-CDN Steam/Epic/Blizzard → DIRECT; пересекается с `meta-category-games` (`steamcontent`, steampipe…)
 - `games-launchers.yaml` — процессы лаунчеров → 🎮 Лаунчеры · сайты (выше `games.yaml`, если strip промахнётся)
-- `summary_launchers` — магазины Steam/Epic/Battle.net/Origin/Ubisoft/GOG → 🎮 Лаунчеры · сайты; матчи/античит (`exclude` в manifest) остаются в leftover `meta-category-games`
+- `summary-launchers` — магазины Steam/Epic/Battle.net/Origin/Ubisoft/GOG → 🎮 Лаунчеры · сайты; матчи/античит (`exclude` в manifest) остаются в leftover `meta-category-games`
 
-Игровые **домены** (`games-domain-custom`, `meta-category-enhance-gaming`, leftover `meta-category-games`) стоят рядом с игровыми процессами: **выше** Google-доменов и `category-ban-ru` (`nintendo.ru` есть в `meta-category-games` и ban-ru). С `summary_google` пересечений нет.
+Игровые **домены** (`games-domain-custom`, `meta-category-enhance-gaming`, leftover `meta-category-games`) стоят рядом с игровыми процессами: **выше** Google-доменов и `category-ban-ru` (`nintendo.ru` есть в `meta-category-games` и ban-ru). С `summary-google` пересечений нет.
 
 После sync с апстримом скрипт автоматически пересобирает блок GFN в `games-process-custom.yaml` (`regenerate_gfn_block`), дедуплицируя против `games.yaml` и `games-launchers.yaml`. Вручную:
 
@@ -233,15 +233,15 @@ python3 scripts/generate-gfn-games-block.py
 
 1. **proxy-groups** — группа `🤖 ИИ · ChatGPT · Claude` (`remnawave.include-proxies: false`, прокси `🛡️ VPN` + `🔓 Без VPN` + переопределение стран).
 2. **rule-providers** — провайдер `ai` → `rule-sets/yaml/ai.yaml`.
-3. **rules** — `RULE-SET,ai` (процессы Cursor/ChatGPT/Claude) **выше** Google-доменов: иначе Cursor на `*.googleapis.com` уезжает в 🌐 Google. `RULE-SET,meta-ai` (домены) **ниже** `summary_google`: gemini/antigravity есть в обоих, остаются в Google.
+3. **rules** — `RULE-SET,ai` (процессы Cursor/ChatGPT/Claude) **выше** Google-доменов: иначе Cursor на `*.googleapis.com` уезжает в 🌐 Google. `RULE-SET,meta-ai` (домены) **ниже** `summary-google`: gemini/antigravity есть в обоих, остаются в Google.
 
 ### 🌐 Google · Gemini · Antigravity
 
 1. **proxy-groups** — группа `🌐 Google · Gemini · Antigravity` (`remnawave.include-proxies: false`, прокси `🛡️ VPN` + `🔓 Без VPN` + выбор стран).
-2. **rule-providers** — `google-process` → `rule-sets/yaml/google-process.yaml`; `summary_google` (merge `meta-google`, `meta-google-play`, `meta-google-gemini`, `meta-google-cn`, `meta-google-registry`, `meta-google-trust-services`; youtube/deepmind/fcm/scholar уже внутри `google`) и `meta-geoip-google` (IP Google из `geo/geoip`).
+2. **rule-providers** — `google-process` → `rule-sets/yaml/google-process.yaml`; `summary-google` (merge `meta-google`, `meta-google-play`, `meta-google-gemini`, `meta-google-cn`, `meta-google-registry`, `meta-google-trust-services`; youtube/deepmind/fcm/scholar уже внутри `google`) и `meta-geoip-google` (IP Google из `geo/geoip`).
 3. **rules** — пересечения с Google-доменами (`+.googleapis.com`, `+.googleusercontent.com`):
-   - YouTube, Discord (вложения на `storage.googleapis.com`), FCM → **выше** `summary_google`;
-   - процессы игр/лаунчеров/Wine/Cursor/ru-apps и `google-process` → **выше** `summary_google` (Tekken на `*.bc.googleusercontent.com`);
+   - YouTube, Discord (вложения на `storage.googleapis.com`), FCM → **выше** `summary-google`;
+   - процессы игр/лаунчеров/Wine/Cursor/ru-apps и `google-process` → **выше** `summary-google` (Tekken на `*.bc.googleusercontent.com`);
    - `meta-ai` → **ниже** (`gemini`/`antigravity` ⊂ google);
    - `meta-geoip-google` leftover (TCP) → **после** всех process/domain, иначе Sentry/PoE/Cursor на `34/35.x` без SNI уезжают в 🌐 Google.
 

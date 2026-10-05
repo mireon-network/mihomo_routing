@@ -39,7 +39,7 @@ DISCORD_BLOCK = re.compile(
     r"\n  # --- Discord[^\n]*\n"
     r"  - AND,\(\(RULE-SET,meta-geoip-cloudflare\),\(NETWORK,udp\),\(DST-PORT,19200-19500\)\),[^\n]+\n"
     r"  - AND,\(\(RULE-SET,meta-geoip-cloudflare\),\(NETWORK,udp\),\(DST-PORT,50000-50100\)\),[^\n]+\n"
-    r"  - AND,\(\(RULE-SET,discord_voiceips\),\(NETWORK,udp\),\(DST-PORT,50000-50100\)\),[^\n]+\n"
+    r"  - AND,\(\(RULE-SET,discord-voiceips\),\(NETWORK,udp\),\(DST-PORT,50000-50100\)\),[^\n]+\n"
     r"  - RULE-SET,meta-discord,[^\n]+\n"
     r"  - PROCESS-NAME-REGEX,discord,[^\n]+\n"
     r"  - PROCESS-NAME-REGEX,vesktop,[^\n]+\n"
