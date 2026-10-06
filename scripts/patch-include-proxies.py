@@ -10,6 +10,7 @@ gateway_* не трогаем: hidden hosts и filter стран остаютс�
 
 📡 UDP в основной шаблон не кладём: inject_udp_selector вставляет группу и
 поднимает Discord выше NETWORK,UDP только при сборке *-debug.
+log-level на *-debug — debug (в шаблоне main остаётся warning).
 """
 from __future__ import annotations
 
@@ -202,6 +203,7 @@ def patch_text(text: str, *, is_wl: bool = False) -> str | None:
     if is_wl:
         text = patch_wl_whitelist_filter(text)
 
+    text = re.sub(r"^log-level: \S+", "log-level: debug", text, count=1, flags=re.M)
     return text
 
 
@@ -221,11 +223,13 @@ def patch_file(path: Path) -> bool:
 def self_check() -> None:
     root = Path(__file__).resolve().parents[1]
     src = (root / "MIHOMO/template_remnawave.yaml").read_text(encoding="utf-8")
+    assert re.search(r"^log-level: warning$", src, re.M)
     assert f"  - name: {UDP_NAME}\n" not in src, "UDP-селектор не должен быть в шаблоне"
     assert "NETWORK,UDP,📡 UDP" not in src
 
     out = patch_text(src, is_wl=False)
     assert out is not None
+    assert re.search(r"^log-level: debug$", out, re.M)
     doc = yaml.safe_load(out)
     names = [
         g["name"]

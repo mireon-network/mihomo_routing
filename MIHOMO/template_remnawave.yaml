@@ -121,7 +121,7 @@ x-anchors:
 
 mixed-port: 7890
 mode: rule
-log-level: error
+log-level: warning
 allow-lan: false
 ipv6: true # для перехвата ipv6 трафика в ядро
 unified-delay: true
