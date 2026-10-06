@@ -275,8 +275,10 @@ def self_check() -> None:
     assert sum(1 for g in yaml.safe_load(again)["proxy-groups"] if g["name"] == UDP_NAME) == 1
 
     wl = (root / "MIHOMO/wl.yaml").read_text(encoding="utf-8")
+    assert re.search(r"^log-level: warning$", wl, re.M)
     wl_out = patch_text(wl, is_wl=True)
     assert wl_out is not None
+    assert re.search(r"^log-level: debug$", wl_out, re.M)
     assert UDP_NAME not in wl_out
     wl_sel = next(g for g in yaml.safe_load(wl_out)["proxy-groups"] if g["name"] == "🇷🇺 Белые списки")
     assert wl_sel.get("include-all") is True
