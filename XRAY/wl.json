@@ -1,0 +1,92 @@
+{
+  "routing": {
+    "domainStrategy": "AsIs",
+    "rules": [
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "ip": [
+          "geoip:meta-geoip-private"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "ip": [
+          "geoip:private-ips-custom"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "REJECT-DROP",
+        "ip": [
+          "::/0"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "REJECT-DROP",
+        "network": "udp",
+        "port": "443"
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "geosite:meta-geosite-private"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "geosite:private-domains-custom"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "port": "25,465,587,2525,110,995,143,993"
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "geosite:meta-category-gov-ru"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "geosite:meta-category-medicine-ru"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "geosite:wld"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "geosite:torrent-trackers"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "DIRECT",
+        "domain": [
+          "geosite:torrent-domains-custom"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "PROXY"
+      }
+    ]
+  }
+}
