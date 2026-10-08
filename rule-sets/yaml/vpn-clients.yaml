@@ -1,6 +1,7 @@
 payload:
   # Overlay LAN / mesh / port-sharing → DIRECT. Иначе TUN ломает P2P и NAT traversal.
-  # Не коммерческие VPN (Nord/Amnezia/Outline) — только виртуальные LAN и аналоги.
+  # Не коммерческие VPN (Nord/Amnezia/Outline) — только виртуальные LAN, аналоги
+  # и VPN-клиенты (OpenVPN).
   # Игровой трафик в 25.0.0.0/8 (Hamachi) и 26.0.0.0/8 (Radmin VPN) идёт от процесса
   # игры: CIDR в reserved_ips (TUN exclude) и private-ips-custom, не здесь.
 
@@ -18,6 +19,10 @@ payload:
 
   # --- ZeroTier ---
   - PROCESS-NAME-REGEX,(?i).*zerotier.*
+
+  # --- OpenVPN ---
+  # Туннель VPN-клиента не должен идти через прокси (VPN-в-VPN: обрывы, задержки)
+  - PROCESS-NAME-REGEX,(?i).*openvpn.*
 
   # --- Porthole (Steam: прокси портов, альтернатива Hamachi/Radmin) ---
   - PROCESS-NAME-REGEX,(?i).*porthole.*
