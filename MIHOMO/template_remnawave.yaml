@@ -38,12 +38,15 @@
 #
 # UDP-порт 443 (QUIC) блокируется глобально — принудительный fallback на TCP.
 #
-# TCP keep-alive: пробные пакеты до idle-timeout балансировщика (Beget/Selectel/Reg.ru gateway).
+# TCP keep-alive: пробные пакеты до idle-timeout балансировщика (Beget/Selectel/Reg.ru).
 #
-# Схема gateway (Remnawave hidden hosts gateway_<provider>_<код страны>, напр. Beget/Selectel/Reg.ru):
-#   фильтр стран провайдер-независимый: gateway_<любой>_<код> → 🇫🇮 101, 🇩🇪 102, 🇫🇷 103, 🇳🇱 104, 🇺🇸 105
+# Схема имён нод (локация выхода, не октет IP). Поля выхода делятся «-» или «_»,
+# хостер может содержать «-»:
+#   прямая: gt-fi-hz-102 / bg_fi_hz_102
+#   мост:   bgt_spb-tw-161_gt-fi-hz-102 или bgt_spb-tw-161_bg_fi_hz_102
+#   фильтр страны — локация выхода (мост не считается): 🇵🇱 pl, 🇫🇮 fi, 🇩🇪 de, 🇫🇷 fr, 🇳🇱 nl, 🇺🇸 us
 #   ⚡️ Автовыбор        — url-test между странами; внутри страны — load-balance
-#   🇫🇮/🇩🇪/🇫🇷/🇳🇱/🇺🇸 — load-balance sticky-sessions между всеми провайдерами страны
+#   страны              — load-balance sticky-sessions между всеми нодами локации выхода
 #
 # Благодарности: legiz-ru, Davoyan, RoscomVPN, MetaCubeX
 # ============================================================
@@ -252,6 +255,7 @@ proxy-groups:
       - 🇩🇪 Германия
       - 🇫🇷 Франция
       - 🇳🇱 Нидерланды
+      - 🇵🇱 Польша
       - 🇺🇸 США
     # LEAVE THIS LINE!
     url: https://www.youtube.com/generate_204
@@ -272,6 +276,7 @@ proxy-groups:
       - 🇩🇪 Германия
       - 🇫🇷 Франция
       - 🇳🇱 Нидерланды
+      - 🇵🇱 Польша
       - 🇺🇸 США
   - name: 💬 Discord
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png
@@ -286,6 +291,7 @@ proxy-groups:
       - 🇩🇪 Германия
       - 🇫🇷 Франция
       - 🇳🇱 Нидерланды
+      - 🇵🇱 Польша
       - 🇺🇸 США
   - name: 🤖 ИИ · ChatGPT · Claude
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bot.png
@@ -300,6 +306,7 @@ proxy-groups:
       - 🇩🇪 Германия
       - 🇫🇷 Франция
       - 🇳🇱 Нидерланды
+      - 🇵🇱 Польша
       - 🇺🇸 США
   - name: 🌐 Google · Gemini · Antigravity
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google.png
@@ -314,6 +321,7 @@ proxy-groups:
       - 🇩🇪 Германия
       - 🇫🇷 Франция
       - 🇳🇱 Нидерланды
+      - 🇵🇱 Польша
       - 🇺🇸 США
   - name: 🎮 Лаунчеры · сайты
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png
@@ -328,6 +336,7 @@ proxy-groups:
       - 🇩🇪 Германия
       - 🇫🇷 Франция
       - 🇳🇱 Нидерланды
+      - 🇵🇱 Польша
       - 🇺🇸 США
   - name: 🎮 Игры
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png
@@ -351,6 +360,7 @@ proxy-groups:
       - 🇩🇪 Германия
       - 🇫🇷 Франция
       - 🇳🇱 Нидерланды
+      - 🇵🇱 Польша
       - 🇺🇸 США
   - name: 🇫🇮 Финляндия
     type: load-balance
@@ -365,7 +375,7 @@ proxy-groups:
     remnawave:
       include-proxies: false
     include-all: true
-    filter: "(?i)^gateway_[^_]+_101$"
+    filter: "(?i)(?:^|_)(?:bg|gt)[-_]fi[-_].+[-_][0-9]+$"
     proxies:
       # LEAVE THIS LINE!
   - name: 🇩🇪 Германия
@@ -381,7 +391,7 @@ proxy-groups:
     remnawave:
       include-proxies: false
     include-all: true
-    filter: "(?i)^gateway_[^_]+_102$"
+    filter: "(?i)(?:^|_)(?:bg|gt)[-_]de[-_].+[-_][0-9]+$"
     proxies:
       # LEAVE THIS LINE!
   - name: 🇫🇷 Франция
@@ -397,7 +407,7 @@ proxy-groups:
     remnawave:
       include-proxies: false
     include-all: true
-    filter: "(?i)^gateway_[^_]+_103$"
+    filter: "(?i)(?:^|_)(?:bg|gt)[-_]fr[-_].+[-_][0-9]+$"
     proxies:
       # LEAVE THIS LINE!
   - name: 🇳🇱 Нидерланды
@@ -413,7 +423,23 @@ proxy-groups:
     remnawave:
       include-proxies: false
     include-all: true
-    filter: "(?i)^gateway_[^_]+_104$"
+    filter: "(?i)(?:^|_)(?:bg|gt)[-_]nl[-_].+[-_][0-9]+$"
+    proxies:
+      # LEAVE THIS LINE!
+  - name: 🇵🇱 Польша
+    type: load-balance
+    hidden: true
+    lazy: false
+    strategy: sticky-sessions
+    url: https://www.youtube.com/generate_204
+    interval: 600
+    expected-status: 204
+    max-failed-times: 3
+    timeout: 3000
+    remnawave:
+      include-proxies: false
+    include-all: true
+    filter: "(?i)(?:^|_)(?:bg|gt)[-_]pl[-_].+[-_][0-9]+$"
     proxies:
       # LEAVE THIS LINE!
   - name: 🇺🇸 США
@@ -429,7 +455,7 @@ proxy-groups:
     remnawave:
       include-proxies: false
     include-all: true
-    filter: "(?i)^gateway_[^_]+_105$"
+    filter: "(?i)(?:^|_)(?:bg|gt)[-_]us[-_].+[-_][0-9]+$"
     proxies:
       # LEAVE THIS LINE!
   - name: ⚡️ Автовыбор
@@ -449,6 +475,7 @@ proxy-groups:
       - 🇩🇪 Германия
       - 🇫🇷 Франция
       - 🇳🇱 Нидерланды
+      - 🇵🇱 Польша
       - 🇺🇸 США
   - name: ⚡️ Авто
     type: select

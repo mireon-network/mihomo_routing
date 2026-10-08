@@ -5,8 +5,8 @@ include-all: true подтягивает узлы из общего proxies: (т
 по # LEAVE THIS LINE!). include-proxies: false не снимаем — иначе та же
 инъекция ещё раз в группу и в клиенте дубли карточек.
 
-gateway_* не трогаем: hidden hosts и filter стран остаются как в основном
-шаблоне (иначе страны пустые → COMPATIBLE).
+Фильтры стран (gt-/bg-, локация выхода) не переписываем: они остаются как
+в основном шаблоне.
 
 📡 UDP в основной шаблон не кладём: inject_udp_selector вставляет группу и
 поднимает Discord выше NETWORK,UDP только при сборке *-debug.
@@ -102,7 +102,6 @@ def patch_group(text: str, name: str) -> str | None:
         if n != 1:
             print(f"patch-include-proxies: не вставить include-all в {name!r}", file=sys.stderr)
             return None
-    chunk = re.sub(r'    exclude-filter: "\(\?i\)\^gateway_"\n', "", chunk)
     if "include-proxies: false" not in chunk:
         chunk, n = re.subn(
             rf"({INCLUDE_ALL}\n)",
@@ -198,8 +197,6 @@ def patch_text(text: str, *, is_wl: bool = False) -> str | None:
         if text is None:
             return None
 
-    text = re.sub(r'    exclude-filter: "\(\?i\)\^gateway_"\n', "", text)
-
     if is_wl:
         text = patch_wl_whitelist_filter(text)
 
@@ -258,9 +255,11 @@ def self_check() -> None:
     assert "exclude-filter" not in vpn_raw
     assert "  - name: 🇫🇮 Финляндия\n" in out
     fi = next(g for g in doc["proxy-groups"] if g["name"] == "🇫🇮 Финляндия")
-    assert fi.get("filter") == r"(?i)^gateway_[^_]+_101$"
+    assert fi.get("filter") == r"(?i)(?:^|_)(?:bg|gt)[-_]fi[-_].+[-_][0-9]+$"
     assert fi.get("exclude-filter") is None
     assert fi.get("include-all") is True
+    pl = next(g for g in doc["proxy-groups"] if g["name"] == "🇵🇱 Польша")
+    assert pl.get("filter") == r"(?i)(?:^|_)(?:bg|gt)[-_]pl[-_].+[-_][0-9]+$"
 
     rules = [str(r) for r in doc["rules"]]
     assert sum("vesktop" in r for r in rules) == 1
