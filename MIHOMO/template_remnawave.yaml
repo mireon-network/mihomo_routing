@@ -141,7 +141,8 @@ tun:
   auto-route: true
   auto-detect-interface: true
   dns-hijack:
-    - any:53 # перехватывает UDP/53 и TCP/53 одновременно
+    - any:53
+    - tcp://any:53 # без протокола mihomo берёт только udp://
   strict-route: true
   route-exclude-address: *reserved_ips # приватные + Vivox (см. x-anchors)
   # Российские приложения исключены из TUN (как у Davoyan/ultimate-mihomo-ru).
@@ -162,7 +163,6 @@ dns:
     - rule-set:private-domains-custom # локальные/рабочие домены — реальный DNS
     - rule-set:meta-category-games # leftover игр (Riot, Roblox, Nintendo…) — всегда реальный IP; ⊂ сюда и summary-launchers
     - rule-set:games-domain-custom # локальные игровые домены (PoE, Tarkov...) — реальный IP
-    - rule-set:games-proxy-rules # прокси-правила игр — реальный IP
     - rule-set:meta-youtube # иначе googlevideo по IP может уехать в meta-geoip-google
     - "*.lan"
     - "+.local"
@@ -219,9 +219,10 @@ dns:
       - 10.183.1.63
       - system
     # Игровые домены — резолв через прямой DNS (быстрый пинг к CDN/серверам, без задержек `#PROXY`)
-    "rule-set:meta-category-games,games-domain-custom,games-proxy-rules": *dns_ru
+    "rule-set:meta-category-games,games-domain-custom": *dns_ru
     # PROXY-сервисы — резолв через узел VPN (legiz/Davoyan nameserver-policy)
-    "rule-set:meta-youtube,category-ban-ru,meta-discord": *dns_proxy
+    # games-proxy-rules тоже: иначе easebar/deadorbit получают настоящий IP от RU DNS и UDP обходит PROXY
+    "rule-set:meta-youtube,category-ban-ru,meta-discord,games-proxy-rules": *dns_proxy
     # RU-домены (идут DIRECT) — резолвим через RU DNS напрямую: верный CDN и меньше задержка
     "rule-set:summary-category-ru,category-ru-custom,wld": *dns_ru
     # DIRECT-сервисы — резолвим напрямую: geo-detect, торрент-трекеры, игровые CDN
@@ -871,11 +872,10 @@ rules:
   - RULE-SET,meta-category-enhance-gaming,🎮 Игры
   - RULE-SET,meta-category-games,🎮 Игры            # leftover: riot, roblox, nintendo, dota2, fortnite, wow…
   - RULE-SET,google-process,🌐 Google · Gemini · Antigravity  # Gemini/Antigravity-процессы, не 🤖 ИИ
-  - RULE-SET,summary-google,🌐 Google · Gemini · Antigravity  # браузер; leftover IP — ниже
-  - RULE-SET,ai,🤖 ИИ · ChatGPT · Claude           # Cursor.exe → googleapis
+  - RULE-SET,ai,🤖 ИИ · ChatGPT · Claude           # Cursor.exe → googleapis, выше summary-google
   - RULE-SET,ru-app-list,DIRECT                    # ru-app → firebase.googleapis.com
   - RULE-SET,ru-apps-custom,DIRECT
-
+  - RULE-SET,summary-google,🌐 Google · Gemini · Antigravity  # браузер; leftover IP — ниже
 
   - RULE-SET,meta-ai,🤖 ИИ · ChatGPT · Claude      # gemini/antigravity ⊂ google — домены ИИ после
 

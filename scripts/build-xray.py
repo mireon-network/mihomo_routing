@@ -286,7 +286,8 @@ def build(providers: dict[str, dict], src_rules: list[str]) -> tuple[list[dict],
             notes.extend(extra)
         elif raw.startswith("MATCH,"):
             outbound = raw.split(",", 1)[1]
-            rules.append(field(outbound))
+            # пустой field xray-core отвергает: "this rule has no effective fields"
+            rules.append(field(outbound, network="tcp,udp"))
         elif raw.startswith("PROCESS-"):
             notes.append(raw)
         else:
@@ -484,7 +485,7 @@ def main() -> None:
     assert any(r.get("domain") == ["geosite:meta-youtube"] for r in rules)
     assert not any(r.get("domain") == ["geosite:meta-reddit"] for r in rules)
     assert all(len(r.get("domain", [])) < 8 for r in rules)
-    assert rules[-1] == {"type": "field", "outboundTag": "PROXY"}
+    assert rules[-1] == {"type": "field", "outboundTag": "PROXY", "network": "tcp,udp"}
     assert (REGEX, r"(^|\.)tinkoff\.[^.]+$") in decoded_site["summary-category-ru"]
     print(
         f"geosite: {len(GEOSITE)} категорий, {len(site)} байт; geoip: {len(GEOIP)} категорий, {len(ipdat)} байт",

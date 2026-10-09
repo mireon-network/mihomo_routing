@@ -277,7 +277,8 @@
       },
       {
         "type": "field",
-        "outboundTag": "PROXY"
+        "outboundTag": "PROXY",
+        "network": "tcp,udp"
       }
     ]
   }

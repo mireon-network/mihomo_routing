@@ -1,0 +1,22 @@
+name: XRAY matches sources
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+
+      - name: Rebuild XRAY
+        run: python3 scripts/build-xray.py
+
+      - name: Fail if generated files differ
+        run: git diff --exit-code -- XRAY
