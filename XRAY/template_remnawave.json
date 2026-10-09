@@ -173,7 +173,7 @@
         "type": "field",
         "outboundTag": "PROXY",
         "ip": [
-          "geoip:games-proxy-rules"
+          "172.232.25.131/32"
         ]
       },
       {

@@ -26,7 +26,7 @@
 # Rule-sets (MetaCubeX geosite/geoip, legiz-ru, Davoyan и локальные наборы mireon).
 # Порядок — по пересечениям (кто выше, тот выигрывает):
 #   YouTube / Discord / FCM     → выше Google-доменов (googleapis, googleusercontent)
-#   games-proxy-rules → PROXY   → выше игровых процессов (иначе steamapps PATH)
+#   games-proxy-rules → PROXY   → выше игровых процессов (иначе steamapps PATH); IP чата Warframe — отдельный IP-CIDR
 #   download-CDN → DIRECT       → выше meta-category-games (steamcontent, steampipe, blzddist)
 #   summary-launchers           → Steam/Epic/Battle.net/Origin/Ubisoft/GOG → лаунчеры; выше leftover games
 #   процессы игр/лаунчеров/Wine/Cursor/ru-apps → выше Google-доменов
@@ -665,13 +665,12 @@ rule-providers:
     format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-clients-custom.yaml
     path: ./ruleset/torrent-clients-custom.yaml
-  games-proxy-rules: # инлайн (мелкий список — без отдельной загрузки)
+  games-proxy-rules: # domain, не classical: fake-ip и nameserver-policy на classical пишут warn
     type: inline
-    behavior: classical
+    behavior: domain
     payload:
-      - DOMAIN-SUFFIX,easebar.com
-      - DOMAIN-SUFFIX,deadorbit.net
-      - IP-CIDR,172.232.25.131/32 # чат Warframe
+      - +.easebar.com
+      - +.deadorbit.net
   games-launchers:
     type: http
     proxy: ⚡️ Авто
@@ -859,6 +858,7 @@ rules:
   - RULE-SET,category-ru-custom,DIRECT             # xsolla, p-way, банки .ru
 
   - RULE-SET,games-proxy-rules,PROXY               # easebar/deadorbit: иначе steamapps PATH → 🎮 Игры
+  - IP-CIDR,172.232.25.131/32,PROXY,no-resolve     # чат Warframe
   - RULE-SET,meta-category-game-platforms-download,DIRECT # steamcontent ⊂ meta-category-games — патчи всегда DIRECT
 
   # процесс бьёт +.googleusercontent.com / +.googleapis.com

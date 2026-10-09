@@ -75,7 +75,6 @@
 ### geoip
 
 - `discord-voiceips`
-- `games-proxy-rules`
 - `meta-geoip-cloudflare`
 - `meta-geoip-google`
 - `meta-geoip-private`
@@ -202,7 +201,7 @@ Upstream-наборы перезаписываются из CDN/MetaCubeX. Ло�
 
 Исключения с фиксированной политикой (не попадают в 🎮 Игры) — в шаблоне **выше** игровых процессов:
 
-- `games-proxy-rules` — домены/IP (easebar, deadorbit, Warframe chat) → PROXY; иначе `steamapps` PATH уводит их в 🎮 Игры
+- `games-proxy-rules` — домены easebar/deadorbit → PROXY; иначе `steamapps` PATH уводит их в 🎮 Игры. IP чата Warframe — `IP-CIDR` в шаблоне (classical в DNS даёт warn и игнорирует IP)
 - `meta-category-game-platforms-download` — патч-CDN Steam/Epic/Blizzard → DIRECT; пересекается с `meta-category-games` (`steamcontent`, steampipe…)
 - `games-launchers.yaml` — процессы лаунчеров → 🎮 Лаунчеры · сайты (выше `games.yaml`, если strip промахнётся)
 - `summary-launchers` — магазины Steam/Epic/Battle.net/Origin/Ubisoft/GOG → 🎮 Лаунчеры · сайты; матчи/античит (`exclude` в manifest) остаются в leftover `meta-category-games`

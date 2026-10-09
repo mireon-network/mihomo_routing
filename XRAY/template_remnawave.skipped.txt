@@ -3,7 +3,6 @@ RULE-SET,torrent-clients → DIRECT: пропущено процессов 90
 RULE-SET,torrent-clients-custom → DIRECT: пропущено процессов 28
 PROCESS-NAME-REGEX,discord,💬 Discord
 PROCESS-NAME-REGEX,vesktop,💬 Discord
-games-proxy-rules: geoip без no-resolve — только уже известный IP
 RULE-SET,games-launchers → 🎮 Лаунчеры · сайты: пропущено процессов 78
 RULE-SET,games-process-custom → 🎮 Игры: пропущено процессов 95
 RULE-SET,games → 🎮 Игры: пропущено процессов 96

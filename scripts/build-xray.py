@@ -133,12 +133,20 @@ def load_domain_list(name: str) -> list[tuple[int, str]]:
     return domains
 
 
+def from_payload(behavior: str, payload: list[str]):
+    if behavior == "domain":
+        return [parse_domain_line(s) for s in payload], [], [], []
+    if behavior == "ipcidr":
+        return [], list(payload), [], []
+    return classify_classical(payload)
+
+
 def load_set(providers: dict[str, dict], name: str):
     prov = providers.get(name)
     if not prov:
         raise SystemExit(f"нет rule-provider {name}")
     if prov["payload"]:
-        return classify_classical(prov["payload"])
+        return from_payload(prov["behavior"], prov["payload"])
     behavior = prov["behavior"]
     if behavior == "classical":
         path = YAML / f"{name}.yaml"
@@ -436,6 +444,10 @@ def self_check() -> None:
     )
     assert domains == [(DOMAIN, "easebar.com")]
     assert ips == ["172.232.25.131/32"]
+    d, i, _, s = from_payload("domain", ["+.easebar.com", "+.deadorbit.net"])
+    assert d == [(DOMAIN, "easebar.com"), (DOMAIN, "deadorbit.net")] and not i and not s
+    _, i, _, s = from_payload("ipcidr", ["172.232.25.131/32"])
+    assert i == ["172.232.25.131/32"] and not s
     assert ports == ["25"] and skipped == ["PROCESS-NAME,cs2.exe"]
     assert parse_domain_line("+.reddit.com") == (DOMAIN, "reddit.com")
     assert parse_domain_line("router.asus.com") == (FULL, "router.asus.com")
