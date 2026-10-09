@@ -34,7 +34,6 @@ payload:
   - PROCESS-NAME-REGEX,TslGame.* # Game
 
   # Minecraft
-  - PROCESS-NAME,javaw.exe # Minecraft (Java Edition)
   - PROCESS-NAME,Minecraft.exe # Minecraft (Bedrock Edition)
 
   # FragPunk

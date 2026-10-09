@@ -30,7 +30,12 @@ jobs:
         run: ./scripts/upstream-sync.sh sync
 
       - name: Validate config
-        run: ./scripts/test-config-local.sh
+        run: |
+          python3 scripts/patch-include-proxies.py --self-check
+          python3 scripts/strip-games-launchers.py --self-check
+          ./scripts/test-config-local.sh
+          ./scripts/test-config-local.sh MIHOMO/wl.yaml
+          ./scripts/mrs-tool.sh check
 
       - name: Configure git
         run: |

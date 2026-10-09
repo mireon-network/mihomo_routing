@@ -7,6 +7,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -155,25 +156,27 @@ def run_post_hooks(root: Path, info: SourceInfo) -> None:
             print(f"post {info.id}: неизвестный hook {hook!r}", file=sys.stderr)
 
 
-def cmd_download(root: Path, sync_dir: Path, manifest: Path) -> list[SourceInfo]:
+def cmd_download(root: Path, sync_dir: Path, manifest: Path) -> tuple[list[SourceInfo], int]:
     sources = parse_manifest(manifest)
     staging = sync_dir / "staging"
     if staging.exists():
         shutil.rmtree(staging)
     staging.mkdir(parents=True)
 
+    failed = 0
     for info in sources:
         dest = staging / info.path
         print(f"fetch {info.id}: {info.url}")
         try:
             fetch(info.url, dest)
         except OSError as exc:
+            failed += 1
             print(f"fetch {info.id}: ошибка — {exc}", file=sys.stderr)
-    return sources
+    return sources, failed
 
 
 def cmd_sync(root: Path, sync_dir: Path, manifest: Path) -> int:
-    sources = cmd_download(root, sync_dir, manifest)
+    sources, failed = cmd_download(root, sync_dir, manifest)
     staging = sync_dir / "staging"
     stats: dict[str, int] = {}
 
@@ -193,10 +196,35 @@ def cmd_sync(root: Path, sync_dir: Path, manifest: Path) -> int:
         ", ".join(f"{k}={v}" for k, v in sorted(stats.items())),
         file=sys.stderr,
     )
+    if failed:
+        print(f"upstream-sync: не скачано источников: {failed}", file=sys.stderr)
+        return 1
     return 0
 
 
+def self_check() -> None:
+    root = Path(tempfile.mkdtemp())
+    manifest = root / "manifest.yaml"
+    manifest.write_text(
+        "sources:\n"
+        "  - id: bad\n"
+        "    url: http://127.0.0.1:1/nope.yaml\n"
+        "    path: rule-sets/yaml/nope.yaml\n",
+        encoding="utf-8",
+    )
+    sync_dir = root / "sync"
+    sources, failed = cmd_download(root, sync_dir, manifest)
+    assert failed == 1 and len(sources) == 1
+    assert not (sync_dir / "staging/rule-sets/yaml/nope.yaml").is_file()
+    assert cmd_sync(root, sync_dir, manifest) == 1
+    print("upstream-sync-merge: self-check ok")
+
+
 def main() -> int:
+    if sys.argv[1:2] == ["--self-check"]:
+        self_check()
+        return 0
+
     root = Path(__file__).resolve().parents[1]
     sync_dir = root / ".sync-upstream"
     manifest = root / "scripts/upstream-manifest.yaml"
@@ -218,8 +246,8 @@ def main() -> int:
 
     if args.command == "sync":
         return cmd_sync(args.root, args.sync_dir, args.manifest)
-    cmd_download(args.root, args.sync_dir, args.manifest)
-    return 0
+    _, failed = cmd_download(args.root, args.sync_dir, args.manifest)
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":

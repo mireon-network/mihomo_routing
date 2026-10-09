@@ -227,13 +227,35 @@ cmd_sync() {
     --mrs-dir "$MRS_DIR" \
     --manifest "$MANIFEST"
 
-  echo "mrs-tool: сборка summary из merge-from…"
-  cmd_build_merged_lists
-
   echo "mrs-tool: упаковка text/ → bin/…"
   cmd_pack
 
   echo "mrs-tool: sync завершён"
+}
+
+cmd_check() {
+  ensure_mihomo
+  local tmp rc=0
+  tmp="$(mktemp -d)"
+  while IFS=$'\t' read -r _ behavior file _ _ _; do
+    local txt="$TEXT_DIR/${file}.list"
+    local bin="$BIN_DIR/${file}.mrs"
+    if [[ ! -f "$txt" || ! -f "$bin" ]]; then
+      echo "mrs-tool: нет пары text/bin для $file" >&2
+      rc=1
+      continue
+    fi
+    "$MIHOMO_BIN" convert-ruleset "$behavior" text "$txt" "$tmp/${file}.mrs"
+    if ! cmp -s "$bin" "$tmp/${file}.mrs"; then
+      echo "mrs-tool: bin устарел: ${file}.mrs" >&2
+      rc=1
+    fi
+  done < <(list_sets)
+  rm -rf "$tmp"
+  if [[ "$rc" -eq 0 ]]; then
+    echo "mrs-tool: bin совпадает с text"
+  fi
+  return "$rc"
 }
 
 cmd_install_hooks() {
@@ -252,6 +274,7 @@ usage() {
   download [--force]  — скачать .mrs в rule-sets/mrs/bin/
   unpack --force        — bin/*.mrs → text/*.list (перезаписывает text/)
   pack                  — text/*.list → bin/*.mrs
+  check                 — bin/*.mrs совпадает с пересборкой из text/
   sync                  — upstream → text/ (зеркала) + pack → bin/
   install-hooks         — git pre-commit
 
@@ -269,6 +292,7 @@ main() {
     download) cmd_download "$@" ;;
     unpack) cmd_unpack "$@" ;;
     pack) cmd_pack ;;
+    check) cmd_check ;;
     sync) cmd_sync ;;
     install-hooks) cmd_install_hooks ;;
     -h|--help|"") usage ;;

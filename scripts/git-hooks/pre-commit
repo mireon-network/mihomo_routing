@@ -43,7 +43,8 @@ fi
 if [[ "$needs_pack" -eq 1 ]]; then
   echo "pre-commit: упаковка rule-sets/mrs…"
   "$ROOT/scripts/mrs-tool.sh" pack
-  git add "$BIN_DIR"/*.mrs rule-sets/mrs/text
+  git add "$BIN_DIR"/*.mrs
+  git add -u -- rule-sets/mrs/text
 fi
 
 if [[ "$should_xray" -eq 1 ]]; then

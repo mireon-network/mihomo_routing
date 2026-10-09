@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Вырезать из games.yaml процессы, которые уже есть в games-launchers.yaml.
+"""Вырезать из games.yaml процессы лаунчеров и слишком широкие имена.
 
 games.yaml — зеркало апстрима; лаунчеры живут только в games-launchers.
 После upstream-sync этот скрипт снова вычищает пересечения.
+javaw.exe — любой Java GUI, не только Minecraft; домены Minecraft уже в games-domain-custom.
 """
 from __future__ import annotations
 
@@ -16,6 +17,8 @@ LAUNCHERS = ROOT / "rule-sets/yaml/games-launchers.yaml"
 
 PAYLOAD = re.compile(r"^(\s*-\s*)(PROCESS-NAME(?:-REGEX)?),(.+)$")
 SECTION_HDR = re.compile(r"^\s*# --- .+ ---\s*$")
+# Переживает перезапись зеркала. Minecraft Java остаётся на доменах.
+DROP_KEYS = frozenset({("PROCESS-NAME", "javaw.exe")})
 
 
 def payload_key(line: str) -> tuple[str, str] | None:
@@ -58,7 +61,25 @@ def collapse_empty_sections(lines: list[str]) -> list[str]:
     return [ln for idx, ln in enumerate(lines) if idx not in drop]
 
 
-def main() -> int:
+def should_strip(key: tuple[str, str], launcher_keys: set[tuple[str, str]]) -> bool:
+    return key in launcher_keys or key in DROP_KEYS
+
+
+def self_check() -> None:
+    javaw = ("PROCESS-NAME", "javaw.exe")
+    steam = ("PROCESS-NAME", "steam.exe")
+    assert should_strip(javaw, set())
+    assert not should_strip(("PROCESS-NAME", "cs2.exe"), set())
+    assert should_strip(steam, {steam})
+    print("strip-games-launchers: self-check ok")
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = argv if argv is not None else sys.argv[1:]
+    if args == ["--self-check"]:
+        self_check()
+        return 0
+
     if not GAMES.is_file() or not LAUNCHERS.is_file():
         print("нет games.yaml или games-launchers.yaml", file=sys.stderr)
         return 1
@@ -70,7 +91,7 @@ def main() -> int:
     removed: list[str] = []
     for line in lines:
         key = payload_key(line)
-        if key and key in launcher_keys:
+        if key and should_strip(key, launcher_keys):
             removed.append(key[1])
             continue
         kept.append(line)
@@ -95,9 +116,14 @@ def main() -> int:
 
     GAMES.write_text(text, encoding="utf-8")
 
-    leftover = keys_in(GAMES) & launcher_keys
-    if leftover:
-        print("остались пересечения:", sorted(v for _, v in leftover), file=sys.stderr)
+    left = keys_in(GAMES)
+    leftover = left & launcher_keys
+    if leftover or DROP_KEYS & left:
+        print(
+            "остались пересечения:",
+            sorted(v for _, v in (leftover | (DROP_KEYS & left))),
+            file=sys.stderr,
+        )
         return 1
 
     print(f"strip-games-launchers: убрано {len(removed)} ({', '.join(removed) or '—'})")
