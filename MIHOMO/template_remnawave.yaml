@@ -11,7 +11,7 @@
 #
 # Группы прокси:
 #   🛡️ VPN       — Автовыбор / Без VPN / страны
-#   (скрытые)    — load-balance sticky-sessions (Beget/Selectel/Reg.ru); Автовыбор — url-test
+#   (скрытые)    — страны: fallback прямая→мосты; внутри пула — load-balance sticky-sessions; Автовыбор — url-test
 #                  lazy: false + expected-status: 204 — актуальный пинг и health-check
 #   📺 Youtube   — отдельный выбор узла для YouTube
 #   💬 Discord   — отдельный выбор узла для Discord / Vesktop
@@ -40,13 +40,16 @@
 #
 # TCP keep-alive: пробные пакеты до idle-timeout балансировщика (Beget/Selectel/Reg.ru).
 #
-# Схема имён нод (локация выхода, не октет IP). Поля выхода делятся «-» или «_»,
-# хостер может содержать «-»:
-#   прямая: gt-fi-hz-102 / bg_fi_hz_102
-#   мост:   bgt_spb-tw-161_gt-fi-hz-102 или bgt_spb-tw-161_bg_fi_hz_102
+# Схема имён нод (локация выхода, не октет IP).
+# gt, bg, bgt — сущность, после неё всегда «_». Объект ноды всегда через «-»: fi-hz-102
+# (хостер может содержать «-»).
+#   прямая: gt_fi-hz-102
+#   мост:   bgt_spb-tw-161_gt_fi-hz-102 или bgt_spb-tw-161_bg_fi-hz-102
 #   фильтр страны — локация выхода (мост не считается): 🇵🇱 pl, 🇫🇮 fi, 🇩🇪 de, 🇫🇷 fr, 🇳🇱 nl, 🇺🇸 us
-#   ⚡️ Автовыбор        — url-test между странами; внутри страны — load-balance
-#   страны              — load-balance sticky-sessions между всеми нодами локации выхода
+#   ⚡️ Автовыбор        — url-test между странами
+#   страны              — fallback: живые прямые (gt_), иначе мосты и bg_
+#                         fallback interval 30с: иначе мёртвый прямой пул держится до 10 мин
+#                         пустой пул: empty-fallback REJECT (не COMPATIBLE/DIRECT)
 #
 # Благодарности: legiz-ru, Davoyan, RoscomVPN, MetaCubeX
 # ============================================================
@@ -368,6 +371,20 @@ proxy-groups:
       - 🇵🇱 Польша
       - 🇺🇸 США
   - name: 🇫🇮 Финляндия
+    type: fallback
+    hidden: true
+    lazy: false
+    url: https://www.youtube.com/generate_204
+    interval: 30
+    expected-status: 204
+    max-failed-times: 3
+    timeout: 3000
+    remnawave:
+      include-proxies: false
+    proxies:
+      - 🇫🇮 Финляндия · прямая
+      - 🇫🇮 Финляндия · мосты
+  - name: 🇫🇮 Финляндия · прямая
     type: load-balance
     hidden: true
     lazy: false
@@ -380,10 +397,42 @@ proxy-groups:
     remnawave:
       include-proxies: false
     include-all: true
-    filter: "(?i)(?:^|_)(?:bg|gt)[-_]fi[-_].+[-_][0-9]+$"
+    empty-fallback: REJECT
+    filter: "(?i)^gt_fi-.+-[0-9]+$"
+    proxies:
+      # LEAVE THIS LINE!
+  - name: 🇫🇮 Финляндия · мосты
+    type: load-balance
+    hidden: true
+    lazy: false
+    strategy: sticky-sessions
+    url: https://www.youtube.com/generate_204
+    interval: 600
+    expected-status: 204
+    max-failed-times: 3
+    timeout: 3000
+    remnawave:
+      include-proxies: false
+    include-all: true
+    empty-fallback: REJECT
+    filter: "(?i)^(?:bg_|bgt_.+_(?:bg|gt)_)fi-.+-[0-9]+$"
     proxies:
       # LEAVE THIS LINE!
   - name: 🇩🇪 Германия
+    type: fallback
+    hidden: true
+    lazy: false
+    url: https://www.youtube.com/generate_204
+    interval: 30
+    expected-status: 204
+    max-failed-times: 3
+    timeout: 3000
+    remnawave:
+      include-proxies: false
+    proxies:
+      - 🇩🇪 Германия · прямая
+      - 🇩🇪 Германия · мосты
+  - name: 🇩🇪 Германия · прямая
     type: load-balance
     hidden: true
     lazy: false
@@ -396,10 +445,42 @@ proxy-groups:
     remnawave:
       include-proxies: false
     include-all: true
-    filter: "(?i)(?:^|_)(?:bg|gt)[-_]de[-_].+[-_][0-9]+$"
+    empty-fallback: REJECT
+    filter: "(?i)^gt_de-.+-[0-9]+$"
+    proxies:
+      # LEAVE THIS LINE!
+  - name: 🇩🇪 Германия · мосты
+    type: load-balance
+    hidden: true
+    lazy: false
+    strategy: sticky-sessions
+    url: https://www.youtube.com/generate_204
+    interval: 600
+    expected-status: 204
+    max-failed-times: 3
+    timeout: 3000
+    remnawave:
+      include-proxies: false
+    include-all: true
+    empty-fallback: REJECT
+    filter: "(?i)^(?:bg_|bgt_.+_(?:bg|gt)_)de-.+-[0-9]+$"
     proxies:
       # LEAVE THIS LINE!
   - name: 🇫🇷 Франция
+    type: fallback
+    hidden: true
+    lazy: false
+    url: https://www.youtube.com/generate_204
+    interval: 30
+    expected-status: 204
+    max-failed-times: 3
+    timeout: 3000
+    remnawave:
+      include-proxies: false
+    proxies:
+      - 🇫🇷 Франция · прямая
+      - 🇫🇷 Франция · мосты
+  - name: 🇫🇷 Франция · прямая
     type: load-balance
     hidden: true
     lazy: false
@@ -412,10 +493,42 @@ proxy-groups:
     remnawave:
       include-proxies: false
     include-all: true
-    filter: "(?i)(?:^|_)(?:bg|gt)[-_]fr[-_].+[-_][0-9]+$"
+    empty-fallback: REJECT
+    filter: "(?i)^gt_fr-.+-[0-9]+$"
+    proxies:
+      # LEAVE THIS LINE!
+  - name: 🇫🇷 Франция · мосты
+    type: load-balance
+    hidden: true
+    lazy: false
+    strategy: sticky-sessions
+    url: https://www.youtube.com/generate_204
+    interval: 600
+    expected-status: 204
+    max-failed-times: 3
+    timeout: 3000
+    remnawave:
+      include-proxies: false
+    include-all: true
+    empty-fallback: REJECT
+    filter: "(?i)^(?:bg_|bgt_.+_(?:bg|gt)_)fr-.+-[0-9]+$"
     proxies:
       # LEAVE THIS LINE!
   - name: 🇳🇱 Нидерланды
+    type: fallback
+    hidden: true
+    lazy: false
+    url: https://www.youtube.com/generate_204
+    interval: 30
+    expected-status: 204
+    max-failed-times: 3
+    timeout: 3000
+    remnawave:
+      include-proxies: false
+    proxies:
+      - 🇳🇱 Нидерланды · прямая
+      - 🇳🇱 Нидерланды · мосты
+  - name: 🇳🇱 Нидерланды · прямая
     type: load-balance
     hidden: true
     lazy: false
@@ -428,10 +541,42 @@ proxy-groups:
     remnawave:
       include-proxies: false
     include-all: true
-    filter: "(?i)(?:^|_)(?:bg|gt)[-_]nl[-_].+[-_][0-9]+$"
+    empty-fallback: REJECT
+    filter: "(?i)^gt_nl-.+-[0-9]+$"
+    proxies:
+      # LEAVE THIS LINE!
+  - name: 🇳🇱 Нидерланды · мосты
+    type: load-balance
+    hidden: true
+    lazy: false
+    strategy: sticky-sessions
+    url: https://www.youtube.com/generate_204
+    interval: 600
+    expected-status: 204
+    max-failed-times: 3
+    timeout: 3000
+    remnawave:
+      include-proxies: false
+    include-all: true
+    empty-fallback: REJECT
+    filter: "(?i)^(?:bg_|bgt_.+_(?:bg|gt)_)nl-.+-[0-9]+$"
     proxies:
       # LEAVE THIS LINE!
   - name: 🇵🇱 Польша
+    type: fallback
+    hidden: true
+    lazy: false
+    url: https://www.youtube.com/generate_204
+    interval: 30
+    expected-status: 204
+    max-failed-times: 3
+    timeout: 3000
+    remnawave:
+      include-proxies: false
+    proxies:
+      - 🇵🇱 Польша · прямая
+      - 🇵🇱 Польша · мосты
+  - name: 🇵🇱 Польша · прямая
     type: load-balance
     hidden: true
     lazy: false
@@ -444,10 +589,42 @@ proxy-groups:
     remnawave:
       include-proxies: false
     include-all: true
-    filter: "(?i)(?:^|_)(?:bg|gt)[-_]pl[-_].+[-_][0-9]+$"
+    empty-fallback: REJECT
+    filter: "(?i)^gt_pl-.+-[0-9]+$"
+    proxies:
+      # LEAVE THIS LINE!
+  - name: 🇵🇱 Польша · мосты
+    type: load-balance
+    hidden: true
+    lazy: false
+    strategy: sticky-sessions
+    url: https://www.youtube.com/generate_204
+    interval: 600
+    expected-status: 204
+    max-failed-times: 3
+    timeout: 3000
+    remnawave:
+      include-proxies: false
+    include-all: true
+    empty-fallback: REJECT
+    filter: "(?i)^(?:bg_|bgt_.+_(?:bg|gt)_)pl-.+-[0-9]+$"
     proxies:
       # LEAVE THIS LINE!
   - name: 🇺🇸 США
+    type: fallback
+    hidden: true
+    lazy: false
+    url: https://www.youtube.com/generate_204
+    interval: 30
+    expected-status: 204
+    max-failed-times: 3
+    timeout: 3000
+    remnawave:
+      include-proxies: false
+    proxies:
+      - 🇺🇸 США · прямая
+      - 🇺🇸 США · мосты
+  - name: 🇺🇸 США · прямая
     type: load-balance
     hidden: true
     lazy: false
@@ -460,7 +637,25 @@ proxy-groups:
     remnawave:
       include-proxies: false
     include-all: true
-    filter: "(?i)(?:^|_)(?:bg|gt)[-_]us[-_].+[-_][0-9]+$"
+    empty-fallback: REJECT
+    filter: "(?i)^gt_us-.+-[0-9]+$"
+    proxies:
+      # LEAVE THIS LINE!
+  - name: 🇺🇸 США · мосты
+    type: load-balance
+    hidden: true
+    lazy: false
+    strategy: sticky-sessions
+    url: https://www.youtube.com/generate_204
+    interval: 600
+    expected-status: 204
+    max-failed-times: 3
+    timeout: 3000
+    remnawave:
+      include-proxies: false
+    include-all: true
+    empty-fallback: REJECT
+    filter: "(?i)^(?:bg_|bgt_.+_(?:bg|gt)_)us-.+-[0-9]+$"
     proxies:
       # LEAVE THIS LINE!
   - name: ⚡️ Автовыбор

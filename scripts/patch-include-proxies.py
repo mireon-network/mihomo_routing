@@ -253,13 +253,45 @@ def self_check() -> None:
     assert "include-proxies: false" in vpn_raw
     assert "# LEAVE THIS LINE!" in vpn_raw
     assert "exclude-filter" not in vpn_raw
-    assert "  - name: 🇫🇮 Финляндия\n" in out
-    fi = next(g for g in doc["proxy-groups"] if g["name"] == "🇫🇮 Финляндия")
-    assert fi.get("filter") == r"(?i)(?:^|_)(?:bg|gt)[-_]fi[-_].+[-_][0-9]+$"
-    assert fi.get("exclude-filter") is None
-    assert fi.get("include-all") is True
-    pl = next(g for g in doc["proxy-groups"] if g["name"] == "🇵🇱 Польша")
-    assert pl.get("filter") == r"(?i)(?:^|_)(?:bg|gt)[-_]pl[-_].+[-_][0-9]+$"
+    countries = (
+        ("🇫🇮 Финляндия", "fi"),
+        ("🇩🇪 Германия", "de"),
+        ("🇫🇷 Франция", "fr"),
+        ("🇳🇱 Нидерланды", "nl"),
+        ("🇵🇱 Польша", "pl"),
+        ("🇺🇸 США", "us"),
+    )
+    by_name = {g["name"]: g for g in doc["proxy-groups"]}
+    for name, code in countries:
+        group = by_name[name]
+        assert group.get("type") == "fallback"
+        assert group.get("interval") == 30
+        assert group.get("proxies") == [f"{name} · прямая", f"{name} · мосты"]
+        direct = by_name[f"{name} · прямая"]
+        bridge = by_name[f"{name} · мосты"]
+        assert direct.get("filter") == rf"(?i)^gt_{code}-.+-[0-9]+$"
+        assert bridge.get("filter") == rf"(?i)^(?:bg_|bgt_.+_(?:bg|gt)_){code}-.+-[0-9]+$"
+        assert direct.get("include-all") is True and direct.get("exclude-filter") is None
+        assert bridge.get("include-all") is True and bridge.get("exclude-filter") is None
+        assert direct.get("empty-fallback") == "REJECT"
+        assert bridge.get("empty-fallback") == "REJECT"
+        direct_re = re.compile(direct["filter"])
+        bridge_re = re.compile(bridge["filter"])
+        assert direct_re.match(f"gt_{code}-hz-102")
+        assert direct_re.match(f"gt_{code}-h2n-147")
+        assert direct_re.match(f"gt_{code}-hz-extra-102")
+        assert not direct_re.match(f"gt-{code}-hz-102")
+        assert not direct_re.match(f"gt_{code}_hz_102")
+        assert not direct_re.match(f"bg_{code}-hz-102")
+        assert not direct_re.match(f"bgt_spb-tw-161_gt_{code}-hz-102")
+        assert bridge_re.search(f"bgt_spb-tw-161_gt_{code}-hz-102")
+        assert bridge_re.search(f"bgt_spb-tw-161_bg_{code}-hz-102")
+        assert bridge_re.search(f"bg_{code}-hz-102")
+        assert not bridge_re.search(f"foo_gt_{code}-hz-102")
+        assert not bridge_re.search(f"other_bg_{code}-hz-102")
+        assert not bridge_re.search(f"gt_{code}-hz-102")
+        assert not bridge_re.search(f"gt-{code}-hz-102")
+        assert not bridge_re.search(f"gt_{code}_hz_102")
 
     rules = [str(r) for r in doc["rules"]]
     assert sum("vesktop" in r for r in rules) == 1
@@ -275,6 +307,15 @@ def self_check() -> None:
 
     wl = (root / "MIHOMO/wl.yaml").read_text(encoding="utf-8")
     assert re.search(r"^log-level: warning$", wl, re.M)
+    wl_src = next(g for g in yaml.safe_load(wl)["proxy-groups"] if g["name"] == "🇷🇺 Белые списки")
+    assert wl_src.get("filter") == r"(?i)^wlgt_[a-z]{2}-.+-[0-9]+$"
+    wl_re = re.compile(wl_src["filter"])
+    assert wl_re.match("wlgt_fi-hz-102")
+    assert wl_re.match("wlgt_fi-h2n-147")
+    assert wl_re.match("wlgt_de-hz-extra-102")
+    assert not wl_re.match("gt_fi-hz-102")
+    assert not wl_re.match("wlgt_fi_hz_102")
+    assert not wl_re.match("bgt_spb-tw-161_wlgt_fi-hz-102")
     wl_out = patch_text(wl, is_wl=True)
     assert wl_out is not None
     assert re.search(r"^log-level: debug$", wl_out, re.M)
