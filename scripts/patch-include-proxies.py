@@ -307,6 +307,15 @@ def self_check() -> None:
 
     wl = (root / "MIHOMO/wl.yaml").read_text(encoding="utf-8")
     assert re.search(r"^log-level: warning$", wl, re.M)
+    wl_src = next(g for g in yaml.safe_load(wl)["proxy-groups"] if g["name"] == "🇷🇺 Белые списки")
+    assert wl_src.get("filter") == r"(?i)^wlgt_[a-z]{2}-.+-[0-9]+$"
+    wl_re = re.compile(wl_src["filter"])
+    assert wl_re.match("wlgt_fi-hz-102")
+    assert wl_re.match("wlgt_fi-h2n-147")
+    assert wl_re.match("wlgt_de-hz-extra-102")
+    assert not wl_re.match("gt_fi-hz-102")
+    assert not wl_re.match("wlgt_fi_hz_102")
+    assert not wl_re.match("bgt_spb-tw-161_wlgt_fi-hz-102")
     wl_out = patch_text(wl, is_wl=True)
     assert wl_out is not None
     assert re.search(r"^log-level: debug$", wl_out, re.M)
