@@ -1,4 +1,4 @@
-RULE-SET,vpn-clients → DIRECT: пропущено процессов 10
+RULE-SET,vpn-clients → DIRECT: пропущено процессов 11
 RULE-SET,torrent-clients → DIRECT: пропущено процессов 90
 RULE-SET,torrent-clients-custom → DIRECT: пропущено процессов 28
 PROCESS-NAME-REGEX,discord,💬 Discord
@@ -9,7 +9,7 @@ RULE-SET,games → 🎮 Игры: пропущено процессов 96
 RULE-SET,wine → 🍷 Wine · Proton: пропущено процессов 1
 RULE-SET,google-process → 🌐 Google · Gemini · Antigravity: пропущено процессов 42
 RULE-SET,ai → 🤖 ИИ · ChatGPT · Claude: пропущено процессов 160
-RULE-SET,ru-app-list → DIRECT: пропущено процессов 531
+RULE-SET,ru-app-list → DIRECT: пропущено процессов 540
 RULE-SET,ru-apps-custom → DIRECT: пропущено процессов 488
 meta-geoip-google: geoip без no-resolve — только уже известный IP
 summary-ru-ips: geoip без no-resolve — только уже известный IP

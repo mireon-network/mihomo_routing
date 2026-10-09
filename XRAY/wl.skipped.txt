@@ -1,3 +1,3 @@
-RULE-SET,vpn-clients → DIRECT: пропущено процессов 10
+RULE-SET,vpn-clients → DIRECT: пропущено процессов 11
 RULE-SET,torrent-clients → DIRECT: пропущено процессов 90
 RULE-SET,torrent-clients-custom → DIRECT: пропущено процессов 28
