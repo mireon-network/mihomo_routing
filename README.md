@@ -145,7 +145,7 @@ Live-тест — throwaway-ветки **`<ветка>-cdn`** и **`<ветка>
 ./scripts/upstream-sync.sh sync       # YAML-зеркала + MRS
 ```
 
-**Автоматически:** GitHub Actions [`.github/workflows/upstream-sync.yml`](.github/workflows/upstream-sync.yml) — каждый день **06:00 МСК** (`sync` + `test-config-local.sh`, коммит в `main` при изменениях). Ручной запуск: Actions → *Upstream sync* → *Run workflow*.
+**Автоматически:** GitHub Actions [`.github/workflows/upstream-sync.yml`](.github/workflows/upstream-sync.yml) — каждый день **03:00 МСК** (`sync` + `test-config-local.sh`, коммит в `main` при изменениях). Ручной запуск: Actions → *Upstream sync* → *Run workflow*.
 
 `upstream-sync.sh sync` последовательно:
 
