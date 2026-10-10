@@ -127,7 +127,7 @@ x-anchors:
 
 mixed-port: 7890
 mode: rule
-log-level: warning
+log-level: debug
 allow-lan: false
 ipv6: true # для перехвата ipv6 трафика в ядро
 unified-delay: true
@@ -255,6 +255,7 @@ proxy-groups:
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hijacking.png
     type: select
     description: "Автовыбор и страны"
+    include-all: true
     remnawave:
       include-proxies: false
     proxies:
@@ -271,10 +272,27 @@ proxy-groups:
     lazy: false
     timeout: 3000
     expected-status: 204
+  - name: 📡 UDP
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Rocket.png
+    type: select
+    description: "Весь UDP — выше Youtube, Google, игр и MATCH; Discord — свой селектор"
+    include-all: true
+    remnawave:
+      include-proxies: false
+    proxies:
+      - 🛡️ VPN
+      - 🔓 Без VPN
+      - 🇫🇮 Финляндия
+      - 🇩🇪 Германия
+      - 🇫🇷 Франция
+      - 🇳🇱 Нидерланды
+      - 🇵🇱 Польша
+      - 🇺🇸 США
   - name: 📺 Youtube
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png
     type: select
     description: "YouTube, YouTube Music"
+    include-all: true
     remnawave:
       include-proxies: false
     proxies:
@@ -290,6 +308,7 @@ proxy-groups:
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png
     type: select
     description: "Discord, Vesktop, голос"
+    include-all: true
     remnawave:
       include-proxies: false
     proxies:
@@ -305,6 +324,7 @@ proxy-groups:
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bot.png
     type: select
     description: "OpenAI, Claude, Copilot, Cursor, Perplexity… Gemini и Antigravity — в Google"
+    include-all: true
     remnawave:
       include-proxies: false
     proxies:
@@ -320,6 +340,7 @@ proxy-groups:
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google.png
     type: select
     description: "Google, Play, Drive, Cloud, Search, Gemini, DeepMind, Antigravity"
+    include-all: true
     remnawave:
       include-proxies: false
     proxies:
@@ -335,6 +356,7 @@ proxy-groups:
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png
     type: select
     description: "Клиенты магазинов — Steam, Epic, Battle.net"
+    include-all: true
     remnawave:
       include-proxies: false
     proxies:
@@ -350,6 +372,7 @@ proxy-groups:
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png
     type: select
     description: "Трафик игр — напрямую или как лаунчеры"
+    include-all: true
     remnawave:
       include-proxies: false
     proxies:
@@ -359,6 +382,7 @@ proxy-groups:
     icon: https://api.iconify.design/mdi/glass-wine.svg?color=%23B11226&width=128&height=128
     type: select
     description: "Windows-игры и софт через Wine/Proton; по умолчанию без VPN"
+    include-all: true
     remnawave:
       include-proxies: false
     proxies:
@@ -714,7 +738,7 @@ rule-providers:
     proxy: ⚡️ Авто
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geosite-private.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/meta-geosite-private.mrs
     path: ./ruleset/meta-geosite-private.mrs
     interval: *rp_interval
   private-domains-custom: # локальный mrs (source: rule-sets/mrs/text/private-domains-custom.list)
@@ -723,7 +747,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/private-domains-custom.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/private-domains-custom.mrs
     path: ./ruleset/private-domains-custom.mrs
   category-ru-custom: # локальный mrs (source: rule-sets/mrs/text/category-ru-custom.list)
     type: http
@@ -731,7 +755,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/category-ru-custom.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/category-ru-custom.mrs
     path: ./ruleset/category-ru-custom.mrs
   summary-category-ru:
     type: http
@@ -739,7 +763,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/summary-category-ru.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/summary-category-ru.mrs
     path: ./ruleset/summary-category-ru.mrs
   wld:
     type: http
@@ -747,7 +771,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/wld.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/wld.mrs
     path: ./ruleset/wld.mrs
   meta-category-game-platforms-download:
     type: http
@@ -755,7 +779,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-game-platforms-download.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/meta-category-game-platforms-download.mrs
     path: ./ruleset/meta-category-game-platforms-download.mrs
   meta-category-games:
     type: http
@@ -763,7 +787,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-games.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/meta-category-games.mrs
     path: ./ruleset/meta-category-games.mrs
   meta-discord:
     type: http
@@ -771,7 +795,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-discord.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/meta-discord.mrs
     path: ./ruleset/meta-discord.mrs
   meta-category-enhance-gaming:
     type: http
@@ -779,7 +803,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-enhance-gaming.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/meta-category-enhance-gaming.mrs
     path: ./ruleset/meta-category-enhance-gaming.mrs
   private-ips-custom: # локальный mrs (source: rule-sets/mrs/text/private-ips-custom.list)
     type: http
@@ -787,14 +811,14 @@ rule-providers:
     interval: *rp_interval
     behavior: ipcidr
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/private-ips-custom.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/private-ips-custom.mrs
     path: ./ruleset/private-ips-custom.mrs
   meta-geoip-private:
     type: http
     proxy: ⚡️ Авто
     behavior: ipcidr
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geoip-private.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/meta-geoip-private.mrs
     path: ./ruleset/meta-geoip-private.mrs
     interval: *rp_interval
   summary-ru-ips:
@@ -803,7 +827,7 @@ rule-providers:
     interval: *rp_interval
     behavior: ipcidr
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/summary-ru-ips.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/summary-ru-ips.mrs
     path: ./ruleset/summary-ru-ips.mrs
   meta-youtube:
     type: http
@@ -811,7 +835,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-youtube.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/meta-youtube.mrs
     path: ./ruleset/meta-youtube.mrs
   meta-win-spy:
     type: http
@@ -819,7 +843,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-win-spy.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/meta-win-spy.mrs
     path: ./ruleset/meta-win-spy.mrs
   torrent-domains-custom: # локальный mrs (source: rule-sets/mrs/text/torrent-domains-custom.list)
     type: http
@@ -827,7 +851,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-domains-custom.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/torrent-domains-custom.mrs
     path: ./ruleset/torrent-domains-custom.mrs
   torrent-trackers:
     type: http
@@ -835,7 +859,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-trackers.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/torrent-trackers.mrs
     path: ./ruleset/torrent-trackers.mrs
   meta-category-ip-geo-detect:
     type: http
@@ -843,7 +867,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-ip-geo-detect.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/meta-category-ip-geo-detect.mrs
     path: ./ruleset/meta-category-ip-geo-detect.mrs
   torrent-clients:
     type: http
@@ -851,7 +875,7 @@ rule-providers:
     interval: *rp_interval
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-clients.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/yaml/torrent-clients.yaml
     path: ./ruleset/torrent-clients.yaml
   torrent-clients-custom:
     type: http
@@ -859,7 +883,7 @@ rule-providers:
     interval: *rp_interval
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-clients-custom.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/yaml/torrent-clients-custom.yaml
     path: ./ruleset/torrent-clients-custom.yaml
   games-proxy-rules: # domain, не classical: fake-ip и nameserver-policy на classical пишут warn
     type: inline
@@ -873,7 +897,7 @@ rule-providers:
     interval: *rp_interval
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/games-launchers.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/yaml/games-launchers.yaml
     path: ./ruleset/games-launchers.yaml
   games:
     type: http
@@ -881,7 +905,7 @@ rule-providers:
     interval: *rp_interval
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/games.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/yaml/games.yaml
     path: ./ruleset/games.yaml
   games-domain-custom: # локальный mrs (source: rule-sets/mrs/text/games-domain-custom.list)
     type: http
@@ -889,7 +913,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/games-domain-custom.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/games-domain-custom.mrs
     path: ./ruleset/games-domain-custom.mrs
   summary-launchers: # steam, epicgames, blizzard, origin, ubisoft, gog
     type: http
@@ -897,7 +921,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/summary-launchers.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/summary-launchers.mrs
     path: ./ruleset/summary-launchers.mrs
   games-process-custom:
     type: http
@@ -905,7 +929,7 @@ rule-providers:
     interval: *rp_interval
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/games-process-custom.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/yaml/games-process-custom.yaml
     path: ./ruleset/games-process-custom.yaml
   wine: # инлайн (мелкий список — без отдельной загрузки)
     type: inline
@@ -918,7 +942,7 @@ rule-providers:
     interval: *rp_interval
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/vpn-clients.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/yaml/vpn-clients.yaml
     path: ./ruleset/vpn-clients.yaml
   ai:
     type: http
@@ -926,7 +950,7 @@ rule-providers:
     interval: *rp_interval
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/ai.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/yaml/ai.yaml
     path: ./ruleset/ai.yaml
   meta-ai:
     type: http
@@ -934,7 +958,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-ai.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/meta-ai.mrs
     path: ./ruleset/meta-ai.mrs
   google-process: # Antigravity / agy / Gemini — процессы → 🌐 Google · Gemini · Antigravity (не 🤖 ИИ)
     type: http
@@ -942,7 +966,7 @@ rule-providers:
     interval: *rp_interval
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/google-process.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/yaml/google-process.yaml
     path: ./ruleset/google-process.yaml
   summary-google: # google, google-play, gemini, deepmind, antigravity, google-cn, registry, trust-services
     type: http
@@ -950,7 +974,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/summary-google.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/summary-google.mrs
     path: ./ruleset/summary-google.mrs
   meta-geoip-google:
     type: http
@@ -958,7 +982,7 @@ rule-providers:
     interval: *rp_interval
     behavior: ipcidr
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geoip-google.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/meta-geoip-google.mrs
     path: ./ruleset/meta-geoip-google.mrs
   ru-apps-custom:
     type: http
@@ -966,7 +990,7 @@ rule-providers:
     interval: *rp_interval
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/ru-apps-custom.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/yaml/ru-apps-custom.yaml
     path: ./ruleset/ru-apps-custom.yaml
   ru-app-list:
     type: http
@@ -974,7 +998,7 @@ rule-providers:
     interval: *rp_interval
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/ru-app-list.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/yaml/ru-app-list.yaml
     path: ./ruleset/ru-app-list.yaml
   category-ban-ru:
     type: http
@@ -982,7 +1006,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/category-ban-ru.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/category-ban-ru.mrs
     path: ./ruleset/category-ban-ru.mrs
   discord-voiceips:
     type: http
@@ -990,7 +1014,7 @@ rule-providers:
     interval: *rp_interval
     behavior: ipcidr
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/discord-voiceips.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/discord-voiceips.mrs
     path: ./ruleset/discord-voiceips.mrs
   meta-geoip-cloudflare:
     type: http
@@ -998,7 +1022,7 @@ rule-providers:
     interval: *rp_interval
     behavior: ipcidr
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geoip-cloudflare.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/meta-geoip-cloudflare.mrs
     path: ./ruleset/meta-geoip-cloudflare.mrs
   mail-ports: # инлайн (мелкий список — без отдельной загрузки)
     type: inline
@@ -1023,6 +1047,16 @@ rules:
   - RULE-SET,private-domains-custom,DIRECT         # локальные домены — напрямую (вне upstream)
   - RULE-SET,vpn-clients,DIRECT                    # overlay LAN: Radmin/Hamachi/Porthole/ZeroTier/Tailscale/… — не туннелировать
 
+  # --- Discord (выше 📡 UDP и Google: голос по IP/порту + вложения на storage.googleapis.com) ---
+  - AND,((RULE-SET,meta-geoip-cloudflare),(NETWORK,udp),(DST-PORT,19200-19500)),💬 Discord # голос Discord через Cloudflare (мобильные)
+  - AND,((RULE-SET,meta-geoip-cloudflare),(NETWORK,udp),(DST-PORT,50000-50100)),💬 Discord # голос Discord через Cloudflare
+  - AND,((RULE-SET,discord-voiceips),(NETWORK,udp),(DST-PORT,50000-50100)),💬 Discord # голос Discord по IP (legiz)
+  - RULE-SET,meta-discord,💬 Discord
+  - PROCESS-NAME-REGEX,discord,💬 Discord
+  - PROCESS-NAME-REGEX,vesktop,💬 Discord
+  - NETWORK,UDP,📡 UDP                             # весь UDP → селектор (выше Youtube/Google/игр/торрентов/MATCH)
+
+
   # --- Пуш-уведомления → DIRECT (через VPN APNs/FCM тормозят и жрут батарею) ---
   - IP-CIDR,17.0.0.0/8,DIRECT,no-resolve           # Apple CDN (legiz prod)
   - OR,((DST-PORT,5223),(DOMAIN-SUFFIX,push.apple.com)),DIRECT                                                              # Apple APNs (порт 5223 ловит и коннект по IP)
@@ -1042,14 +1076,6 @@ rules:
 
   # --- YouTube ⊂ google (googleapis / googleusercontent) ---
   - RULE-SET,meta-youtube,📺 Youtube
-
-  # --- Discord (storage.googleapis.com ⊂ google) ---
-  - AND,((RULE-SET,meta-geoip-cloudflare),(NETWORK,udp),(DST-PORT,19200-19500)),💬 Discord # голос Discord через Cloudflare (мобильные)
-  - AND,((RULE-SET,meta-geoip-cloudflare),(NETWORK,udp),(DST-PORT,50000-50100)),💬 Discord # голос Discord через Cloudflare
-  - AND,((RULE-SET,discord-voiceips),(NETWORK,udp),(DST-PORT,50000-50100)),💬 Discord # голос Discord по IP (legiz)
-  - RULE-SET,meta-discord,💬 Discord
-  - PROCESS-NAME-REGEX,discord,💬 Discord
-  - PROCESS-NAME-REGEX,vesktop,💬 Discord
 
   - RULE-SET,category-ru-custom,DIRECT             # xsolla, p-way, банки .ru
 
