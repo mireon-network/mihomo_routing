@@ -12,8 +12,6 @@
 | `MIHOMO/wl.yaml` | Режим «белые списки» |
 | `XRAY/geosite.dat` | Категории доменов, имя = id rule-set |
 | `XRAY/geoip.dat` | Категории IP |
-| `XRAY/template_remnawave.json` | Правила Xray: `geosite:` / `geoip:` (процессы в `*.skipped.txt`) |
-| `XRAY/wl.json` | Белые списки для Xray |
 | `rule-sets/yaml/torrent-clients.yaml` | Торрент-клиенты — **зеркало** [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets/blob/main/other/torrent-clients.yaml) (без правок) |
 | `rule-sets/yaml/torrent-clients-custom.yaml` | Локальные дополнения торрент-клиентов → DIRECT |
 | `rule-sets/yaml/games.yaml` | Игры — **зеркало** [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category); post-hook вырезает лаунчеры (они в `games-launchers.yaml`) |
@@ -29,7 +27,7 @@
 | `rule-sets/mrs/bin/*.mrs` | Бинарные rule-set для Mihomo (собираются из `text/`) |
 | `scripts/upstream-sync.sh` | Обновление YAML из upstream-репозиториев |
 | `scripts/mrs-tool.sh` | Обновление MRS rule-sets |
-| `scripts/build-xray.py` | Сборка `XRAY/geosite.dat`, `geoip.dat` и JSON из `MIHOMO/*.yaml` и `rule-sets/` |
+| `scripts/build-xray.py` | Сборка `XRAY/geosite.dat` и `geoip.dat` из `MIHOMO/*.yaml` и `rule-sets/` |
 | `scripts/upstream-manifest.yaml` | Список upstream-источников для `upstream-sync.sh` |
 | `scripts/generate-gfn-games-block.py` | Пересборка блока GeForce NOW в `games-process-custom.yaml` |
 | `scripts/generate-tun-exclude-package.py` | Пересборка `tun.exclude-package` в обоих шаблонах |
@@ -41,9 +39,7 @@
 
 ## Категории Xray
 
-Имя категории совпадает с id rule-set. В правилах: `geosite:<имя>` и `geoip:<имя>`. Файлы лежат в каталоге ассетов Xray (`XRAY_LOCATION_ASSET`). `meta-reddit` есть в `geosite.dat`, в правила не входит.
-
-`outboundTag` — имя политики mihomo (`DIRECT`, `PROXY`, `REJECT-DROP` или группа с эмодзи): в Xray нужен outbound с тем же тегом. `domainStrategy: AsIs`, чтобы `::/0` с `no-resolve` не резал AAAA. `summary-ru-ips` и `meta-geoip-google` без `no-resolve` поэтому совпадают только с уже известным IP.
+Имя категории совпадает с id rule-set: `geosite:<имя>` и `geoip:<имя>`. Файлы лежат в каталоге ассетов Xray (`XRAY_LOCATION_ASSET`). `meta-reddit` есть в `geosite.dat`. JSON-шаблоны маршрутов не собираются.
 
 ### geosite
 
@@ -122,7 +118,7 @@
 - Основной: `https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/MIHOMO/template_remnawave.yaml`
 - Белые списки: `https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/MIHOMO/wl.yaml`
 
-Live-тест — throwaway-ветки **`<ветка>-cdn`** и **`<ветка>-debug`** обновляются автоматически при push в любую ветку (кроме `*-cdn`/`*-debug`). Вручную: `./scripts/deploy-test-branches.sh`.
+Live-тест — throwaway-ветки **`<ветка>-cdn`** и **`<ветка>-debug`** обновляются при push в любую ветку (кроме `*-cdn`/`*-debug`). Ночной sync пушит токеном Actions, такой push другой workflow не запускает, поэтому тот же job сам вызывает `./scripts/deploy-test-branches.sh`. Вручную: `./scripts/deploy-test-branches.sh`.
 
 Пример для `routing-v2`:
 
@@ -145,14 +141,16 @@ Live-тест — throwaway-ветки **`<ветка>-cdn`** и **`<ветка>
 ./scripts/upstream-sync.sh sync       # YAML-зеркала + MRS
 ```
 
-**Автоматически:** GitHub Actions [`.github/workflows/upstream-sync.yml`](.github/workflows/upstream-sync.yml) — каждый день **03:00 МСК** (`sync` + `test-config-local.sh`, коммит в `main` при изменениях). Ручной запуск: Actions → *Upstream sync* → *Run workflow*.
+**Автоматически:** GitHub Actions [`.github/workflows/upstream-sync.yml`](.github/workflows/upstream-sync.yml) — каждый день **03:00 МСК** (`sync` + `test-config-local.sh`, коммит в `main` при изменениях, затем `main-cdn` и `main-debug`). Ручной запуск: Actions → *Upstream sync* → *Run workflow*.
 
 `upstream-sync.sh sync` последовательно:
 
 1. скачивает upstream в `.sync-upstream/staging/`;
 2. **перезаписывает** зеркала из manifest (конфликтов нет — правки только в `*-custom`);
-3. post-hooks: лаунчеры вырезаются из `games.yaml`, GFN → `games-process-custom.yaml`, `tun.exclude-package` в обоих шаблонах, CDN URL в `template_remnawave.yaml`;
-4. вызывает `./scripts/mrs-tool.sh sync`.
+3. post-hooks: лаунчеры вырезаются из `games.yaml`, GFN → `games-process-custom.yaml`, CDN URL в `template_remnawave.yaml`;
+4. вызывает `./scripts/mrs-tool.sh sync` (здесь обновляется `wld.list`);
+5. пересобирает `tun.exclude-package` уже по свежему `wld.list`;
+6. собирает `XRAY/geosite.dat` и `XRAY/geoip.dat`.
 
 ### Источники (`scripts/upstream-manifest.yaml`)
 
@@ -160,7 +158,7 @@ Live-тест — throwaway-ветки **`<ветка>-cdn`** и **`<ветка>
 |----|------|----------|
 | `torrent_clients` | `rule-sets/yaml/torrent-clients.yaml` | [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets) |
 | `games` | `rule-sets/yaml/games.yaml` | [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category) (post → strip лаунчеров + GFN в `games-process-custom.yaml`) |
-| `ru_app_list` | `rule-sets/yaml/ru-app-list.yaml` | [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets) (post → `tun.exclude-package`) |
+| `ru_app_list` | `rule-sets/yaml/ru-app-list.yaml` | [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets) |
 
 **Не синхронизируется (только локально):** `MIHOMO/template_remnawave.yaml`, `MIHOMO/wl.yaml`, `rule-sets/yaml/ai.yaml`, `rule-sets/yaml/google-process.yaml`, все `*-custom.yaml`, локальные MRS `*-custom` (`rule-sets/mrs/text/<имя>.list`).
 
@@ -197,7 +195,7 @@ Upstream-наборы перезаписываются из CDN/MetaCubeX. Ло�
 - `games-domain-custom` (MRS) — игровые домены вне MetaCubeX `category-games` (PoE, Tarkov…);
 - `games-process-custom.yaml` — процессы: блок GeForce NOW (пересобирается скриптом), нативные порты macOS/Linux, секция «Добавленно вручную» (R.E.P.O. и т.п.).
 
-Правьте только часть `games-process-custom.yaml` **выше** маркера `# --- GeForce NOW` — всё ниже перезаписывает скрипт.
+В `games-process-custom.yaml` скрипт перезаписывает только блок между `# --- GeForce NOW` и `# --- Добавленно вручную`. Хвост ручной секции не трогает. Заголовок ручной секции не переименовывать: по нему скрипт находит хвост.
 
 Исключения с фиксированной политикой (не попадают в 🎮 Игры) — в шаблоне **выше** игровых процессов:
 
@@ -253,7 +251,7 @@ python3 scripts/generate-gfn-games-block.py
 | `template_remnawave.yaml` | `ru-app-list.yaml` + `ru-apps-custom.yaml` (~530 пакетов) |
 | `wl.yaml` | `wld.list` → `ru-app-list.yaml` + `wld-apps-custom.yaml` |
 
-Пост-хук `regenerate_tun_exclude` срабатывает после sync `ru_app_list`. Вручную:
+`upstream-sync.sh` пересобирает список после `mrs-tool.sh sync`, когда `wld.list` уже свежий. Вручную:
 
 ```bash
 python3 scripts/generate-tun-exclude-package.py

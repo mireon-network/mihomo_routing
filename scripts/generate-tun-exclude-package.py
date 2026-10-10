@@ -56,6 +56,8 @@ WLD_ALIASES: dict[str, frozenset[str]] = {
 }
 
 PKG_RE = re.compile(r"^[A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)+$")
+# sber/dgis — 4 символа. Короче (ya, t2) совпадение по началу сегмента не берём.
+PREFIX_MIN = 4
 WLD_FILTER_SOURCES = (ROOT / "rule-sets/yaml/ru-app-list.yaml",)
 WLD_CUSTOM_SOURCES = (ROOT / "rule-sets/yaml/wld-apps-custom.yaml",)
 
@@ -79,11 +81,18 @@ def wld_match_tokens() -> frozenset[str]:
     return frozenset(tokens)
 
 
+def require_sources(sources: tuple[Path, ...]) -> None:
+    missing = [src for src in sources if not src.is_file()]
+    if missing:
+        raise SystemExit(
+            "generate-tun-exclude-package: нет " + ", ".join(str(p) for p in missing)
+        )
+
+
 def collect_packages(sources: tuple[Path, ...]) -> list[str]:
+    require_sources(sources)
     seen: dict[str, None] = {}
     for src in sources:
-        if not src.is_file():
-            continue
         for m in re.finditer(r"PROCESS-NAME,([^\n#]+)", src.read_text(encoding="utf-8")):
             v = m.group(1).strip()
             if v.lower().endswith(".exe"):
@@ -94,8 +103,18 @@ def collect_packages(sources: tuple[Path, ...]) -> list[str]:
 
 
 def package_matches_wld(pkg: str, tokens: frozenset[str]) -> bool:
-    segs = pkg.lower().split(".")
-    return any(t in segs for t in tokens)
+    # ru.sberbankmobile и pro.sber_zvuk: метка короче сегмента или склеена через _
+    segs: list[str] = []
+    for part in pkg.lower().split("."):
+        segs.append(part)
+        if "_" in part:
+            segs.extend(piece for piece in part.split("_") if piece)
+    if any(token in segs for token in tokens):
+        return True
+    return any(
+        len(token) >= PREFIX_MIN and any(seg.startswith(token) and seg != token for seg in segs)
+        for token in tokens
+    )
 
 
 def collect_wld_packages() -> list[str]:
@@ -112,7 +131,35 @@ def collect_wld_packages() -> list[str]:
     return list(seen)
 
 
+def self_check() -> None:
+    try:
+        require_sources((Path("/no/such/ru-apps-custom.yaml"),))
+    except SystemExit as exc:
+        assert "ru-apps-custom.yaml" in str(exc)
+    else:
+        raise AssertionError("пропавший yaml не остановил сборку")
+    tokens = frozenset({"sber", "sberbank", "dgis", "gosuslugi", "yandex", "ya", "mail"})
+    assert package_matches_wld("ru.sberbankmobile", tokens)
+    assert package_matches_wld("ru.sberbank_sbbol", tokens)
+    assert package_matches_wld("pro.sber_zvuk", tokens)
+    assert package_matches_wld("ru.dublgis.dgismobile", tokens)
+    assert package_matches_wld("com.uip.gosuslugi2", tokens)
+    assert package_matches_wld("ru.yandex_team.calendar_app", tokens)
+    assert package_matches_wld("ru.mail.cloud", tokens)
+    assert not package_matches_wld("com.yappy.android", tokens)
+    print("generate-tun-exclude-package: self-check ok")
+
+
 def main() -> int:
+    if sys.argv[1:2] == ["--self-check"]:
+        self_check()
+        return 0
+    # оба шаблона читают эти файлы; проверяем до первой записи
+    require_sources(
+        TEMPLATES[ROOT / "MIHOMO/template_remnawave.yaml"]
+        + WLD_FILTER_SOURCES
+        + WLD_CUSTOM_SOURCES
+    )
     rc = 0
     for tpl, sources in TEMPLATES.items():
         if tpl.name == "wl.yaml":

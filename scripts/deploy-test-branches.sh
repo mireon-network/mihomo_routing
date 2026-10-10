@@ -70,10 +70,10 @@ print_client_urls() {
 unlock_branch_worktree() {
   local br="$1" path
   path="$(git -C "$ROOT" worktree list --porcelain | awk -v ref="refs/heads/$br" '
-    /^worktree / { p=$2 }
+    /^worktree / { p=substr($0, 10) }
     $0 == "branch " ref { print p }
   ')"
-  if [[ -n "${path:-}" ]]; then
+  if [[ -n "${path:-}" && "$path" != "$ROOT" ]]; then
     git -C "$ROOT" worktree remove --force "$path" 2>/dev/null || true
     rm -rf "$path"
   fi

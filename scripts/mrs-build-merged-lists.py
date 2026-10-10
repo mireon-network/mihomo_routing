@@ -75,10 +75,10 @@ def main() -> int:
         missing = [p for p in inputs if not p.is_file()]
         if missing:
             print(
-                f"mrs-build-merged-lists: пропуск {info.file} — нет {[p.name for p in missing]}",
+                f"mrs-build-merged-lists: нет {[p.name for p in missing]} для {info.file}",
                 file=sys.stderr,
             )
-            continue
+            return 1
         out = text_dir / f"{info.file}.list"
         print(f"mrs-build-merged-lists: {info.file}.list ← {', '.join(info.sources)}")
         subprocess.run(

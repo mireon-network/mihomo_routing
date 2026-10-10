@@ -51,3 +51,7 @@ jobs:
           git add -A
           git commit -m "chore: upstream sync $(date -u +%Y-%m-%d)"
           git push
+
+      # Push токеном Actions не запускает deploy-test-branches.yml
+      - name: Update test branches
+        run: ./scripts/deploy-test-branches.sh

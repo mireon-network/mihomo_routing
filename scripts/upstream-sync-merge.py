@@ -129,31 +129,22 @@ def fix_template_cdn(path: Path) -> bool:
     return False
 
 
+HOOKS = {
+    "strip_launchers": "scripts/strip-games-launchers.py",
+    "regenerate_gfn_block": "scripts/generate-gfn-games-block.py",
+}
+
+
 def run_post_hooks(root: Path, info: SourceInfo) -> None:
     for hook in info.post:
-        if hook == "strip_launchers":
-            script = root / "scripts/strip-games-launchers.py"
-            if not script.is_file():
-                print(f"post {info.id}: нет {script}", file=sys.stderr)
-                continue
-            print(f"post {info.id}: strip_launchers…")
-            subprocess.run([sys.executable, str(script)], cwd=root, check=True)
-        elif hook == "regenerate_gfn_block":
-            script = root / "scripts/generate-gfn-games-block.py"
-            if not script.is_file():
-                print(f"post {info.id}: нет {script}", file=sys.stderr)
-                continue
-            print(f"post {info.id}: regenerate_gfn_block…")
-            subprocess.run([sys.executable, str(script)], cwd=root, check=True)
-        elif hook == "regenerate_tun_exclude":
-            script = root / "scripts/generate-tun-exclude-package.py"
-            if not script.is_file():
-                print(f"post {info.id}: нет {script}", file=sys.stderr)
-                continue
-            print(f"post {info.id}: regenerate_tun_exclude…")
-            subprocess.run([sys.executable, str(script)], cwd=root, check=True)
-        else:
-            print(f"post {info.id}: неизвестный hook {hook!r}", file=sys.stderr)
+        rel = HOOKS.get(hook)
+        if rel is None:
+            raise SystemExit(f"post {info.id}: неизвестный hook {hook!r}")
+        script = root / rel
+        if not script.is_file():
+            raise SystemExit(f"post {info.id}: нет {script}")
+        print(f"post {info.id}: {hook}…")
+        subprocess.run([sys.executable, str(script)], cwd=root, check=True)
 
 
 def cmd_download(root: Path, sync_dir: Path, manifest: Path) -> tuple[list[SourceInfo], int]:
@@ -217,6 +208,12 @@ def self_check() -> None:
     assert failed == 1 and len(sources) == 1
     assert not (sync_dir / "staging/rule-sets/yaml/nope.yaml").is_file()
     assert cmd_sync(root, sync_dir, manifest) == 1
+    try:
+        run_post_hooks(root, SourceInfo("x", "http://x", "p", ["nope"]))
+    except SystemExit as exc:
+        assert "неизвестный hook" in str(exc)
+    else:
+        raise AssertionError("неизвестный hook не остановил sync")
     print("upstream-sync-merge: self-check ok")
 
 

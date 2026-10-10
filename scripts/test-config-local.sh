@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Локальная проверка rule-providers/rules БЕЗ пуша в main и БЕЗ сети.
-# Все провайдеры подменяются на type:file с локальными путями репозитория, затем:
-#   1) mihomo -t — структура конфига + ссылки RULE-SET ↔ провайдеры;
+# Локальная проверка шаблона БЕЗ пуша в main и БЕЗ сети.
+# В mihomo -t уходит шаблон целиком. Подменяются только proxies (узлы ставит
+# Remnawave) и URL провайдеров → type:file с локальными путями.
+#   1) mihomo -t — dns, sniffer, группы, tun, find-process-mode и rules;
 #   2) convert-ruleset — каждый .mrs/.yaml реально парсится mihomo (ловит битый контент).
 #
 # Использование: scripts/test-config-local.sh [MIHOMO/template_remnawave.yaml]
@@ -14,41 +15,96 @@ MIHOMO_BIN="${MIHOMO_BIN:-$ROOT/.tools/mihomo}"
 
 WORK="$(mktemp -d)"; trap 'rm -rf "$WORK"' EXIT
 
-# 1) Минимальный конфиг: провайдеры → type:file (локальные пути), заглушка-прокси.
+# 1) Шаблон целиком. Заглушка только у proxies, провайдеры → type:file.
 python3 - "$TPL" "$ROOT" "$WORK" >"$WORK/config.yaml" <<'PY'
-import sys, yaml
+import re, sys, yaml
 from pathlib import Path
 tpl, root, work = sys.argv[1], Path(sys.argv[2]), sys.argv[3]
 doc = yaml.safe_load(open(tpl, encoding="utf-8"))
 provs = doc.get("rule-providers", {}) or {}
-out = {
-    "mixed-port": 7890, "mode": "rule", "log-level": "warning",
-    "proxies": [{"name": "DUMMY", "type": "socks5", "server": "127.0.0.1", "port": 1080}],
-    "proxy-groups": [{"name": "G", "type": "select", "proxies": ["DUMMY", "DIRECT"]}],
-    "rule-providers": {}, "rules": [],
-}
+def iter_str(obj: object):
+    if isinstance(obj, str):
+        yield obj
+    elif isinstance(obj, dict):
+        for key, value in obj.items():
+            if isinstance(key, str):
+                yield key
+            yield from iter_str(value)
+    elif isinstance(obj, list):
+        for item in obj:
+            yield from iter_str(item)
+
+def rule_sets_in(text: str) -> set[str]:
+    found = set()
+    for chunk in re.findall(r"rule-set:([^'\"\s#]+)", text):
+        found.update(part for part in chunk.split(",") if part)
+    for name in re.findall(r"RULE-SET,([^,)\s]+)", text):
+        found.add(name)
+    return found
+
+def policy_of(rule: str) -> str:
+    rule = rule.split(" #", 1)[0].strip()
+    if rule.startswith(("AND,", "OR,")):
+        end = rule.rfind("))")
+        if end < 0:
+            return ""
+        pol = rule[end + 2 :].lstrip(",").strip()
+    else:
+        parts = [part.strip() for part in rule.split(",")]
+        if parts and parts[-1] == "no-resolve":
+            parts = parts[:-1]
+        pol = parts[-1] if len(parts) >= 2 else ""
+    return pol.removesuffix(",no-resolve").strip()
+
+builtins = {"DIRECT", "REJECT", "REJECT-DROP", "PASS", "COMPATIBLE"}
+groups = {g.get("name") for g in (doc.get("proxy-groups") or []) if g.get("name")}
+bad_rules = sorted(rule_sets_in("\n".join(iter_str(doc.get("dns") or {}))) - set(provs))
+bad_rules += sorted(
+    name for rule in (doc.get("rules") or []) for name in re.findall(r"RULE-SET,([^,)\s]+)", str(rule))
+    if name not in provs
+)
+if bad_rules:
+    print("MISSING_RULE_SETS:", sorted(set(bad_rules)), file=sys.stderr)
+    sys.exit(2)
+bad_policies = sorted({
+    pol
+    for rule in (doc.get("rules") or [])
+    if (pol := policy_of(str(rule))) and pol not in builtins and pol not in groups
+})
+if bad_policies:
+    print("MISSING_POLICIES:", bad_policies, file=sys.stderr)
+    sys.exit(2)
+broken = [
+    str(rule)
+    for rule in (doc.get("rules") or [])
+    if str(rule).startswith(("AND,", "OR,")) and not policy_of(str(rule))
+]
+if broken:
+    print("BROKEN_RULES:", broken, file=sys.stderr)
+    sys.exit(2)
+
+doc["proxies"] = [{"name": "DUMMY", "type": "socks5", "server": "127.0.0.1", "port": 1080}]
+local_provs = {}
 missing = []
 for name, p in provs.items():
     if p.get("type") == "inline":
-        out["rule-providers"][name] = p
-        out["rules"].append(f"RULE-SET,{name},G")
+        local_provs[name] = p
         continue
     url = p.get("url", "")
     sub = url.split("@main/", 1)[1] if "@main/" in url else None
     local = (root / sub) if sub else None
     if not local or not local.is_file():
         missing.append((name, sub)); continue
-    out["rule-providers"][name] = {
+    local_provs[name] = {
         "type": "file", "behavior": p.get("behavior", "domain"),
         "format": p.get("format", "yaml"), "path": str(local),
     }
-    out["rules"].append(f"RULE-SET,{name},G")
-out["rules"].append("MATCH,G")
-yaml.safe_dump(out, sys.stdout, allow_unicode=True, sort_keys=False)
+doc["rule-providers"] = local_provs
+yaml.safe_dump(doc, sys.stdout, allow_unicode=True, sort_keys=False)
 if missing:
     print("MISSING_FILES:", missing, file=sys.stderr)
     sys.exit(2)
-print(f"providers={len(out['rule-providers'])}", file=sys.stderr)
+print(f"providers={len(local_provs)}", file=sys.stderr)
 PY
 
 echo "→ [1/2] mihomo -t (структура + ссылки)"

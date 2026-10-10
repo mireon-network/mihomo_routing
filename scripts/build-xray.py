@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
-"""Сборка XRAY/ из правил MIHOMO/*.yaml и rule-sets/. MIHOMO не меняется.
+"""Сборка XRAY/geosite.dat и XRAY/geoip.dat из MIHOMO/*.yaml и rule-sets/. MIHOMO не меняется.
 
-Домены и IP наборов — категории geosite.dat / geoip.dat.
-В JSON только geosite:<имя> и geoip:<имя>. Имя категории = id rule-set.
-Одиночные домены внутри OR/AND остаются как есть. Процессы — в *.skipped.txt.
+Имя категории = id rule-set. JSON-шаблоны маршрутов не собираются.
 """
 from __future__ import annotations
 
 import ipaddress
-import json
 import re
 import sys
 from pathlib import Path
@@ -19,8 +16,8 @@ YAML = ROOT / "rule-sets" / "yaml"
 OUT = ROOT / "XRAY"
 
 PROFILES = (
-    ("MIHOMO/template_remnawave.yaml", "template_remnawave"),
-    ("MIHOMO/wl.yaml", "wl"),
+    "MIHOMO/template_remnawave.yaml",
+    "MIHOMO/wl.yaml",
 )
 # В шаблонах нет: только категория geosite.
 EXTRA_GEOSITE = ("meta-reddit",)
@@ -163,93 +160,6 @@ def load_set(providers: dict[str, dict], name: str):
     return load_domain_list(name), [], [], []
 
 
-def skip_note(prefix: str, skipped: list[str]) -> str:
-    procs = [s for s in skipped if s.startswith("PROCESS")]
-    other = [s for s in skipped if not s.startswith("PROCESS")]
-    bits = []
-    if procs:
-        bits.append(f"пропущено процессов {len(procs)}")
-    if other:
-        bits.append("не перенесено: " + ", ".join(other))
-    return f"{prefix}: " + "; ".join(bits)
-
-
-def field(outbound: str, **parts: object) -> dict:
-    rule: dict = {"type": "field", "outboundTag": outbound}
-    rule.update(parts)
-    return rule
-
-
-def emit_parts(name: str, outbound: str, domains, ips, ports) -> list[dict]:
-    rules: list[dict] = []
-    if domains:
-        GEOSITE[name] = domains
-        rules.append(field(outbound, domain=[f"geosite:{name}"]))
-    if ips:
-        GEOIP[name] = ips
-        rules.append(field(outbound, ip=[f"geoip:{name}"]))
-    if ports:
-        rules.append(field(outbound, port=",".join(ports)))
-    return rules
-
-
-def atom_rule(providers: dict[str, dict], atom: str, outbound: str) -> tuple[dict | None, str | None]:
-    kind, _, value = atom.partition(",")
-    if kind == "NETWORK":
-        return field(outbound, network=value.lower()), None
-    if kind == "DST-PORT":
-        return field(outbound, port=value), None
-    if kind == "DOMAIN-SUFFIX":
-        return field(outbound, domain=["domain:" + value]), None
-    if kind == "DOMAIN-KEYWORD":
-        return field(outbound, domain=["keyword:" + value]), None
-    if kind == "DOMAIN":
-        return field(outbound, domain=["full:" + value]), None
-    if kind == "RULE-SET":
-        domains, ips, ports, skipped = load_set(providers, value)
-        if skipped and not (domains or ips or ports):
-            return None, skip_note(f"{atom} → {outbound}", skipped)
-        rules = emit_parts(value, outbound, domains, ips, ports)
-        if len(rules) != 1:
-            raise SystemExit(f"AND/OR RULE-SET {value} дал {len(rules)} правил, нужно одно")
-        note = skip_note(atom, skipped) if skipped else None
-        return rules[0], note
-    return None, f"не перенесено: {atom} → {outbound}"
-
-
-def logic_rule(providers: dict[str, dict], wrapped: str, outbound: str, op: str) -> tuple[list[dict], list[str]]:
-    atoms = split_atoms(wrapped)
-    if op == "OR":
-        rules: list[dict] = []
-        notes: list[str] = []
-        for atom in atoms:
-            rule, note = atom_rule(providers, atom, outbound)
-            if rule:
-                rules.append(rule)
-            if note:
-                notes.append(note)
-        return rules, notes
-    merged: dict = {"type": "field", "outboundTag": outbound}
-    notes: list[str] = []
-    for atom in atoms:
-        rule, note = atom_rule(providers, atom, outbound)
-        if note:
-            notes.append(note)
-        if not rule:
-            continue
-        for key, val in rule.items():
-            if key in ("type", "outboundTag"):
-                continue
-            merged[key] = val
-    if len(merged) == 2:
-        return [], notes or [f"AND → {outbound}: нечего переносить"]
-    if "ip" in merged and "port" not in merged:
-        names = [atom.split(",", 1)[1] for atom in atoms if atom.startswith("RULE-SET,")]
-        if names:
-            notes.append(f"{names[0]}: geoip без no-resolve — только уже известный IP")
-    return [merged], notes
-
-
 def policy_of(rest: str) -> tuple[str, str]:
     end = rest.rfind("))")
     if end < 0:
@@ -258,41 +168,23 @@ def policy_of(rest: str) -> tuple[str, str]:
     return wrapped, rest[end + 2 :].lstrip(",").strip()
 
 
-def build(providers: dict[str, dict], src_rules: list[str]) -> tuple[list[dict], list[str]]:
-    rules: list[dict] = []
-    notes: list[str] = []
+def record_set(providers: dict[str, dict], name: str) -> None:
+    domains, ips, _ports, _skipped = load_set(providers, name)
+    if domains:
+        GEOSITE[name] = domains
+    if ips:
+        GEOIP[name] = ips
+
+
+def collect_categories(providers: dict[str, dict], src_rules: list[str]) -> None:
     for raw in src_rules:
         if raw.startswith("RULE-SET,"):
-            parts = raw.split(",")
-            name, outbound = parts[1], parts[2]
-            no_resolve = "no-resolve" in parts[3:]
-            domains, ips, ports, skipped = load_set(providers, name)
-            if skipped:
-                notes.append(skip_note(f"RULE-SET,{name} → {outbound}", skipped))
-            made = emit_parts(name, outbound, domains, ips, ports)
-            if any("ip" in rule and "port" not in rule for rule in made) and not no_resolve:
-                notes.append(f"{name}: geoip без no-resolve — только уже известный IP")
-            if not made and not skipped:
-                notes.append(f"RULE-SET,{name} → {outbound}: в xray пусто")
-            rules.extend(made)
-        elif raw.startswith("IP-CIDR,") or raw.startswith("IP-CIDR6,"):
-            parts = raw.split(",")
-            rules.append(field(parts[2], ip=[parts[1]]))
-        elif raw.startswith("AND,") or raw.startswith("OR,"):
-            op, rest = raw.split(",", 1)
-            wrapped, outbound = policy_of(rest)
-            made, extra = logic_rule(providers, wrapped, outbound, op)
-            rules.extend(made)
-            notes.extend(extra)
-        elif raw.startswith("MATCH,"):
-            outbound = raw.split(",", 1)[1]
-            # пустой field xray-core отвергает: "this rule has no effective fields"
-            rules.append(field(outbound, network="tcp,udp"))
-        elif raw.startswith("PROCESS-"):
-            notes.append(raw)
-        else:
-            notes.append(f"не перенесено: {raw}")
-    return rules, notes
+            record_set(providers, raw.split(",")[1])
+        elif raw.startswith(("AND,", "OR,")):
+            wrapped, _outbound = policy_of(raw.split(",", 1)[1])
+            for atom in split_atoms(wrapped):
+                if atom.startswith("RULE-SET,"):
+                    record_set(providers, atom.split(",", 1)[1])
 
 
 def varint(n: int) -> bytes:
@@ -324,10 +216,15 @@ def cidr_msg(cidr: str) -> bytes:
     return proto_len(1, network.network_address.packed) + proto_var(2, network.prefixlen)
 
 
+def dat_code(code: str) -> bytes:
+    # Xray делает strings.ToUpper и сравнивает байты кода в .dat
+    return code.upper().encode()
+
+
 def geosite_dat(categories: dict[str, list[tuple[int, str]]]) -> bytes:
     out = b""
     for code, domains in categories.items():
-        body = proto_len(1, code.encode())
+        body = proto_len(1, dat_code(code))
         for typ, value in domains:
             body += proto_len(2, domain_msg(typ, value))
         out += proto_len(1, body)
@@ -337,7 +234,7 @@ def geosite_dat(categories: dict[str, list[tuple[int, str]]]) -> bytes:
 def geoip_dat(categories: dict[str, list[str]]) -> bytes:
     out = b""
     for code, cidrs in categories.items():
-        body = proto_len(1, code.encode())
+        body = proto_len(1, dat_code(code))
         for cidr in cidrs:
             body += proto_len(2, cidr_msg(cidr))
         out += proto_len(1, body)
@@ -417,21 +314,10 @@ def decode_geoip(buf: bytes) -> dict[str, list[str]]:
     return found
 
 
-def write_profile(src: str, name: str) -> None:
+def collect_profile(src: str) -> None:
     text = (ROOT / src).read_text(encoding="utf-8")
     providers, src_rules = parse_template(text)
-    rules, notes = build(providers, src_rules)
-    doc = {"routing": {"domainStrategy": "AsIs", "rules": rules}}
-    OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / f"{name}.json").write_text(
-        json.dumps(doc, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
-    (OUT / f"{name}.skipped.txt").write_text(
-        "\n".join(notes) + ("\n" if notes else ""),
-        encoding="utf-8",
-    )
-    print(f"{name}: rules={len(rules)} skipped={len(notes)}", file=sys.stderr)
+    collect_categories(providers, src_rules)
 
 
 def self_check() -> None:
@@ -450,6 +336,22 @@ def self_check() -> None:
     _, i, _, s = from_payload("ipcidr", ["172.232.25.131/32"])
     assert i == ["172.232.25.131/32"] and not s
     assert ports == ["25"] and skipped == ["PROCESS-NAME,cs2.exe"]
+    GEOSITE.clear()
+    GEOIP.clear()
+    collect_categories(
+        {
+            "only-proc": {"behavior": "classical", "payload": ["PROCESS-NAME,cs2.exe"]},
+            "priv": {"behavior": "ipcidr", "payload": ["10.0.0.0/8"]},
+        },
+        [
+            "PROCESS-NAME,cs2.exe,games",
+            "RULE-SET,only-proc,🎮 Игры",
+            "AND,((RULE-SET,priv),(NETWORK,tcp)),DIRECT",
+            "MATCH,PROXY",
+        ],
+    )
+    assert "only-proc" not in GEOSITE and "only-proc" not in GEOIP
+    assert GEOIP["priv"] == ["10.0.0.0/8"] and "priv" not in GEOSITE
     assert parse_domain_line("+.reddit.com") == (DOMAIN, "reddit.com")
     assert parse_domain_line("router.asus.com") == (FULL, "router.asus.com")
     assert parse_domain_line("+.tinkoff.*") == (REGEX, r"(^|\.)tinkoff\.[^.]+$")
@@ -458,35 +360,30 @@ def self_check() -> None:
         (PLAIN, "mtalk"),
     ]
     site = geosite_dat({"reddit": [(DOMAIN, "reddit.com"), (FULL, "www.reddit.com")]})
-    assert decode_geosite(site)["reddit"] == [(DOMAIN, "reddit.com"), (FULL, "www.reddit.com")]
+    assert decode_geosite(site)["REDDIT"] == [(DOMAIN, "reddit.com"), (FULL, "www.reddit.com")]
     ipdat = geoip_dat({"private": ["10.0.0.0/8", "::/127"]})
-    assert decode_geoip(ipdat)["private"] == ["10.0.0.0/8", "::/127"]
+    assert decode_geoip(ipdat)["PRIVATE"] == ["10.0.0.0/8", "::/127"]
 
 
 def main() -> None:
     self_check()
     GEOSITE.clear()
     GEOIP.clear()
-    for src, name in PROFILES:
-        write_profile(src, name)
+    for src in PROFILES:
+        collect_profile(src)
     for name in EXTRA_GEOSITE:
         GEOSITE[name] = load_domain_list(name)
     site = geosite_dat(GEOSITE)
     ipdat = geoip_dat(GEOIP)
+    OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "geosite.dat").write_bytes(site)
     (OUT / "geoip.dat").write_bytes(ipdat)
     decoded_site = decode_geosite(site)
     decoded_ip = decode_geoip(ipdat)
-    assert (DOMAIN, "reddit.com") in decoded_site["meta-reddit"]
-    assert decoded_site["meta-youtube"]
-    assert "10.0.0.0/8" in decoded_ip["meta-geoip-private"]
-    youtube = json.loads((OUT / "template_remnawave.json").read_text(encoding="utf-8"))
-    rules = youtube["routing"]["rules"]
-    assert any(r.get("domain") == ["geosite:meta-youtube"] for r in rules)
-    assert not any(r.get("domain") == ["geosite:meta-reddit"] for r in rules)
-    assert all(len(r.get("domain", [])) < 8 for r in rules)
-    assert rules[-1] == {"type": "field", "outboundTag": "PROXY", "network": "tcp,udp"}
-    assert (REGEX, r"(^|\.)tinkoff\.[^.]+$") in decoded_site["summary-category-ru"]
+    assert (DOMAIN, "reddit.com") in decoded_site["META-REDDIT"]
+    assert decoded_site["META-YOUTUBE"]
+    assert "10.0.0.0/8" in decoded_ip["META-GEOIP-PRIVATE"]
+    assert (REGEX, r"(^|\.)tinkoff\.[^.]+$") in decoded_site["SUMMARY-CATEGORY-RU"]
     print(
         f"geosite: {len(GEOSITE)} категорий, {len(site)} байт; geoip: {len(GEOIP)} категорий, {len(ipdat)} байт",
         file=sys.stderr,

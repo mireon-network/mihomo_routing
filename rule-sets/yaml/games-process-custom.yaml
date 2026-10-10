@@ -1,8 +1,8 @@
 payload:
   # Процессы: локальные дополнения к games.yaml (апстрим: roscomvpn).
   # Домены — rule-sets/mrs/text/games-domain-custom.list (pack → bin/).
-  # Блок «GeForce NOW» и «Добавленно вручную» пересобирает
-  # scripts/generate-gfn-games-block.py — правьте только часть ВЫШЕ маркера GFN.
+  # Блок «GeForce NOW» пересобирает scripts/generate-gfn-games-block.py.
+  # «Добавленно вручную» скрипт не трогает.
 
   # --- Windows: игры из стандартных каталогов лаунчеров (любой диск) ---
   - PROCESS-PATH-REGEX,(?i).*\\steamapps\\common\\.*                 # Steam
@@ -51,9 +51,9 @@ payload:
   # JSON: https://static.nvidiagrid.net/supported-public-game-list/locales/gfnpc-en-US.json
   # exe:  https://gist.github.com/Gr3gorywolf/1757c79ce1152966bf77bf8c6d069161
   # Steam appid→name: https://github.com/jsnli/steamappidlist (games_appid.json)
-  # добавлено 69 PROCESS-NAME
+  # добавлено 64 PROCESS-NAME
   # пропущено офлайн (нет MP/MMO/F2P online в жанрах): 1350
-  # пропущено без exe в gamedatabase: 79
+  # пропущено без exe в gamedatabase: 84
 
   # Albion Online ( | Free To Play, Massively Multiplayer Online, Role Playing; match=gfn_title)
   - PROCESS-NAME,Albion-Online.exe
@@ -66,9 +66,6 @@ payload:
 
   # Armored Warfare ( | Simulation, Action, Free To Play; match=gfn_title)
   - PROCESS-NAME,armoredwarfare.exe
-
-  # Black Desert (Steam | Action, Adventure, Massively Multiplayer Online; match=substring)
-  - PROCESS-NAME,blackdesertpatcher32.pae.exe
 
   # Brawlhalla (Steam | Action, Free To Play, Indie; match=gfn_title)
   - PROCESS-NAME,Brawlhalla.exe
@@ -154,9 +151,6 @@ payload:
   # Neverwinter (Steam | Action, Adventure, Free To Play; match=gfn_title)
   - PROCESS-NAME,neverwinter.exe
 
-  # New World (Steam | Action, Adventure, Massively Multiplayer Online; match=substring)
-  - PROCESS-NAME,meridian - new world.exe
-
   # Paladins® (Epic | Action, Free To Play, Indie; match=gfn_title)
   - PROCESS-NAME,paladins.exe
 
@@ -205,9 +199,6 @@ payload:
   # SMITE® (Epic | Action, Free To Play, Indie; match=gfn_title)
   - PROCESS-NAME,smite.exe
 
-  # Splitgate (Steam | Action, First-Person Shooter, Free To Play; match=substring)
-  - PROCESS-NAME,PortalWars-Win64-Shipping.exe
-
   # Star Trek Online (Steam | Free To Play, Massively Multiplayer Online, Role Playing; match=gfn_title)
   - PROCESS-NAME,Star_Trek_Online.exe
 
@@ -220,9 +211,6 @@ payload:
   # The Awesome Adventures of Captain Spirit (Steam | Adventure, Casual, Free To Play; match=gfn_title)
   - PROCESS-NAME,captainspirit-win64-shipping.exe
 
-  # The Crew® 2 (Steam | Action, Racing, Massively Multiplayer Online; match=substring)
-  - PROCESS-NAME,thecrew2.exe
-
   # The Crew™ (Steam | Action, Massively Multiplayer Online, Racing; match=gfn_title)
   - PROCESS-NAME,TheCrew.exe
 
@@ -231,9 +219,6 @@ payload:
 
   # Totally Accurate Battlegrounds (Steam | Action, Casual, Indie; match=gfn_title)
   - PROCESS-NAME,TotallyAccurateBattlegrounds.exe
-
-  # Trackmania® (Ubisoft Connect | Arcade, Free To Play, Massively Multiplayer Online; match=substring)
-  - PROCESS-NAME,maniaplanet.exe
 
   # Trackmania® Turbo (Ubisoft Connect | Massively Multiplayer Online, Racing, Action; match=gfn_title)
   - PROCESS-NAME,trackmaniaturbo.exe

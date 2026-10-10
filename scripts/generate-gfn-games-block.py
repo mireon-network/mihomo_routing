@@ -32,6 +32,17 @@ GDB_URL = "https://gist.githubusercontent.com/Gr3gorywolf/1757c79ce1152966bf77bf
 STEAM_URL = "https://raw.githubusercontent.com/jsnli/steamappidlist/master/data/games_appid.json"
 
 GFN_MARKER = "  # --- GeForce NOW"
+MANUAL_MARKER = "  # --- Добавленно вручную"
+DEFAULT_MANUAL = (
+    "\n  # --- Добавленно вручную (нет в GFN / не попали в фильтр жанров) ---\n"
+    "  # R.E.P.O. — co-op онлайн, Steam 3241660; в gfnpc-en-US.json отсутствует\n"
+    "  # (REPO/Overwolf — только Windows; на Linux Proton видит REPO.exe)\n"
+    "  # Raft.exe / Tanki.exe уже есть в апстримном games.yaml — не дублируем.\n"
+    "  - PROCESS-NAME,REPO.exe\n"
+    "  - PROCESS-NAME,REPO-Win64-Shipping.exe\n"
+    "  - PROCESS-NAME,Raft                  # Raft — нативный macOS\n"
+    "  - PROCESS-NAME,Overwolf.exe\n"
+)
 
 # Не попадают в games.yaml — см. rule-sets/yaml/games-launchers.yaml
 LAUNCHER_PROCESS_EXACT = frozenset(
@@ -45,6 +56,10 @@ LAUNCHER_PROCESS_EXACT = frozenset(
         "mycomgames.exe",
     }
 )
+
+
+def usable_process(proc: str) -> bool:
+    return bool(proc) and not any(ch in proc for ch in "\n\r#,:" )
 
 
 def is_launcher_process(proc: str) -> bool:
@@ -92,7 +107,50 @@ def norm(s: str) -> str:
     return re.sub(r"\s+", " ", s).strip()
 
 
+def split_owned(text: str) -> tuple[str, str]:
+    """Голова до маркера GFN и ручной хвост. Хвост пустой, если секции ещё нет."""
+    gfn_at = text.find(GFN_MARKER)
+    if gfn_at < 0:
+        return text.rstrip() + "\n", ""
+    manual_at = text.find(MANUAL_MARKER, gfn_at)
+    head = text[:gfn_at].rstrip() + "\n"
+    if manual_at < 0:
+        return head, ""
+    return head, text[manual_at:]
+
+
+def splice_gfn(text: str, gfn_lines: list[str]) -> str:
+    head, manual_tail = split_owned(text)
+    block = "\n".join(gfn_lines)
+    if not block.endswith("\n"):
+        block += "\n"
+    if manual_tail:
+        return head + block + "\n" + manual_tail
+    return head + block + DEFAULT_MANUAL
+
+
+def self_check() -> None:
+    src = (
+        "head\n"
+        "  # --- GeForce NOW old\n"
+        "  - PROCESS-NAME,old.exe\n"
+        "\n"
+        "  # --- Добавленно вручную (нет в GFN / не попали в фильтр жанров) ---\n"
+        "  - PROCESS-NAME,KEEP.exe\n"
+    )
+    out = splice_gfn(src, ["  # --- GeForce NOW new", "  - PROCESS-NAME,new.exe", ""])
+    assert "old.exe" not in out
+    assert "new.exe" in out and "KEEP.exe" in out
+    assert out.index("new.exe") < out.index("KEEP.exe")
+    assert not usable_process("000: Dawn of War III")
+    assert usable_process("Among Us.exe")
+    print("generate-gfn-games-block: self-check ok")
+
+
 def main() -> int:
+    if sys.argv[1:2] == ["--self-check"]:
+        self_check()
+        return 0
     gfn = json.loads(fetch(GFN_URL))
     gdb = json.loads(fetch(GDB_URL))
     steam = json.loads(fetch(STEAM_URL))
@@ -100,36 +158,17 @@ def main() -> int:
 
     name_to_proc: dict[str, str] = {}
     norm_to_proc: dict[str, str] = {}
-    gdb_norms: list[tuple[str, str]] = []
     for e in gdb:
         n = (e.get("Name") or "").strip()
         p = (e.get("processName") or "").strip()
         if n and p:
             name_to_proc[n.lower()] = p
-            nn = norm(n)
-            norm_to_proc[nn] = p
-            gdb_norms.append((nn, p))
+            norm_to_proc[norm(n)] = p
 
     def match_exact(title: str | None) -> str | None:
         if not title:
             return None
         return name_to_proc.get(title.lower()) or norm_to_proc.get(norm(title))
-
-    def match_substring(title: str | None) -> str | None:
-        if not title:
-            return None
-        nt = norm(title)
-        if len(nt) < 4:
-            return None
-        best: str | None = None
-        best_len = 0
-        for gn, proc in gdb_norms:
-            if gn in nt or nt in gn:
-                overlap = min(len(gn), len(nt))
-                if overlap > best_len and overlap >= max(6, int(len(nt) * 0.6)):
-                    best_len = overlap
-                    best = proc
-        return best
 
     def steam_appid(g: dict) -> str | None:
         m = re.search(r"/app/(\d+)", g.get("steamUrl") or "")
@@ -144,13 +183,6 @@ def main() -> int:
             proc = match_exact(appid_name.get(aid))
             if proc:
                 return proc, "steam_name"
-        proc = match_substring(g["title"])
-        if proc:
-            return proc, "substring"
-        if aid:
-            proc = match_substring(appid_name.get(aid, ""))
-            if proc:
-                return proc, "steam_substring"
         return None, "none"
 
     def process_names(text: str) -> set[str]:
@@ -162,11 +194,10 @@ def main() -> int:
                 names.add(v.lower())
         return names
 
-    base = GAMES_CUSTOM_YAML.read_text(encoding="utf-8")
-    if GFN_MARKER in base:
-        base = base.split(GFN_MARKER)[0].rstrip() + "\n"
-
-    existing: set[str] = process_names(base)
+    current = GAMES_CUSTOM_YAML.read_text(encoding="utf-8")
+    head, manual_tail = split_owned(current)
+    existing: set[str] = process_names(head)
+    existing |= process_names(manual_tail or DEFAULT_MANUAL)
     for src in DEDUP_SOURCES:
         if src.is_file():
             existing |= process_names(src.read_text(encoding="utf-8"))
@@ -183,6 +214,9 @@ def main() -> int:
         proc, via = resolve(g)
         if not proc:
             stats["skipped_no_exe"] = stats.get("skipped_no_exe", 0) + 1
+            continue
+        if not usable_process(proc):
+            stats["skipped_bad_name"] = stats.get("skipped_bad_name", 0) + 1
             continue
         if is_launcher_process(proc):
             stats["skipped_launcher"] = stats.get("skipped_launcher", 0) + 1
@@ -213,18 +247,7 @@ def main() -> int:
         lines.append(f"  - PROCESS-NAME,{proc}")
         lines.append("")
 
-    manual = (
-        "\n  # --- Добавленно вручную (нет в GFN / не попали в фильтр жанров) ---\n"
-        "  # R.E.P.O. — co-op онлайн, Steam 3241660; в gfnpc-en-US.json отсутствует\n"
-        "  # (REPO/Overwolf — только Windows; на Linux Proton видит REPO.exe)\n"
-        "  # Raft.exe / Tanki.exe уже есть в апстримном games.yaml — не дублируем.\n"
-        "  - PROCESS-NAME,REPO.exe\n"
-        "  - PROCESS-NAME,REPO-Win64-Shipping.exe\n"
-        "  - PROCESS-NAME,Raft                  # Raft — нативный macOS\n"
-        "  - PROCESS-NAME,Overwolf.exe\n"
-    )
-    out = base + "\n".join(lines) + manual
-    current = GAMES_CUSTOM_YAML.read_text(encoding="utf-8")
+    out = splice_gfn(current, lines)
     if out == current:
         print(
             f"generate-gfn-games-block: без изменений "

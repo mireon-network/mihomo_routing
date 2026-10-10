@@ -38,6 +38,10 @@ cmd_sync() {
     echo "upstream-sync: пропуск MRS (нет $MRS_TOOL)" >&2
   fi
 
+  # wld.list обновляется в mrs sync; exclude-package считает пакеты уже по свежему списку
+  echo "upstream-sync: tun exclude-package…"
+  python3 "$ROOT/scripts/generate-tun-exclude-package.py"
+
   echo "upstream-sync: XRAY…"
   python3 "$ROOT/scripts/build-xray.py"
 

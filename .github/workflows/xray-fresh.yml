@@ -29,6 +29,8 @@ jobs:
           python3 scripts/patch-include-proxies.py --self-check
           python3 scripts/strip-games-launchers.py --self-check
           python3 scripts/upstream-sync-merge.py --self-check
+          python3 scripts/generate-tun-exclude-package.py --self-check
+          python3 scripts/generate-gfn-games-block.py --self-check
           ./scripts/mrs-tool.sh check
           ./scripts/test-config-local.sh
           ./scripts/test-config-local.sh MIHOMO/wl.yaml

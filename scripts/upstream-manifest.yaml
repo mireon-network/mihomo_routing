@@ -19,5 +19,3 @@ sources:
   - id: ru_app_list
     url: https://raw.githubusercontent.com/legiz-ru/mihomo-rule-sets/main/other/ru-app-list.yaml
     path: rule-sets/yaml/ru-app-list.yaml
-    post:
-      - regenerate_tun_exclude
