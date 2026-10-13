@@ -11,7 +11,9 @@
 | `MIHOMO/template_remnawave.yaml` | Шаблон для Remnawave (страны + gateway LB) |
 | `MIHOMO/wl.yaml` | Режим «белые списки» |
 | `XRAY/geosite.dat` | Категории доменов, имя = id rule-set |
+| `XRAY/geosite.dat.sha256` | SHA-256 `geosite.dat`, одна hex-строка (64 символа) |
 | `XRAY/geoip.dat` | Категории IP |
+| `XRAY/geoip.dat.sha256` | SHA-256 `geoip.dat`, одна hex-строка (64 символа) |
 | `rule-sets/yaml/torrent-clients.yaml` | Торрент-клиенты — **зеркало** [legiz-ru/mihomo-rule-sets](https://github.com/legiz-ru/mihomo-rule-sets/blob/main/other/torrent-clients.yaml) (без правок) |
 | `rule-sets/yaml/torrent-clients-custom.yaml` | Локальные дополнения торрент-клиентов → DIRECT |
 | `rule-sets/yaml/games.yaml` | Игры — **зеркало** [roscomvpn/custom-category](https://github.com/roscomvpn/custom-category); post-hook вырезает лаунчеры (они в `games-launchers.yaml`) |
@@ -27,7 +29,7 @@
 | `rule-sets/mrs/bin/*.mrs` | Бинарные rule-set для Mihomo (собираются из `text/`) |
 | `scripts/upstream-sync.sh` | Обновление YAML из upstream-репозиториев |
 | `scripts/mrs-tool.sh` | Обновление MRS rule-sets |
-| `scripts/build-xray.py` | Сборка `XRAY/geosite.dat` и `geoip.dat` из `MIHOMO/*.yaml` и `rule-sets/` |
+| `scripts/build-xray.py` | Сборка `XRAY/geosite.dat` и `geoip.dat` (и `.sha256` рядом) из `MIHOMO/*.yaml` и `rule-sets/` |
 | `scripts/upstream-manifest.yaml` | Список upstream-источников для `upstream-sync.sh` |
 | `scripts/generate-gfn-games-block.py` | Пересборка блока GeForce NOW в `games-process-custom.yaml` |
 | `scripts/generate-tun-exclude-package.py` | Пересборка `tun.exclude-package` в обоих шаблонах |
@@ -150,7 +152,7 @@ Live-тест — throwaway-ветки **`<ветка>-cdn`** и **`<ветка>
 3. post-hooks: лаунчеры вырезаются из `games.yaml`, GFN → `games-process-custom.yaml`, CDN URL в `template_remnawave.yaml`;
 4. вызывает `./scripts/mrs-tool.sh sync` (здесь обновляется `wld.list`);
 5. пересобирает `tun.exclude-package` уже по свежему `wld.list`;
-6. собирает `XRAY/geosite.dat` и `XRAY/geoip.dat`.
+6. собирает `XRAY/geosite.dat` и `XRAY/geoip.dat` и кладёт рядом `.sha256` (hex SHA-256, 64 символа).
 
 ### Источники (`scripts/upstream-manifest.yaml`)
 

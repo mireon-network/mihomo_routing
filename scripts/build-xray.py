@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """Сборка XRAY/geosite.dat и XRAY/geoip.dat из MIHOMO/*.yaml и rule-sets/. MIHOMO не меняется.
 
+Рядом пишутся geosite.dat.sha256 и geoip.dat.sha256: одна hex-строка SHA-256, 64 символа.
+
 Имя категории = id rule-set. JSON-шаблоны маршрутов не собираются.
 """
 from __future__ import annotations
 
+import hashlib
 import ipaddress
 import re
 import sys
@@ -365,6 +368,11 @@ def self_check() -> None:
     assert decode_geoip(ipdat)["PRIVATE"] == ["10.0.0.0/8", "::/127"]
 
 
+def write_dat(name: str, data: bytes) -> None:
+    (OUT / name).write_bytes(data)
+    (OUT / f"{name}.sha256").write_text(hashlib.sha256(data).hexdigest(), encoding="ascii")
+
+
 def main() -> None:
     self_check()
     GEOSITE.clear()
@@ -376,8 +384,8 @@ def main() -> None:
     site = geosite_dat(GEOSITE)
     ipdat = geoip_dat(GEOIP)
     OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / "geosite.dat").write_bytes(site)
-    (OUT / "geoip.dat").write_bytes(ipdat)
+    write_dat("geosite.dat", site)
+    write_dat("geoip.dat", ipdat)
     decoded_site = decode_geosite(site)
     decoded_ip = decode_geoip(ipdat)
     assert (DOMAIN, "reddit.com") in decoded_site["META-REDDIT"]
