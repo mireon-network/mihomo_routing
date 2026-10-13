@@ -53,7 +53,7 @@ payload:
   # Steam appid→name: https://github.com/jsnli/steamappidlist (games_appid.json)
   # добавлено 64 PROCESS-NAME
   # пропущено офлайн (нет MP/MMO/F2P online в жанрах): 1350
-  # пропущено без exe в gamedatabase: 84
+  # пропущено без exe в gamedatabase: 90
 
   # Albion Online ( | Free To Play, Massively Multiplayer Online, Role Playing; match=gfn_title)
   - PROCESS-NAME,Albion-Online.exe
