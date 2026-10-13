@@ -15,7 +15,7 @@ sets:
     behavior: domain
     file: category-ru-davoyan
     src: davoyan-list
-    exclude: +.ru,+.su
+    exclude: +.ru,+.su,+.windsurf.com # ИИ, уже в meta-ai
     url: https://raw.githubusercontent.com/Davoyan/mihomo-rule-sets/main/rules/category-ru.lst
   - id: wld
     behavior: domain
