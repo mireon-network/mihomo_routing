@@ -101,7 +101,7 @@
 ```bash
 ./scripts/cdn-url.sh rule-sets/yaml/games.yaml
 ./scripts/cdn-purge.sh rule-sets/yaml/ai.yaml   # сброс кэша jsDelivr
-./scripts/cdn-purge.sh --all                     # @main + @<ветка>-cdn/debug из MIHOMO/*.yaml
+./scripts/cdn-purge.sh --all                     # @main + @<ветка>-cdn/debug: шаблоны, rule-providers, XRAY/*.dat
 ```
 
 После `git push` в `main` файлы доступны на CDN автоматически (кэш jsDelivr может обновляться с задержкой; при срочном обновлении — `./scripts/cdn-purge.sh` или [purge](https://www.jsdelivr.com/tools/purge)).
@@ -143,7 +143,7 @@ Live-тест — throwaway-ветки **`<ветка>-cdn`** и **`<ветка>
 ./scripts/upstream-sync.sh sync       # YAML-зеркала + MRS
 ```
 
-**Автоматически:** GitHub Actions [`.github/workflows/upstream-sync.yml`](.github/workflows/upstream-sync.yml) — каждый день **03:00 МСК** (`sync` + `test-config-local.sh`, коммит в `main` при изменениях, затем `main-cdn` и `main-debug`). Ручной запуск: Actions → *Upstream sync* → *Run workflow*.
+**Автоматически:** GitHub Actions [`.github/workflows/upstream-sync.yml`](.github/workflows/upstream-sync.yml) — каждый день **03:00 МСК** (`sync` + `test-config-local.sh`, коммит и push в `main` при изменениях, затем `main-cdn` и `main-debug`). Кэш jsDelivr (`cdn-purge.sh --all`) сбрасывается только после этого push; если изменений нет — не трогаем. Ручной запуск: Actions → *Upstream sync* → *Run workflow*.
 
 `upstream-sync.sh sync` последовательно:
 

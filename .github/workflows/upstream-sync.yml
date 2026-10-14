@@ -43,15 +43,23 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Commit and push
+        id: push
         run: |
           if git diff --quiet && git diff --cached --quiet; then
             echo "upstream-sync: изменений нет"
+            echo "updated=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git add -A
           git commit -m "chore: upstream sync $(date -u +%Y-%m-%d)"
           git push
+          echo "updated=true" >> "$GITHUB_OUTPUT"
 
       # Push токеном Actions не запускает deploy-test-branches.yml
       - name: Update test branches
         run: ./scripts/deploy-test-branches.sh
+
+      # Строго после push: раньше purge снова закэширует старый коммит.
+      - name: Purge jsDelivr cache
+        if: ${{ !cancelled() && steps.push.outputs.updated == 'true' }}
+        run: ./scripts/cdn-purge.sh --all
