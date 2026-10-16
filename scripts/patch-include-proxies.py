@@ -169,14 +169,14 @@ def restore_hidden_hosts(text: str) -> str:
 
 
 def patch_wl_whitelist_filter(text: str) -> str:
-    return re.sub(
-        r"(  - name: 🇷🇺 Белые списки\n(?:.*\n)*?    include-all: true\n)"
-        r"(?:    exclude-filter: [^\n]+\n)?"
-        r"    filter: [^\n]+\n",
-        r"\1",
-        text,
-        count=1,
-    )
+    span = _group_chunk(text, "🇷🇺 Белые списки")
+    if span is None:
+        return text
+    start, end = span
+    chunk = text[start:end]
+    chunk = re.sub(r"\n    exclude-filter: [^\n]+", "", chunk, count=1)
+    chunk = re.sub(r"\n    filter: [^\n]+", "", chunk, count=1)
+    return text[:start] + chunk + text[end:]
 
 
 def patch_text(text: str, *, is_wl: bool = False) -> str | None:
@@ -269,8 +269,8 @@ def self_check() -> None:
         assert group.get("proxies") == [f"{name} · прямая", f"{name} · мосты"]
         direct = by_name[f"{name} · прямая"]
         bridge = by_name[f"{name} · мосты"]
-        assert direct.get("filter") == rf"(?i)^gt_{code}-.+-[0-9]+$"
-        assert bridge.get("filter") == rf"(?i)^(?:bg_|bgt_.+_(?:bg|gt)_){code}-.+-[0-9]+$"
+        assert direct.get("filter") == rf"^gt_{code}-.+-[0-9]+$"
+        assert bridge.get("filter") == rf"^(?:bg_|bgt_.+_(?:bg|gt)_){code}-.+-[0-9]+$"
         assert direct.get("include-all") is True and direct.get("exclude-filter") is None
         assert bridge.get("include-all") is True and bridge.get("exclude-filter") is None
         assert direct.get("empty-fallback") == "REJECT"

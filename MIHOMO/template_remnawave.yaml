@@ -232,7 +232,7 @@ dns:
     "rule-set:meta-category-ip-geo-detect,torrent-trackers,meta-category-game-platforms-download": *dns_ru
 sniffer:
   enable: true
-  override-destination: true
+  override-destination: false
   parse-pure-ip: true
   force-dns-mapping: true # восстанавливать домен для соединений, идущих сразу по IP
   sniff:
