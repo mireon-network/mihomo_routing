@@ -125,6 +125,7 @@ alt-r.my.com
 amc.yandex.ru
 +.amediateka.ru
 +.amic.ru
++.amt-insurance.com
 +.amur.ru
 an.mail.ru
 +.an.yandex.ru
@@ -206,6 +207,7 @@ arenda.yandex.ru
 +.avto.ru
 +.avtovokzaly.ru
 +.azbukainterneta.ru
++.azbyka.ru
 +.b17.ru
 b2.mail.ru
 +.b2c-digest.ru
@@ -258,6 +260,12 @@ bilet.nspk.ru
 +.billapp.org
 +.bir.ru
 +.bitrix.info
++.bitrix24.com
++.bitrix24.net
++.bitrix24.tech
++.bitrix24public.com
++.bitrixphone.com
++.bitrixsoft.com
 +.bizmrg.com
 +.bk.mufg.jp
 +.bk.ru
@@ -313,6 +321,7 @@ bs.mail.ru
 +.centrinvest.ru
 +.ceramet.net
 +.cert-gib.com
++.chat2desk.com
 +.checkip.amazonaws.com
 +.chel.ru
 +.chelindbank.ru
@@ -748,6 +757,7 @@ informer.yandex.ru
 +.jivochat.es
 +.jivochat.ng
 +.jivosite.com
++.joyreactor.cc
 +.jpmorgan.ru
 +.jump.finance
 +.jump.taxi
@@ -834,6 +844,9 @@ informer.yandex.ru
 +.koshelek.app
 +.koshelev-bank.ru
 +.kostroma.ru
+kp-config-smart-tv.akamaized.net
+kp-configs-smart-tv.s3.eu-central-1.amazonaws.com
++.kp.yandex.net
 +.krasnodar.su
 +.krasnoeibeloe.ru
 +.krasnoyarsk.ru
@@ -863,6 +876,7 @@ ksn-url-geo.kaspersky-labs.com
 ksn-url.geoksn.kaspersky.com
 ksn-verdict-geo.kaspersky-labs.com
 ksn-verdict.geoksn.kaspersky.com
++.ktalk.host
 +.ktech.team
 +.kuban-credit.biz
 +.kuban-credit.com
@@ -889,6 +903,7 @@ ksn-verdict.geoksn.kaspersky.com
 +.lenta.com
 +.lenta.tech
 +.lerna.ru
++.lexgarant.com
 +.lifestyle-tec.ru
 +.lipetsk.ru
 +.list.ru
@@ -986,6 +1001,7 @@ mos.transport.vtb.ru
 +.mosgorzdrav.ru
 +.mosmetro.ru
 +.mosmetro.tech
++.mospat.ru
 +.mosreg.ru
 +.movika.com
 +.mp.world
@@ -996,6 +1012,7 @@ mos.transport.vtb.ru
 +.ms.vk.com
 +.ms.vk.ru
 +.mspbank.ru
++.mts-link.ru
 +.mts-ws.net
 +.mts.ru
 +.mtsbank.ru
@@ -1159,6 +1176,7 @@ p16.upd.kaspersky.com
 p17.upd.kaspersky.com
 p18.upd.kaspersky.com
 p19.upd.kaspersky.com
++.patriarchia.ru
 +.payment.ru
 +.paywb.com
 +.paywb.ru
@@ -1185,7 +1203,11 @@ podorozhnik.spb.ru
 +.polza.ai
 +.popmechanic.io
 +.posl-t.org
++.posledovania.ru
 +.poudobnee.com
++.pravmir.com
++.pravmir.ru
++.pravoslavie.ru
 +.premier.one
 +.premiumlive.site
 +.pressria.ru
@@ -1244,11 +1266,13 @@ refresh-bkg.activation-v2.kaspersky.com
 +.reg.com
 +.reg.ru
 +.regard.ru
++.regionvideo.ru
 reklama.mail.ru
 +.relap.mail.ru
 +.remanga.org
 +.rencapbank.ru
 +.rencredit.ru
++.renins.com
 +.report-megafon.ru
 report.ap.yandex-net.ru
 +.reso-med.com
@@ -1263,6 +1287,7 @@ report.ap.yandex-net.ru
 +.rncoluminis.ru
 +.rnd.ru
 +.ro-edu.ru
++.robohall.tech
 +.robotext.io
 +.rocketozon.by
 +.roistat.com
@@ -1898,6 +1923,7 @@ visor.sberbank.ru
 +.wbwh.ru
 +.wbwh.tech
 web-analytics.wildberries.ru
++.webtypikon.ru
 +.webvisor.com
 +.webvisor.org
 +.weildberries.ru
@@ -2006,6 +2032,7 @@ xapi.ozonru.me
 +.xn--80acbjgmges7ca.xn--p1ai
 +.xn--80acbjgsdq2cl.xn--p1ai
 +.xn--80acgfbsl1azdqr.xn--p1ai
++.xn--80adfddrquddgz.xn--p1ai
 +.xn--80adxhks
 +.xn--80aj3b.xn--p1ai
 +.xn--80ajghhoc2aj1c8b.xn--p1ai
