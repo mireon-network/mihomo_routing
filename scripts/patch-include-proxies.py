@@ -270,7 +270,7 @@ def self_check() -> None:
         direct = by_name[f"{name} · прямая"]
         bridge = by_name[f"{name} · мосты"]
         assert direct.get("filter") == rf"^gt_{code}-.+-[0-9]+$"
-        assert bridge.get("filter") == rf"^(?:bg_|bgt_.+_(?:bg|gt)_){code}-.+-[0-9]+$"
+        assert bridge.get("filter") == rf"^bgt_[^_]+_gt_{code}-.+-[0-9]+$"
         assert direct.get("include-all") is True and direct.get("exclude-filter") is None
         assert bridge.get("include-all") is True and bridge.get("exclude-filter") is None
         assert direct.get("empty-fallback") == "REJECT"
@@ -285,10 +285,10 @@ def self_check() -> None:
         assert not direct_re.match(f"bg_{code}-hz-102")
         assert not direct_re.match(f"bgt_spb-tw-161_gt_{code}-hz-102")
         assert bridge_re.search(f"bgt_spb-tw-161_gt_{code}-hz-102")
-        assert bridge_re.search(f"bgt_spb-tw-161_bg_{code}-hz-102")
-        assert bridge_re.search(f"bg_{code}-hz-102")
+        assert not bridge_re.search(f"bgt_spb-tw-161_bg_{code}-hz-102")
+        assert not bridge_re.search(f"bgt_spb_tw-161_gt_{code}-hz-102")
+        assert not bridge_re.search(f"bg_{code}-hz-102")
         assert not bridge_re.search(f"foo_gt_{code}-hz-102")
-        assert not bridge_re.search(f"other_bg_{code}-hz-102")
         assert not bridge_re.search(f"gt_{code}-hz-102")
         assert not bridge_re.search(f"gt-{code}-hz-102")
         assert not bridge_re.search(f"gt_{code}_hz_102")
