@@ -7,10 +7,13 @@
 """
 from __future__ import annotations
 
+import contextlib
 import hashlib
+import io
 import ipaddress
 import re
 import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -82,7 +85,10 @@ def parse_template(text: str) -> tuple[dict[str, dict], list[str]]:
                 if current:
                     providers[current["name"]] = current
                 current = {"name": line.strip().split(":", 1)[0], "behavior": "", "payload": []}
-            elif current and "behavior:" in line:
+            elif current and line.strip().startswith("type:"):
+                if line.split(":", 1)[1].strip() == "inline":
+                    current["inline"] = True
+            elif current and line.strip().startswith("behavior:"):
                 current["behavior"] = line.split(":", 1)[1].strip()
             elif current and line.strip().startswith("- "):
                 current["payload"].append(strip_comment(line.strip()[2:]))
@@ -116,8 +122,11 @@ def classify_classical(items: list[str]) -> tuple[list[tuple[int, str]], list[st
 
 
 def list_lines(path: Path) -> list[str]:
+    # Нет файла или ноль строк — категория всё равно попадёт в .dat пустой.
+    # Xray падает, если кода geosite/geoip нет совсем.
     if not path.is_file():
-        raise SystemExit(f"нет {path}")
+        print(f"build-xray: нет {path}, категория будет пустой", file=sys.stderr)
+        return []
     lines: list[str] = []
     for line in path.read_text(encoding="utf-8").splitlines():
         s = line.strip()
@@ -127,10 +136,7 @@ def list_lines(path: Path) -> list[str]:
 
 
 def load_domain_list(name: str) -> list[tuple[int, str]]:
-    domains = [parse_domain_line(s) for s in list_lines(TEXT / f"{name}.list")]
-    if not domains:
-        raise SystemExit(f"пустой {name}.list")
-    return domains
+    return [parse_domain_line(s) for s in list_lines(TEXT / f"{name}.list")]
 
 
 def from_payload(behavior: str, payload: list[str]):
@@ -145,7 +151,7 @@ def load_set(providers: dict[str, dict], name: str):
     prov = providers.get(name)
     if not prov:
         raise SystemExit(f"нет rule-provider {name}")
-    if prov["payload"]:
+    if prov.get("inline") or prov["payload"]:
         return from_payload(prov["behavior"], prov["payload"])
     behavior = prov["behavior"]
     if behavior == "classical":
@@ -173,6 +179,17 @@ def policy_of(rest: str) -> tuple[str, str]:
 
 def record_set(providers: dict[str, dict], name: str) -> None:
     domains, ips, _ports, _skipped = load_set(providers, name)
+    behavior = providers[name].get("behavior", "")
+    # Пустой список пишем, только если категории ещё нет: второй профиль
+    # не затирает непустую категорию первого. classical — только при содержимом.
+    if behavior == "domain":
+        if domains or name not in GEOSITE:
+            GEOSITE[name] = domains
+        return
+    if behavior == "ipcidr":
+        if ips or name not in GEOIP:
+            GEOIP[name] = ips
+        return
     if domains:
         GEOSITE[name] = domains
     if ips:
@@ -324,6 +341,7 @@ def collect_profile(src: str) -> None:
 
 
 def self_check() -> None:
+    global TEXT
     domains, ips, ports, skipped = classify_classical(
         [
             "DOMAIN-SUFFIX,easebar.com",
@@ -355,6 +373,55 @@ def self_check() -> None:
     )
     assert "only-proc" not in GEOSITE and "only-proc" not in GEOIP
     assert GEOIP["priv"] == ["10.0.0.0/8"] and "priv" not in GEOSITE
+    inline_providers, inline_rules = parse_template(
+        "rule-providers:\n"
+        "  empty-dom:\n"
+        "    type: inline\n"
+        "    behavior: domain\n"
+        "  empty-ip:\n"
+        "    type: inline\n"
+        "    behavior: ipcidr\n"
+        "rules:\n"
+        "  - RULE-SET,empty-dom,DIRECT\n"
+        "  - RULE-SET,empty-ip,DIRECT\n"
+    )
+    assert inline_providers["empty-dom"].get("inline") is True
+    assert inline_providers["empty-dom"]["payload"] == []
+    collect_categories(inline_providers, inline_rules)
+    assert GEOSITE["empty-dom"] == [] and "empty-dom" not in GEOIP
+    assert GEOIP["empty-ip"] == [] and "empty-ip" not in GEOSITE
+    collect_categories(
+        {"shared": {"behavior": "domain", "payload": ["+.keep.example"], "inline": True}},
+        ["RULE-SET,shared,DIRECT"],
+    )
+    collect_categories(
+        {"shared": {"behavior": "domain", "payload": [], "inline": True}},
+        ["RULE-SET,shared,DIRECT"],
+    )
+    assert GEOSITE["shared"] == [(DOMAIN, "keep.example")]
+    assert decode_geosite(geosite_dat({"gone": []}))["GONE"] == []
+    assert decode_geoip(geoip_dat({"gone": []}))["GONE"] == []
+    # Пустой и отсутствующий .list не обрывают сборку и оставляют категорию.
+    with tempfile.TemporaryDirectory() as raw:
+        empty_root = Path(raw)
+        (empty_root / "gone.list").write_text("# только комментарий\n", encoding="utf-8")
+        saved_text = TEXT
+        TEXT = empty_root
+        try:
+            GEOSITE.clear()
+            GEOIP.clear()
+            with contextlib.redirect_stderr(io.StringIO()):
+                collect_categories(
+                    {
+                        "gone": {"behavior": "domain", "payload": []},
+                        "gone-ip": {"behavior": "ipcidr", "payload": []},
+                    },
+                    ["RULE-SET,gone,DIRECT", "RULE-SET,gone-ip,DIRECT"],
+                )
+            assert GEOSITE["gone"] == []
+            assert GEOIP["gone-ip"] == []
+        finally:
+            TEXT = saved_text
     assert parse_domain_line("+.reddit.com") == (DOMAIN, "reddit.com")
     assert parse_domain_line("router.asus.com") == (FULL, "router.asus.com")
     assert parse_domain_line("+.tinkoff.*") == (REGEX, r"(^|\.)tinkoff\.[^.]+$")

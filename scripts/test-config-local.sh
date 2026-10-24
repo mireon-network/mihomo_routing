@@ -82,6 +82,35 @@ broken = [
 if broken:
     print("BROKEN_RULES:", broken, file=sys.stderr)
     sys.exit(2)
+# Cursor и ru-apps бьют +.googleapis.com раньше доменов Gemini.
+# Иначе Cursor на generativelanguage уезжает в селектор Google.
+google_ai_order = ("ai", "ru-app-list", "ru-apps-custom", "meta-google-gemini", "summary-google", "meta-ai")
+ruleset_at = {}
+for index, rule in enumerate(doc.get("rules") or []):
+    body = str(rule).split(" #", 1)[0]
+    for name in google_ai_order:
+        token = f"RULE-SET,{name}"
+        if name not in ruleset_at and (f"{token}," in body or f"{token})" in body):
+            ruleset_at[name] = index
+need_google_ai = (
+    Path(tpl).name == "template_remnawave.yaml"
+    or "summary-google" in ruleset_at
+    or "meta-google-gemini" in ruleset_at
+    or "summary-google" in provs
+    or "meta-google-gemini" in provs
+)
+if need_google_ai:
+    missing_order = [name for name in google_ai_order if name not in ruleset_at]
+    positions = [ruleset_at[name] for name in google_ai_order if name in ruleset_at]
+    if missing_order or positions != sorted(positions):
+        print(
+            "GOOGLE_AI_ORDER: нужно",
+            " < ".join(google_ai_order),
+            "есть",
+            {name: ruleset_at.get(name) for name in google_ai_order},
+            file=sys.stderr,
+        )
+        sys.exit(2)
 
 doc["proxies"] = [{"name": "DUMMY", "type": "socks5", "server": "127.0.0.1", "port": 1080}]
 local_provs = {}

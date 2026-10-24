@@ -292,10 +292,15 @@ sets:
   - id: games-domain-custom
     behavior: domain
     file: games-domain-custom
+  # ИИ Google (geosite google-gemini, он же google-deepmind) не в merge-from.
+  # exclude-from снимает точные дубли, которые уже есть в meta-google.
+  # +.google.com / +.googleapis.com / +.gstatic.com остаются —
+  # в шаблоне RULE-SET meta-google-gemini стоит выше summary-google.
   - id: summary-google
     behavior: domain
     file: summary-google
-    merge-from: meta-google,meta-google-play,meta-google-gemini,meta-google-cn,meta-google-registry,meta-google-trust-services
+    merge-from: meta-google,meta-google-play,meta-google-cn,meta-google-registry,meta-google-trust-services
+    exclude-from: meta-google-gemini
   - id: summary-launchers
     behavior: domain
     file: summary-launchers

@@ -31,8 +31,9 @@
 #   summary-launchers           → Steam/Epic/Battle.net/Origin/Ubisoft/GOG → лаунчеры; выше leftover games
 #   процессы игр/лаунчеров/Wine/Cursor/ru-apps → выше Google-доменов
 #   игровые домены              → рядом с процессами; выше Google и ban-ru (nintendo.ru)
-#   google-process              → Gemini/Antigravity не в 🤖 ИИ
-#   Google-домены               → выше meta-ai (gemini/antigravity ∩ google)
+#   google-process              → процессы Gemini/Antigravity → 🌐 Google · Gemini · Antigravity (не 🤖 ИИ)
+#   meta-google-gemini          → выше summary-google (+.google.com / +.googleapis.com всё ещё там)
+#   summary-google              → выше meta-ai (прочие домены ИИ; gemini уже забран)
 #   ban-ru → PROXY              → выше RU catch-all
 #   google-ips leftover         → после всех process/domain (GCP без SNI)
 #
@@ -944,7 +945,15 @@ rule-providers:
     format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/google-process.yaml
     path: ./ruleset/google-process.yaml
-  summary-google: # google, google-play, gemini, deepmind, antigravity, google-cn, registry, trust-services
+  meta-google-gemini: # geosite google-gemini (= google-deepmind): только ИИ Google
+    type: http
+    proxy: ⚡️ Авто
+    interval: *rp_interval
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-google-gemini.mrs
+    path: ./ruleset/meta-google-gemini.mrs
+  summary-google: # google, play, cn, registry, trust-services — без строк google-gemini
     type: http
     proxy: ⚡️ Авто
     interval: *rp_interval
@@ -1066,13 +1075,14 @@ rules:
   - RULE-SET,summary-launchers,🎮 Лаунчеры · сайты  # магазины; матчи/EAC — leftover games
   - RULE-SET,meta-category-enhance-gaming,🎮 Игры
   - RULE-SET,meta-category-games,🎮 Игры            # leftover: riot, roblox, nintendo, dota2, fortnite, wow…
-  - RULE-SET,google-process,🌐 Google · Gemini · Antigravity  # Gemini/Antigravity-процессы, не 🤖 ИИ
-  - RULE-SET,ai,🤖 ИИ · ChatGPT · Claude           # Cursor.exe → googleapis, выше summary-google
+  - RULE-SET,google-process,🌐 Google · Gemini · Antigravity  # процессы Gemini/Antigravity, не 🤖 ИИ
+  - RULE-SET,ai,🤖 ИИ · ChatGPT · Claude           # Cursor.exe → googleapis, выше доменов Google
   - RULE-SET,ru-app-list,DIRECT                    # ru-app → firebase.googleapis.com
   - RULE-SET,ru-apps-custom,DIRECT
-  - RULE-SET,summary-google,🌐 Google · Gemini · Antigravity  # браузер; leftover IP — ниже
+  - RULE-SET,meta-google-gemini,🌐 Google · Gemini · Antigravity  # выше summary-google: +.google.com / +.googleapis.com
+  - RULE-SET,summary-google,🌐 Google · Gemini · Antigravity  # поиск, Play, Drive, Cloud; leftover IP — ниже
 
-  - RULE-SET,meta-ai,🤖 ИИ · ChatGPT · Claude      # gemini/antigravity ⊂ google — домены ИИ после
+  - RULE-SET,meta-ai,🤖 ИИ · ChatGPT · Claude      # gemini уже забран meta-google-gemini
 
   - RULE-SET,category-ban-ru,PROXY                 # выше RU catch-all (rnd.ru ⊂ оба)
 

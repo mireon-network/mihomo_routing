@@ -15,6 +15,7 @@ class MergeSet:
     file: str
     sources: list[str]
     exclude: str
+    exclude_from: str
 
 
 def parse_manifest(path: Path) -> list[MergeSet]:
@@ -29,7 +30,7 @@ def parse_manifest(path: Path) -> list[MergeSet]:
         elif cur and ":" in s and not s.startswith("#"):
             k, v = s.split(":", 1)
             k, v = k.strip(), v.strip()
-            if k in ("id", "file", "merge-from", "exclude"):
+            if k in ("id", "file", "merge-from", "exclude", "exclude-from"):
                 cur[k] = v
     if cur and cur.get("merge-from"):
         sets.append(_merge_set(cur))
@@ -42,6 +43,30 @@ def _merge_set(cur: dict[str, str]) -> MergeSet:
         cur["file"],
         [x.strip() for x in cur["merge-from"].split(",") if x.strip()],
         cur.get("exclude", ""),
+        cur.get("exclude-from", ""),
+    )
+
+
+def apply_exclude_from(path: Path, text_dir: Path, exclude_from: str) -> None:
+    names = [x.strip() for x in exclude_from.split(",") if x.strip()]
+    if not names:
+        return
+    banned: set[str] = set()
+    for name in names:
+        src = text_dir / f"{name}.list"
+        if not src.is_file():
+            print(f"mrs-build-merged-lists: нет {src.name} для exclude-from", file=sys.stderr)
+            raise SystemExit(1)
+        for line in src.read_text(encoding="utf-8").splitlines():
+            item = line.strip()
+            if item and not item.startswith("#"):
+                banned.add(item)
+    lines = path.read_text(encoding="utf-8").splitlines()
+    kept = [line for line in lines if line.strip() not in banned]
+    path.write_text("\n".join(kept) + ("\n" if kept else ""), encoding="utf-8")
+    print(
+        f"mrs-build-merged-lists: exclude-from {path.name}: {len(lines)} → {len(kept)} ({exclude_from})",
+        file=sys.stderr,
     )
 
 
@@ -72,7 +97,9 @@ def main() -> int:
 
     for info in parse_manifest(args.manifest):
         inputs = [text_dir / f"{name}.list" for name in info.sources]
-        missing = [p for p in inputs if not p.is_file()]
+        exclude_names = [x.strip() for x in info.exclude_from.split(",") if x.strip()]
+        exclude_paths = [text_dir / f"{name}.list" for name in exclude_names]
+        missing = [p for p in inputs + exclude_paths if not p.is_file()]
         if missing:
             print(
                 f"mrs-build-merged-lists: нет {[p.name for p in missing]} для {info.file}",
@@ -85,6 +112,7 @@ def main() -> int:
             [sys.executable, str(merge_py), "-o", str(out), *[str(p) for p in inputs]],
             check=True,
         )
+        apply_exclude_from(out, text_dir, info.exclude_from)
         apply_exclude(out, info.exclude)
 
     return 0
