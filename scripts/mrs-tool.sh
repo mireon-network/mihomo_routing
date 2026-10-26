@@ -276,7 +276,7 @@ usage() {
   pack                  — text/*.list → bin/*.mrs
   check                 — bin/*.mrs совпадает с пересборкой из text/
   sync                  — upstream → text/ (зеркала) + pack → bin/
-  install-hooks         — git pre-commit
+  install-hooks         — git pre-commit: pack .mrs и сборка XRAY
 
   Upstream-наборы (url/src в manifest): перезаписываются из CDN/upstream.
   Локальные *-custom (без url/src): правки только в text/, pack → bin/.

@@ -152,7 +152,7 @@ Live-тест — throwaway-ветки **`<ветка>-cdn`** и **`<ветка>
 ### Быстрый старт
 
 ```bash
-./scripts/mrs-tool.sh install-hooks   # pre-commit: pack .mrs при коммите
+./scripts/mrs-tool.sh install-hooks   # pre-commit: pack .mrs и сборка XRAY при коммите
 ./scripts/upstream-sync.sh sync       # YAML-зеркала + MRS
 ```
 
@@ -197,7 +197,7 @@ Live-тест — throwaway-ветки **`<ветка>-cdn`** и **`<ветка>
 ./scripts/mrs-tool.sh sync
 ```
 
-Upstream-наборы перезаписываются из CDN/MetaCubeX. Локальные правки — только в `*-custom` (`private-domains-custom`, `category-ru-custom`, `private-ips-custom`, `torrent-domains-custom`, `games-domain-custom`): правьте `text/*.list`, **pre-commit** вызовет `pack`.
+Upstream-наборы перезаписываются из CDN/MetaCubeX. Локальные правки — только в `*-custom` (`private-domains-custom`, `category-ru-custom`, `private-ips-custom`, `torrent-domains-custom`, `games-domain-custom`): правьте `text/*.list`, **pre-commit** вызовет `pack` и пересоберёт `XRAY`.
 
 Отдельные команды MRS: `download`, `unpack --force`, `pack`. Бинарник `mihomo` — из `PATH` или `.tools/mihomo` (в `.gitignore`).
 

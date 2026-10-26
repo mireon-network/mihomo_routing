@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Перед коммитом: text/*.list → bin/*.mrs и добавить .mrs в индекс.
+# Перед коммитом: text/*.list → bin/*.mrs, затем XRAY/*.dat из этих исходников.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
