@@ -1026,7 +1026,7 @@ rules:
   # --- Системные / приватные адреса ---
   - RULE-SET,meta-geoip-private,DIRECT,no-resolve    # приватные IP (MetaCubeX) — без DNS
   - RULE-SET,private-ips-custom,DIRECT,no-resolve  # локальные IP — напрямую (вне upstream)
-  - IP-CIDR,::/0,REJECT-DROP,no-resolve            # весь IPv6-трафик, не попавший в fake-ip — блок
+  - IP-CIDR,::/0,REJECT,no-resolve                   # IPv6: быстрый REJECT → Happy Eyeballs на IPv4 (не DROP)
   - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT-DROP # QUIC — принудительно через TCP
   - RULE-SET,meta-geosite-private,DIRECT           # локальные домены (MetaCubeX) — напрямую
   - RULE-SET,private-domains-custom,DIRECT         # локальные домены — напрямую (вне upstream)
