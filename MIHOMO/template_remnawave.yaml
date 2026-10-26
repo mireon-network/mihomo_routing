@@ -4,7 +4,8 @@
 # Набор правил маршрутизации для Mihomo
 #
 # Режим:       rule
-# Инбаунды:    TUN (gvisor, strict-route), mixed-port 7890
+# Инбаунды:    только TUN (gvisor, strict-route); mixed-port не открываем —
+#              локальный SOCKS/HTTP без пароля выдаёт IP выхода любому приложению (localhost-атака)
 #              Приватные и зарезервированные IP исключены из TUN и сниффера
 # DNS:         fake-ip, Yandex + Alibaba DNS (direct) + Google DNS (proxy)
 #              IPv6 в DNS отключён, весь IPv6-трафик ядра блокируется на уровне правил
@@ -12,7 +13,9 @@
 # Группы прокси:
 #   🛡️ VPN       — Автовыбор / Без VPN / страны
 #   (скрытые)    — страны: fallback прямая→мосты; внутри пула — load-balance sticky-sessions; Автовыбор — url-test
-#                  lazy: false + expected-status: 204 — актуальный пинг и health-check
+#                  expected-status: 204. Пулы: lazy true (проверка, пока через пул есть новые соединения)
+#                  Автовыбор: lazy false, interval 600с — мёртвая страна снимается не позже 10 мин
+#                  fallback страны: lazy false, interval 30с — мёртвая прямая снимается за полминуты
 #   📺 Youtube   — отдельный выбор узла для YouTube
 #   💬 Discord   — отдельный выбор узла для Discord / Vesktop
 #   🌐 Google · Gemini · Antigravity — Google, Play, Drive, Cloud, Search, DeepMind…
@@ -49,8 +52,11 @@
 #   фильтр страны — локация выхода (мост не считается): 🇵🇱 pl, 🇫🇮 fi, 🇩🇪 de, 🇫🇷 fr, 🇳🇱 nl, 🇺🇸 us
 #   ⚡️ Автовыбор        — url-test между странами
 #   страны              — fallback: живые прямые (gt_), иначе мосты (bgt_…_gt_)
-#                         fallback interval 30с: иначе мёртвый прямой пул держится до 10 мин
+#                         lazy false, interval 30с: редкий таймаут не копит max-failed-times (окно = timeout 3с)
 #                         пустой пул: empty-fallback REJECT (не COMPATIBLE/DIRECT)
+#
+# Минимальная версия ядра клиентов: mihomo v1.19.27 (первая с empty-fallback).
+# Ядра старше молча игнорируют empty-fallback → пустой пул = COMPATIBLE (DIRECT), утечка мимо VPN.
 #
 # Благодарности: legiz-ru, Davoyan, RoscomVPN, MetaCubeX
 # ============================================================
@@ -126,7 +132,6 @@ x-anchors:
   # rp_* шаблоны развёрнуты в rule-providers (Remnawave/node-yaml alias limit)
   rp_interval: &rp_interval 86400          # rule-sets: 1 день — своевременно подхватываем изменения upstream
 
-mixed-port: 7890
 mode: rule
 log-level: warning
 allow-lan: false
@@ -267,11 +272,6 @@ proxy-groups:
       - 🇵🇱 Польша
       - 🇺🇸 США
     # LEAVE THIS LINE!
-    url: https://www.youtube.com/generate_204
-    interval: 600
-    lazy: false
-    timeout: 3000
-    expected-status: 204
   - name: 📺 Youtube
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png
     type: select
@@ -388,7 +388,7 @@ proxy-groups:
   - name: 🇫🇮 Финляндия · прямая
     type: load-balance
     hidden: true
-    lazy: false
+    lazy: true
     strategy: sticky-sessions
     url: https://www.youtube.com/generate_204
     interval: 600
@@ -405,7 +405,7 @@ proxy-groups:
   - name: 🇫🇮 Финляндия · мосты
     type: load-balance
     hidden: true
-    lazy: false
+    lazy: true
     strategy: sticky-sessions
     url: https://www.youtube.com/generate_204
     interval: 600
@@ -436,7 +436,7 @@ proxy-groups:
   - name: 🇩🇪 Германия · прямая
     type: load-balance
     hidden: true
-    lazy: false
+    lazy: true
     strategy: sticky-sessions
     url: https://www.youtube.com/generate_204
     interval: 600
@@ -453,7 +453,7 @@ proxy-groups:
   - name: 🇩🇪 Германия · мосты
     type: load-balance
     hidden: true
-    lazy: false
+    lazy: true
     strategy: sticky-sessions
     url: https://www.youtube.com/generate_204
     interval: 600
@@ -484,7 +484,7 @@ proxy-groups:
   - name: 🇫🇷 Франция · прямая
     type: load-balance
     hidden: true
-    lazy: false
+    lazy: true
     strategy: sticky-sessions
     url: https://www.youtube.com/generate_204
     interval: 600
@@ -501,7 +501,7 @@ proxy-groups:
   - name: 🇫🇷 Франция · мосты
     type: load-balance
     hidden: true
-    lazy: false
+    lazy: true
     strategy: sticky-sessions
     url: https://www.youtube.com/generate_204
     interval: 600
@@ -532,7 +532,7 @@ proxy-groups:
   - name: 🇳🇱 Нидерланды · прямая
     type: load-balance
     hidden: true
-    lazy: false
+    lazy: true
     strategy: sticky-sessions
     url: https://www.youtube.com/generate_204
     interval: 600
@@ -549,7 +549,7 @@ proxy-groups:
   - name: 🇳🇱 Нидерланды · мосты
     type: load-balance
     hidden: true
-    lazy: false
+    lazy: true
     strategy: sticky-sessions
     url: https://www.youtube.com/generate_204
     interval: 600
@@ -580,7 +580,7 @@ proxy-groups:
   - name: 🇵🇱 Польша · прямая
     type: load-balance
     hidden: true
-    lazy: false
+    lazy: true
     strategy: sticky-sessions
     url: https://www.youtube.com/generate_204
     interval: 600
@@ -597,7 +597,7 @@ proxy-groups:
   - name: 🇵🇱 Польша · мосты
     type: load-balance
     hidden: true
-    lazy: false
+    lazy: true
     strategy: sticky-sessions
     url: https://www.youtube.com/generate_204
     interval: 600
@@ -628,7 +628,7 @@ proxy-groups:
   - name: 🇺🇸 США · прямая
     type: load-balance
     hidden: true
-    lazy: false
+    lazy: true
     strategy: sticky-sessions
     url: https://www.youtube.com/generate_204
     interval: 600
@@ -645,7 +645,7 @@ proxy-groups:
   - name: 🇺🇸 США · мосты
     type: load-balance
     hidden: true
-    lazy: false
+    lazy: true
     strategy: sticky-sessions
     url: https://www.youtube.com/generate_204
     interval: 600

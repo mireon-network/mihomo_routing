@@ -220,6 +220,7 @@ def patch_file(path: Path) -> bool:
 def self_check() -> None:
     root = Path(__file__).resolve().parents[1]
     src = (root / "MIHOMO/template_remnawave.yaml").read_text(encoding="utf-8")
+    assert "mixed-port" not in yaml.safe_load(src)
     assert re.search(r"^log-level: warning$", src, re.M)
     assert f"  - name: {UDP_NAME}\n" not in src, "UDP-селектор не должен быть в шаблоне"
     assert "NETWORK,UDP,📡 UDP" not in src
@@ -262,10 +263,15 @@ def self_check() -> None:
         ("🇺🇸 США", "us"),
     )
     by_name = {g["name"]: g for g in doc["proxy-groups"]}
+    auto = by_name["⚡️ Автовыбор"]
+    assert auto.get("type") == "url-test"
+    assert auto.get("lazy") is False
+    assert auto.get("interval") == 600
     for name, code in countries:
         group = by_name[name]
         assert group.get("type") == "fallback"
         assert group.get("interval") == 30
+        assert group.get("lazy") is False
         assert group.get("proxies") == [f"{name} · прямая", f"{name} · мосты"]
         direct = by_name[f"{name} · прямая"]
         bridge = by_name[f"{name} · мосты"]
@@ -273,8 +279,12 @@ def self_check() -> None:
         assert bridge.get("filter") == rf"^bgt_[^_]+_gt_{code}-.+-[0-9]+$"
         assert direct.get("include-all") is True and direct.get("exclude-filter") is None
         assert bridge.get("include-all") is True and bridge.get("exclude-filter") is None
+        assert direct.get("lazy") is True and bridge.get("lazy") is True
         assert direct.get("empty-fallback") == "REJECT"
         assert bridge.get("empty-fallback") == "REJECT"
+        # без явных узлов/заглушек: пустой пул закрывает empty-fallback (mihomo >= v1.19.27)
+        assert not direct.get("proxies"), direct.get("proxies")
+        assert not bridge.get("proxies"), bridge.get("proxies")
         direct_re = re.compile(direct["filter"])
         bridge_re = re.compile(bridge["filter"])
         assert direct_re.match(f"gt_{code}-hz-102")
@@ -306,6 +316,7 @@ def self_check() -> None:
     assert sum(1 for g in yaml.safe_load(again)["proxy-groups"] if g["name"] == UDP_NAME) == 1
 
     wl = (root / "MIHOMO/wl.yaml").read_text(encoding="utf-8")
+    assert "mixed-port" not in yaml.safe_load(wl)
     assert re.search(r"^log-level: warning$", wl, re.M)
     wl_src = next(g for g in yaml.safe_load(wl)["proxy-groups"] if g["name"] == "🇷🇺 Белые списки")
     assert wl_src.get("filter") == r"(?i)^wlgt_[a-z]{2}-.+-[0-9]+$"

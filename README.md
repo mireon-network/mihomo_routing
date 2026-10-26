@@ -34,6 +34,9 @@
 | `scripts/generate-gfn-games-block.py` | Пересборка блока GeForce NOW в `games-process-custom.yaml` |
 | `scripts/generate-tun-exclude-package.py` | Пересборка `tun.exclude-package` в обоих шаблонах |
 | `scripts/test-config-local.sh` | Локальная проверка rule-providers без CDN (`mihomo -t` + convert-ruleset) |
+| `scripts/test-config-matrix.sh` | CI-матрица ядер mihomo (минимальная v1.19.27 и последний стабильный релиз с GitHub): `test-config-local.sh` + фикстура групп + проверка ключей |
+| `scripts/test-groups-fixture.py` | Живой mihomo с обезличенными узлами (`gt_`, `bgt_…_gt_`, `wlgt_`): пулы непусты, пустой пул → REJECT через `empty-fallback` |
+| `scripts/check-config-keys.py` | Неизвестные/опечатанные ключи и ключи новее минимальной версии ядра (mihomo их молча игнорирует) |
 | `scripts/deploy-test-branches.sh` | Throwaway `<ветка>-cdn` и `<ветка>-debug` от текущего HEAD (CDN-URL + debug-патч) |
 | `scripts/patch-include-proxies.py` | Debug-патч: `include-all: true`, селектор `📡 UDP`, без блокировки Remnawave |
 
@@ -114,6 +117,15 @@
 ./scripts/test-config-local.sh MIHOMO/wl.yaml
 ```
 
+Полная проверка, как в CI (скачивает ядра в `.tools/`):
+
+```bash
+./scripts/test-config-matrix.sh                                    # v1.19.27 + последний стабильный релиз
+MIHOMO_TEST_VERSIONS="v1.19.27 v1.19.33" ./scripts/test-config-matrix.sh  # не спрашивать latest; ключи всё равно против v1.19.27
+```
+
+Минимальная поддерживаемая версия ядра клиентов — **mihomo v1.19.27** (первая с `empty-fallback`): на более старых ядрах ключ молча игнорируется, и пустой пул становится `COMPATIBLE` (DIRECT) — трафик идёт мимо VPN. Последние стабильные Koala Clash, FlClashX, Clash Mi и RabbitHole этому требованию соответствуют. В шаблонах нет `mixed-port`: клиенты работают через TUN, открытый локальный прокси без пароля выдаёт IP выхода любому приложению.
+
 ## Использование в Remnawave
 
 Шаблоны (ветка `main`):
@@ -144,7 +156,7 @@ Live-тест — throwaway-ветки **`<ветка>-cdn`** и **`<ветка>
 ./scripts/upstream-sync.sh sync       # YAML-зеркала + MRS
 ```
 
-**Автоматически:** GitHub Actions [`.github/workflows/upstream-sync.yml`](.github/workflows/upstream-sync.yml) — каждый день **03:00 МСК** (`sync` + `test-config-local.sh`, коммит и push в `main` при изменениях, затем `main-cdn` и `main-debug`). Кэш jsDelivr (`cdn-purge.sh --all`) сбрасывается только после этого push; если изменений нет — не трогаем. Ручной запуск: Actions → *Upstream sync* → *Run workflow*.
+**Автоматически:** GitHub Actions [`.github/workflows/upstream-sync.yml`](.github/workflows/upstream-sync.yml) — каждый день **03:00 МСК** (`sync` + `test-config-matrix.sh` на сверенных v1.19.27 и v1.19.33, коммит и push в `main` при изменениях, затем `main-cdn` и `main-debug`). Кэш jsDelivr (`cdn-purge.sh --all`) сбрасывается только после этого push; если изменений нет — не трогаем. Ручной запуск: Actions → *Upstream sync* → *Run workflow*.
 
 `upstream-sync.sh sync` последовательно:
 

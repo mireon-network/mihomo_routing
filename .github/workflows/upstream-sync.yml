@@ -33,8 +33,8 @@ jobs:
         run: |
           python3 scripts/patch-include-proxies.py --self-check
           python3 scripts/strip-games-launchers.py --self-check
-          ./scripts/test-config-local.sh
-          ./scripts/test-config-local.sh MIHOMO/wl.yaml
+          # Только сверенные хеши: этот job пушит в main. Latest без пина — локально и в xray-fresh.
+          MIHOMO_TEST_VERSIONS="v1.19.27 v1.19.33" ./scripts/test-config-matrix.sh
           ./scripts/mrs-tool.sh check
 
       - name: Configure git

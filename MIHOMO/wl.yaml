@@ -80,7 +80,6 @@ x-anchors:
   rp_interval: &rp_interval 604800              # rule-sets: 7 дней — реже перезагрузка в память
   rp_interval_static: &rp_interval_static 2592000 # meta/private: 30 дней — почти не меняются
 
-mixed-port: 7890
 mode: rule
 log-level: warning
 allow-lan: false
@@ -185,6 +184,7 @@ proxy-groups:
       include-proxies: false
     include-all: true
     empty-fallback: REJECT # нет узлов wlgt_ — не COMPATIBLE/DIRECT
+    # требует mihomo >= v1.19.27: на старых ядрах пустая группа = COMPATIBLE (DIRECT)
     filter: "(?i)^wlgt_[a-z]{2}-.+-[0-9]+$" # wlgt_fi-hz-102
   - name: PROXY
     type: select
