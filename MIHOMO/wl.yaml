@@ -3,7 +3,7 @@
 # ============================================================
 # Весь трафик проксируется на узлы wlgt_ (wlgt_fi-hz-102).
 # Исключения: приватные/зарезервированные IP — напрямую,
-#             IPv6 (вне fake-ip) и QUIC (UDP 443) — блокируются.
+#             IPv6 выключен (ipv6: false + dns.ipv6: false); QUIC (UDP 443) блокируется.
 #
 # Основано на template_remnawave.yaml (mireon-network):
 # общие якоря и sniffer; routing — режим белых списков (gov/medicine/wld → DIRECT, остальное → PROXY).
@@ -307,7 +307,6 @@ rules:
   # --- Системные / приватные адреса ---
   - RULE-SET,meta-geoip-private,DIRECT,no-resolve    # приватные IP (MetaCubeX) — без DNS
   - RULE-SET,private-ips-custom,DIRECT,no-resolve  # локальные/рабочие IP — напрямую (вне upstream)
-  - IP-CIDR,::/0,REJECT,no-resolve                   # IPv6: быстрый REJECT → Happy Eyeballs на IPv4 (не DROP)
   - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT-DROP # QUIC — принудительно через TCP
   - RULE-SET,meta-geosite-private,DIRECT           # локальные домены (MetaCubeX) — напрямую
   - RULE-SET,private-domains-custom,DIRECT         # локальные/рабочие домены — напрямую (вне upstream)

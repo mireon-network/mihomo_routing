@@ -8,7 +8,7 @@
 #              локальный SOCKS/HTTP без пароля выдаёт IP выхода любому приложению (localhost-атака)
 #              Приватные и зарезервированные IP исключены из TUN и сниффера
 # DNS:         fake-ip, Yandex + Alibaba DNS (direct) + Google DNS (proxy)
-#              IPv6 в DNS отключён, весь IPv6-трафик ядра блокируется на уровне правил
+#              IPv6 выключен целиком (ipv6: false + dns.ipv6: false), как у Davoyan/legiz; QUIC режется отдельно
 #
 # Группы прокси:
 #   🛡️ VPN       — Автовыбор / Без VPN / страны
@@ -135,7 +135,7 @@ x-anchors:
 mode: rule
 log-level: warning
 allow-lan: false
-ipv6: false # не перехватывать IPv6: с TUN+REJECT Happy Eyeballs не откатывается на IPv4
+ipv6: false # как у Davoyan/legiz: не перехватывать IPv6 (иначе TUN ломает Happy Eyeballs)
 unified-delay: true
 tcp-concurrent: true
 geodata-loader: memconservative # ленивая загрузка geoip/geosite .dat — меньше RAM (дефолт Mihomo)
@@ -1026,7 +1026,6 @@ rules:
   # --- Системные / приватные адреса ---
   - RULE-SET,meta-geoip-private,DIRECT,no-resolve    # приватные IP (MetaCubeX) — без DNS
   - RULE-SET,private-ips-custom,DIRECT,no-resolve  # локальные IP — напрямую (вне upstream)
-  - IP-CIDR,::/0,REJECT,no-resolve                   # IPv6: быстрый REJECT → Happy Eyeballs на IPv4 (не DROP)
   - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT-DROP # QUIC — принудительно через TCP
   - RULE-SET,meta-geosite-private,DIRECT           # локальные домены (MetaCubeX) — напрямую
   - RULE-SET,private-domains-custom,DIRECT         # локальные домены — напрямую (вне upstream)
