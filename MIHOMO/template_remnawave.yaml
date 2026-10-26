@@ -135,7 +135,7 @@ x-anchors:
 mode: rule
 log-level: warning
 allow-lan: false
-ipv6: true # для перехвата ipv6 трафика в ядро
+ipv6: false # не перехватывать IPv6: с TUN+REJECT Happy Eyeballs не откатывается на IPv4
 unified-delay: true
 tcp-concurrent: true
 geodata-loader: memconservative # ленивая загрузка geoip/geosite .dat — меньше RAM (дефолт Mihomo)
