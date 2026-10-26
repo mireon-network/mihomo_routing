@@ -250,11 +250,11 @@ python3 scripts/generate-gfn-games-block.py
 ### 🌐 Google · Gemini · Antigravity
 
 1. **proxy-groups** — группа `🌐 Google · Gemini · Antigravity` (`remnawave.include-proxies: false`, прокси `🛡️ VPN` + `🔓 Без VPN` + выбор стран). Отдельного селектора для Gemini нет.
-2. **rule-providers** — `google-process` → `rule-sets/yaml/google-process.yaml`; `meta-google-gemini` — geosite `google-gemini` (он же `google-deepmind`: Gemini, Antigravity, NotebookLM, AI Studio, Jules); `summary-google` (merge `meta-google`, `meta-google-play`, `meta-google-cn`, `meta-google-registry`, `meta-google-trust-services`, `exclude-from: meta-google-gemini`) и `meta-geoip-google`.
+2. **rule-providers** — `google-process` → `rule-sets/yaml/google-process.yaml`; `meta-google-gemini` — geosite `google-gemini` (он же `google-deepmind`: Gemini, Antigravity, NotebookLM, AI Studio, Jules), отдельный файл; `summary-google` (merge `meta-google`, `meta-google-play`, `meta-google-cn`, `meta-google-registry`, `meta-google-trust-services`, `meta-google-gemini`) и `meta-geoip-google`.
 3. **rules** — пересечения с Google-доменами (`+.google.com`, `+.googleapis.com`, `+.googleusercontent.com`):
    - YouTube, Discord (вложения на `storage.googleapis.com`), FCM → **выше** обоих Google-наборов;
    - процессы игр/лаунчеров/Wine/Cursor/ru-apps и `google-process` → **выше** доменов (Tekken на `*.bc.googleusercontent.com`);
-   - `meta-google-gemini` → **выше** `summary-google` (широкие `+.google.com` / `+.googleapis.com` остаются в summary); оба набора идут в `🌐 Google · Gemini · Antigravity`;
+   - `meta-google-gemini` → **выше** `summary-google` (отдельный файл; те же домены входят и в summary, широкие `+.google.com` / `+.googleapis.com` остаются в summary); оба набора идут в `🌐 Google · Gemini · Antigravity`;
    - `meta-ai` → **ниже** (`gemini`/`antigravity` уже в Google);
    - `meta-geoip-google` leftover (TCP) → **после** всех process/domain, в ту же группу: IP без SNI не отличить от остального GCP.
 

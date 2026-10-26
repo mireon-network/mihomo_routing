@@ -15,7 +15,8 @@ sets:
     behavior: domain
     file: category-ru-davoyan
     src: davoyan-list
-    exclude: +.ru,+.su,+.windsurf.com # ИИ, уже в meta-ai
+    # ИИ, уже в meta-ai
+    exclude: +.ru,+.su,+.windsurf.com
     url: https://raw.githubusercontent.com/Davoyan/mihomo-rule-sets/main/rules/category-ru.lst
   - id: wld
     behavior: domain
@@ -292,15 +293,14 @@ sets:
   - id: games-domain-custom
     behavior: domain
     file: games-domain-custom
-  # ИИ Google (geosite google-gemini, он же google-deepmind) не в merge-from.
-  # exclude-from снимает точные дубли, которые уже есть в meta-google.
-  # +.google.com / +.googleapis.com / +.gstatic.com остаются —
-  # в шаблоне RULE-SET meta-google-gemini стоит выше summary-google.
+  # ИИ Google (geosite google-gemini, он же google-deepmind) входит в merge
+  # и остаётся отдельным файлом meta-google-gemini.
+  # В шаблоне RULE-SET meta-google-gemini стоит выше summary-google:
+  # +.google.com / +.googleapis.com / +.gstatic.com по-прежнему в summary.
   - id: summary-google
     behavior: domain
     file: summary-google
-    merge-from: meta-google,meta-google-play,meta-google-cn,meta-google-registry,meta-google-trust-services
-    exclude-from: meta-google-gemini
+    merge-from: meta-google,meta-google-play,meta-google-cn,meta-google-registry,meta-google-trust-services,meta-google-gemini
   - id: summary-launchers
     behavior: domain
     file: summary-launchers
