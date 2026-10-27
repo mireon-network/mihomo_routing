@@ -9,14 +9,15 @@ sets:
     behavior: domain
     file: meta-category-ru
     src: mihomo-list
-    exclude: +.ru,+.su
+    # +.ru/+.su слишком широко; остальное — не русские сервисы
+    exclude: +.ru,+.su,+.ubs.com,+.ru.com,+.ru.net,+.asiangooglenetwork.com,+.ewisdom.us.kg
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ru.list
   - id: category-ru-davoyan
     behavior: domain
     file: category-ru-davoyan
     src: davoyan-list
-    # ИИ, уже в meta-ai
-    exclude: +.ru,+.su,+.windsurf.com
+    # ИИ уже в meta-ai; остальное — не русские банки, IP-чекеры, чужие зоны и мусор
+    exclude: +.ru,+.su,+.windsurf.com,+.ubs.com,+.autobahn.db.com,+.bk.mufg.jp,+.mizuhogroup.com,+.checkip.amazonaws.com,+.ifconfig.me,+.ip.sb,+.ipapi.is,+.ipify.org,+.iplocate.io,+.showip.net,+.ru.com,+.ru.net,+.asiangooglenetwork.com,+.psk,+.coloradogrowers.com,+.doktor.kr,+.medtrum.eu,+.ewisdom.us.kg
     url: https://raw.githubusercontent.com/Davoyan/mihomo-rule-sets/main/rules/category-ru.lst
   - id: wld
     behavior: domain
@@ -72,8 +73,8 @@ sets:
     file: meta-category-games
     src: mihomo-list
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-games.list
-    # справочники/вики/моды — не 🎮 Игры, падают в MATCH
-    exclude: opgg-static.akamaized.net,+.chunkbase.com,+.curseforge.com,+.fabricmc.net,+.forgecdn.net,+.minecraft.wiki,+.minecraftforge.net,+.modrinth.com,+.namemc.com,+.neoforged.net,+.nexus-cdn.com,+.nexusmods.com,+.op.gg,+.optifine.net,+.papermc.io,+.planetminecraft.com,+.prismlauncher.org,+.protondb.com,+.quiltmc.org,+.sih-db.com,+.sih.app,+.speedrun.com,+.spigotmc.org,+.steamdb.info,+.steaminventoryhelper.com
+    # справочники/вики/моды и широкий суффикс +.in.th — не 🎮 Игры, падают в MATCH
+    exclude: opgg-static.akamaized.net,+.chunkbase.com,+.curseforge.com,+.fabricmc.net,+.forgecdn.net,+.minecraft.wiki,+.minecraftforge.net,+.modrinth.com,+.namemc.com,+.neoforged.net,+.nexus-cdn.com,+.nexusmods.com,+.op.gg,+.optifine.net,+.papermc.io,+.planetminecraft.com,+.prismlauncher.org,+.protondb.com,+.quiltmc.org,+.sih-db.com,+.sih.app,+.speedrun.com,+.spigotmc.org,+.steamdb.info,+.steaminventoryhelper.com,+.in.th,+.gamebanana.com,+.loverslab.com,+.thunderstore.io,+.thunderstore.org,+.r2modman.com
   - id: meta-youtube
     behavior: domain
     file: meta-youtube
@@ -83,6 +84,7 @@ sets:
     behavior: domain
     file: meta-category-ecommerce-ru
     src: mihomo-list
+    exclude: +.ewisdom.us.kg
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ecommerce-ru.list
   - id: meta-category-entertainment-ru
     behavior: domain
@@ -93,6 +95,7 @@ sets:
     behavior: domain
     file: meta-category-bank-ru
     src: mihomo-list
+    exclude: +.ubs.com
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-bank-ru.list
   - id: meta-t2-ru
     behavior: domain
@@ -178,6 +181,7 @@ sets:
     behavior: domain
     file: meta-category-media-ru
     src: mihomo-list
+    exclude: +.asiangooglenetwork.com
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-media-ru.list
   - id: meta-category-retail-ru
     behavior: domain
