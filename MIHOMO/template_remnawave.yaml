@@ -375,7 +375,7 @@ proxy-groups:
     type: fallback
     hidden: true
     lazy: false
-    url: https://www.youtube.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 30
     expected-status: 204
     max-failed-times: 3
@@ -390,7 +390,7 @@ proxy-groups:
     hidden: true
     lazy: true
     strategy: sticky-sessions
-    url: https://www.youtube.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 600
     expected-status: 204
     max-failed-times: 3
@@ -407,7 +407,7 @@ proxy-groups:
     hidden: true
     lazy: true
     strategy: sticky-sessions
-    url: https://www.youtube.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 600
     expected-status: 204
     max-failed-times: 3
@@ -423,7 +423,7 @@ proxy-groups:
     type: fallback
     hidden: true
     lazy: false
-    url: https://www.youtube.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 30
     expected-status: 204
     max-failed-times: 3
@@ -438,7 +438,7 @@ proxy-groups:
     hidden: true
     lazy: true
     strategy: sticky-sessions
-    url: https://www.youtube.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 600
     expected-status: 204
     max-failed-times: 3
@@ -455,7 +455,7 @@ proxy-groups:
     hidden: true
     lazy: true
     strategy: sticky-sessions
-    url: https://www.youtube.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 600
     expected-status: 204
     max-failed-times: 3
@@ -471,7 +471,7 @@ proxy-groups:
     type: fallback
     hidden: true
     lazy: false
-    url: https://www.youtube.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 30
     expected-status: 204
     max-failed-times: 3
@@ -486,7 +486,7 @@ proxy-groups:
     hidden: true
     lazy: true
     strategy: sticky-sessions
-    url: https://www.youtube.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 600
     expected-status: 204
     max-failed-times: 3
@@ -503,7 +503,7 @@ proxy-groups:
     hidden: true
     lazy: true
     strategy: sticky-sessions
-    url: https://www.youtube.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 600
     expected-status: 204
     max-failed-times: 3
@@ -519,7 +519,7 @@ proxy-groups:
     type: fallback
     hidden: true
     lazy: false
-    url: https://www.youtube.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 30
     expected-status: 204
     max-failed-times: 3
@@ -534,7 +534,7 @@ proxy-groups:
     hidden: true
     lazy: true
     strategy: sticky-sessions
-    url: https://www.youtube.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 600
     expected-status: 204
     max-failed-times: 3
@@ -551,7 +551,7 @@ proxy-groups:
     hidden: true
     lazy: true
     strategy: sticky-sessions
-    url: https://www.youtube.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 600
     expected-status: 204
     max-failed-times: 3
@@ -567,7 +567,7 @@ proxy-groups:
     type: fallback
     hidden: true
     lazy: false
-    url: https://www.youtube.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 30
     expected-status: 204
     max-failed-times: 3
@@ -582,7 +582,7 @@ proxy-groups:
     hidden: true
     lazy: true
     strategy: sticky-sessions
-    url: https://www.youtube.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 600
     expected-status: 204
     max-failed-times: 3
@@ -599,7 +599,7 @@ proxy-groups:
     hidden: true
     lazy: true
     strategy: sticky-sessions
-    url: https://www.youtube.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 600
     expected-status: 204
     max-failed-times: 3
@@ -615,7 +615,7 @@ proxy-groups:
     type: fallback
     hidden: true
     lazy: false
-    url: https://www.youtube.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 30
     expected-status: 204
     max-failed-times: 3
@@ -630,7 +630,7 @@ proxy-groups:
     hidden: true
     lazy: true
     strategy: sticky-sessions
-    url: https://www.youtube.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 600
     expected-status: 204
     max-failed-times: 3
@@ -647,7 +647,7 @@ proxy-groups:
     hidden: true
     lazy: true
     strategy: sticky-sessions
-    url: https://www.youtube.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 600
     expected-status: 204
     max-failed-times: 3
@@ -663,7 +663,7 @@ proxy-groups:
     type: url-test
     hidden: true
     tolerance: 80
-    url: https://www.youtube.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 600
     lazy: false
     timeout: 3000
