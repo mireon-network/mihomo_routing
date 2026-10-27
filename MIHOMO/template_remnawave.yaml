@@ -235,7 +235,7 @@ dns:
     # RU-домены (идут DIRECT) — резолвим через RU DNS напрямую: верный CDN и меньше задержка
     "rule-set:summary-category-ru,category-ru-custom,wld": *dns_ru
     # DIRECT-сервисы — резолвим напрямую: geo-detect, торрент-трекеры, игровые CDN
-    "rule-set:meta-category-ip-geo-detect,torrent-trackers,meta-category-game-platforms-download": *dns_ru
+    "rule-set:meta-category-ip-geo-detect,torrent-trackers,meta-category-game-platforms-download,push-domains": *dns_ru
 sniffer:
   enable: true
   override-destination: false
@@ -862,6 +862,23 @@ rule-providers:
     format: yaml
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-clients-custom.yaml
     path: ./ruleset/torrent-clients-custom.yaml
+  push-domains: # домены APNs/FCM → DIRECT; mtalk — точные имена вместо DOMAIN-KEYWORD
+    type: inline
+    behavior: domain
+    payload:
+      - +.push.apple.com
+      - mtalk.google.com
+      - mtalk4.google.com
+      - alt1-mtalk.google.com
+      - alt2-mtalk.google.com
+      - alt3-mtalk.google.com
+      - alt4-mtalk.google.com
+      - alt5-mtalk.google.com
+      - alt6-mtalk.google.com
+      - alt7-mtalk.google.com
+      - alt8-mtalk.google.com
+      - +.fcm.googleapis.com
+      - +.fcm-xmpp.googleapis.com
   games-proxy-rules: # domain, не classical: fake-ip и nameserver-policy на classical пишут warn
     type: inline
     behavior: domain
@@ -1032,9 +1049,10 @@ rules:
   - RULE-SET,vpn-clients,DIRECT                    # overlay LAN: Radmin/Hamachi/Porthole/ZeroTier/Tailscale/… — не туннелировать
 
   # --- Пуш-уведомления → DIRECT (через VPN APNs/FCM тормозят и жрут батарею) ---
-  - IP-CIDR,17.0.0.0/8,DIRECT,no-resolve           # Apple CDN (legiz prod)
-  - OR,((DST-PORT,5223),(DOMAIN-SUFFIX,push.apple.com)),DIRECT                                                              # Apple APNs (порт 5223 ловит и коннект по IP)
-  - OR,((DST-PORT,5228-5230),(DOMAIN-KEYWORD,mtalk),(DOMAIN-SUFFIX,fcm.googleapis.com),(DOMAIN-SUFFIX,fcm-xmpp.googleapis.com)),DIRECT # Google FCM/GCM
+  # Только доставка push: весь 17.0.0.0/8 и порты без учёта адреса выводили из VPN посторонний трафик
+  - AND,((NETWORK,TCP),(DST-PORT,5223),(IP-CIDR,17.0.0.0/8,no-resolve)),DIRECT                # Apple APNs по IP — только порт 5223 в сети Apple
+  - RULE-SET,push-domains,DIRECT                                                               # домены APNs/FCM
+  - AND,((NETWORK,TCP),(DST-PORT,5228-5230),(RULE-SET,meta-geoip-google,no-resolve)),DIRECT    # Google FCM по IP — только порты 5228-5230 в сети Google
 
   # --- Почтовые порты → DIRECT ---
   - RULE-SET,mail-ports,DIRECT
