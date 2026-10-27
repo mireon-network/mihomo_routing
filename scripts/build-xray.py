@@ -204,7 +204,7 @@ def collect_categories(providers: dict[str, dict], src_rules: list[str]) -> None
             wrapped, _outbound = policy_of(raw.split(",", 1)[1])
             for atom in split_atoms(wrapped):
                 if atom.startswith("RULE-SET,"):
-                    record_set(providers, atom.split(",", 1)[1])
+                    record_set(providers, atom.split(",")[1])
 
 
 def varint(n: int) -> bytes:
