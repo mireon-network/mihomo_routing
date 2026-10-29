@@ -143,6 +143,7 @@ payload:
   - PROCESS-NAME,com.microsoft.copilot
   - PROCESS-NAME,com.deepseek.chat
   - PROCESS-NAME,ai.x.grok
+  - PROCESS-NAME,ai.x.grok.bot
   - PROCESS-NAME,com.poe.android
   - PROCESS-NAME,ai.character.app
   - PROCESS-NAME,ai.mistral.chat
