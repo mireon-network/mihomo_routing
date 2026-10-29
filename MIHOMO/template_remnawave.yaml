@@ -223,10 +223,13 @@ dns:
     # Локальные/приватные домены — через системный резолвер
     "rule-set:meta-geosite-private":
       - system
-    # private-домены — отдельный резолвер, fallback system при недоступности
+    # private-домены — корп. DNS, fallback RU DoH#DIRECT (не system: петля fake-ip)
     "rule-set:private-domains-custom":
       - 10.183.1.63
-      - system
+      - https://77.88.8.8/dns-query#DIRECT
+      - https://77.88.8.1/dns-query#DIRECT
+      - https://223.5.5.5/dns-query#DIRECT
+      - https://223.6.6.6/dns-query#DIRECT
     # Игровые домены — резолв через прямой DNS (быстрый пинг к CDN/серверам, без задержек `#PROXY`)
     "rule-set:meta-category-games,games-domain-custom": *dns_ru
     # PROXY-сервисы — резолв через узел VPN (legiz/Davoyan nameserver-policy)
