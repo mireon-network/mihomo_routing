@@ -5,8 +5,9 @@ include-all: true подтягивает узлы из общего proxies: (т
 по # LEAVE THIS LINE!). include-proxies: false не снимаем — иначе та же
 инъекция ещё раз в группу и в клиенте дубли карточек.
 
-Фильтры стран (gt-/bg-, локация выхода) не переписываем: они остаются как
-в основном шаблоне.
+Фильтры стран не переписываем: пулы живые, «Автовыбор» ими пользуется.
+На *-debug страны убираются только из видимых select, чтобы хост был
+отдельной строкой (include-all), а не пунктом «Франция» в том же списке.
 
 📡 UDP в основной шаблон не кладём: inject_udp_selector вставляет группу и
 поднимает Discord выше NETWORK,UDP только при сборке *-debug.
@@ -24,6 +25,16 @@ INCLUDE_ALL = "    include-all: true"
 
 UDP_NAME = "📡 UDP"
 YOUTUBE_NAME = "📺 Youtube"
+# Эти группы остаются в «Автовыбор». Из видимого select их убираем, иначе клиент
+# показывает хост внутри страны, а не его именем.
+COUNTRY_NAMES = (
+    "🇫🇮 Финляндия",
+    "🇩🇪 Германия",
+    "🇫🇷 Франция",
+    "🇳🇱 Нидерланды",
+    "🇵🇱 Польша",
+    "🇺🇸 США",
+)
 
 YOUTUBE_GROUP = re.compile(
     rf"(  - name: {re.escape(YOUTUBE_NAME)}\n"
@@ -168,6 +179,21 @@ def restore_hidden_hosts(text: str) -> str:
     )
 
 
+def drop_countries_from_visible_selects(text: str) -> str | None:
+    for name in visible_select_groups(text):
+        span = _group_chunk(text, name)
+        if span is None:
+            print(f"patch-include-proxies: не найдена группа {name!r}", file=sys.stderr)
+            return None
+        start, end = span
+        chunk = text[start:end]
+        for country in COUNTRY_NAMES:
+            # Последняя строка группы без \n на конце: срез чанка обрывается до следующего name.
+            chunk = re.sub(rf"\n      - {re.escape(country)}(?=\n|$)", "", chunk)
+        text = text[:start] + chunk + text[end:]
+    return text
+
+
 def patch_wl_whitelist_filter(text: str) -> str:
     span = _group_chunk(text, "🇷🇺 Белые списки")
     if span is None:
@@ -199,6 +225,10 @@ def patch_text(text: str, *, is_wl: bool = False) -> str | None:
 
     if is_wl:
         text = patch_wl_whitelist_filter(text)
+    else:
+        text = drop_countries_from_visible_selects(text)
+        if text is None:
+            return None
 
     text = re.sub(r"^log-level: \S+", "log-level: debug", text, count=1, flags=re.M)
     return text
@@ -267,6 +297,14 @@ def self_check() -> None:
     assert auto.get("type") == "url-test"
     assert auto.get("lazy") is False
     assert auto.get("interval") == 600
+    assert [name for name, _ in countries] == list(COUNTRY_NAMES)
+    assert auto.get("proxies") == list(COUNTRY_NAMES)
+    for sel in names:
+        listed = by_name[sel].get("proxies") or []
+        for country in COUNTRY_NAMES:
+            assert country not in listed, sel
+    src_vpn = next(g for g in yaml.safe_load(src)["proxy-groups"] if g["name"] == "🛡️ VPN")
+    assert "🇫🇷 Франция" in (src_vpn.get("proxies") or [])
     for name, code in countries:
         group = by_name[name]
         assert group.get("type") == "fallback"
@@ -313,7 +351,20 @@ def self_check() -> None:
 
     again = patch_text(out, is_wl=False)
     assert again is not None
-    assert sum(1 for g in yaml.safe_load(again)["proxy-groups"] if g["name"] == UDP_NAME) == 1
+    again_doc = yaml.safe_load(again)
+    assert sum(1 for g in again_doc["proxy-groups"] if g["name"] == UDP_NAME) == 1
+    again_by = {g["name"]: g for g in again_doc["proxy-groups"]}
+    assert again_by["⚡️ Автовыбор"].get("proxies") == list(COUNTRY_NAMES)
+    again_names = [
+        g["name"]
+        for g in again_doc["proxy-groups"]
+        if not g.get("hidden") and g.get("type") == "select"
+    ]
+    for sel in again_names:
+        listed = again_by[sel].get("proxies") or []
+        for country in COUNTRY_NAMES:
+            assert country not in listed, sel
+    assert "exclude-filter:" not in again
 
     wl = (root / "MIHOMO/wl.yaml").read_text(encoding="utf-8")
     assert "mixed-port" not in yaml.safe_load(wl)
