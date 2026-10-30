@@ -5,9 +5,9 @@ include-all: true подтягивает узлы из общего proxies: (т
 по # LEAVE THIS LINE!). include-proxies: false не снимаем — иначе та же
 инъекция ещё раз в группу и в клиенте дубли карточек.
 
-На *-debug селектор — плоский список имён хостов. Страны и «Автовыбор»
-убираются из видимых select, а пулы стран не забирают хосты (exclude-filter),
-иначе клиент снова прячет имя внутрь страны.
+На *-debug селектор — плоский список имён хостов. include-all без filter
+возвращает в список сами группы стран, поэтому страны и «Автовыбор»
+из debug-шаблона удаляются, а в видимый select попадают только имена gt_/bgt_.
 
 📡 UDP в основной шаблон не кладём: inject_udp_selector вставляет группу и
 поднимает Discord выше NETWORK,UDP только при сборке *-debug.
@@ -36,7 +36,8 @@ COUNTRY_NAMES = (
 )
 AUTO_NAME = "⚡️ Автовыбор"
 SELECT_ENTRIES_DROPPED = COUNTRY_NAMES + (AUTO_NAME,)
-POOL_SUFFIX = (" · прямая", " · мосты")
+# include-all тянет и группы. В селектор — только имена нод.
+HOST_FILTER = r"^(gt_[a-z]{2}-.+-[0-9]+|bgt_[^_]+_gt_[a-z]{2}-.+-[0-9]+)$"
 
 YOUTUBE_GROUP = re.compile(
     rf"(  - name: {re.escape(YOUTUBE_NAME)}\n"
@@ -196,45 +197,46 @@ def drop_countries_from_visible_selects(text: str) -> str | None:
     return text
 
 
-def detach_hosts_from_country_pools(text: str) -> str | None:
-    """Хост не член пула страны: иначе клиент показывает страну, а не имя."""
-    doc = yaml.safe_load(text)
-    names = [
-        g["name"]
-        for g in doc.get("proxy-groups") or []
-        if str(g.get("name", "")).endswith(POOL_SUFFIX)
-    ]
-    if not names:
-        print("patch-include-proxies: нет пулов стран", file=sys.stderr)
-        return None
-    for name in names:
-        text = _detach_pool(text, name)
-        if text is None:
-            return None
-    return text
-
-
-def _detach_pool(text: str, name: str) -> str | None:
-    span = _group_chunk(text, name)
-    if span is None:
-        print(f"patch-include-proxies: не найдена группа {name!r}", file=sys.stderr)
-        return None
-    start, end = span
-    chunk = text[start:end]
-    line = '    exclude-filter: ".+"\n'
-    if line in chunk:
+def drop_country_groups(text: str) -> str | None:
+    """Группы стран и «Автовыбор» не должны существовать: include-all иначе кладёт их в селектор."""
+    start_marker = f"  - name: {COUNTRY_NAMES[0]}\n"
+    end_marker = "  - name: ⚡️ Авто\n"
+    start = text.find(start_marker)
+    end = text.find(end_marker)
+    if start < 0:
         return text
-    found = re.search(r"\n    filter: [^\n]+", chunk)
-    if not found:
-        print(f"patch-include-proxies: нет filter в {name!r}", file=sys.stderr)
+    if end < 0 or end <= start:
+        print("patch-include-proxies: не вырезать группы стран", file=sys.stderr)
         return None
-    insert_at = found.end()
-    if insert_at < len(chunk) and chunk[insert_at] == "\n":
-        insert_at += 1
-    else:
-        line = "\n" + line
-    chunk = chunk[:insert_at] + line + chunk[insert_at:]
-    return text[:start] + chunk + text[end:]
+    text = text[:start] + text[end:]
+    old = "      - ⚡️ Автовыбор\n"
+    new = "      - 🛡️ VPN\n"
+    if old not in text:
+        print("patch-include-proxies: нет ссылки «Автовыбор» у «Авто»", file=sys.stderr)
+        return None
+    return text.replace(old, new, 1)
+
+
+def limit_visible_selects_to_hosts(text: str) -> str | None:
+    line = f'    filter: "{HOST_FILTER}"\n'
+    for name in visible_select_groups(text):
+        span = _group_chunk(text, name)
+        if span is None:
+            print(f"patch-include-proxies: не найдена группа {name!r}", file=sys.stderr)
+            return None
+        start, end = span
+        chunk = text[start:end]
+        if line in chunk:
+            continue
+        marker = "\n    include-all: true\n"
+        idx = chunk.find(marker)
+        if idx < 0:
+            print(f"patch-include-proxies: нет include-all в {name!r}", file=sys.stderr)
+            return None
+        insert_at = idx + len(marker)
+        chunk = chunk[:insert_at] + line + chunk[insert_at:]
+        text = text[:start] + chunk + text[end:]
+    return text
 
 
 def patch_wl_whitelist_filter(text: str) -> str:
@@ -272,7 +274,10 @@ def patch_text(text: str, *, is_wl: bool = False) -> str | None:
         text = drop_countries_from_visible_selects(text)
         if text is None:
             return None
-        text = detach_hosts_from_country_pools(text)
+        text = drop_country_groups(text)
+        if text is None:
+            return None
+        text = limit_visible_selects_to_hosts(text)
         if text is None:
             return None
 
@@ -339,34 +344,43 @@ def self_check() -> None:
         ("🇺🇸 США", "us"),
     )
     by_name = {g["name"]: g for g in doc["proxy-groups"]}
-    auto = by_name["⚡️ Автовыбор"]
-    assert auto.get("type") == "url-test"
-    assert auto.get("lazy") is False
-    assert auto.get("interval") == 600
+    src_doc = yaml.safe_load(src)
+    src_by = {g["name"]: g for g in src_doc["proxy-groups"]}
     assert [name for name, _ in countries] == list(COUNTRY_NAMES)
-    assert auto.get("proxies") == list(COUNTRY_NAMES)
+    for group_name in (*COUNTRY_NAMES, AUTO_NAME):
+        assert group_name not in by_name
+    assert by_name["⚡️ Авто"].get("proxies") == ["🛡️ VPN"]
     assert not by_name["🛡️ VPN"].get("proxies")
+    host_re = re.compile(HOST_FILTER)
+    assert host_re.match("gt_pl-h2n-147")
+    assert host_re.match("bgt_spb-tw-72_gt_fr-ovh-212")
+    assert host_re.match("bgt_msk-tw-161_gt_pl-h2n-147")
+    assert not host_re.match("🇫🇷 Франция")
+    assert not host_re.match(AUTO_NAME)
     for sel in names:
         listed = by_name[sel].get("proxies") or []
         for entry in SELECT_ENTRIES_DROPPED:
             assert entry not in listed, sel
-    src_vpn = next(g for g in yaml.safe_load(src)["proxy-groups"] if g["name"] == "🛡️ VPN")
+        assert by_name[sel].get("filter") == HOST_FILTER, sel
+    src_vpn = src_by["🛡️ VPN"]
     assert "🇫🇷 Франция" in (src_vpn.get("proxies") or [])
     assert AUTO_NAME in (src_vpn.get("proxies") or [])
+    assert src_by[AUTO_NAME].get("type") == "url-test"
+    assert src_by[AUTO_NAME].get("lazy") is False
+    assert src_by[AUTO_NAME].get("interval") == 600
+    assert src_by[AUTO_NAME].get("proxies") == list(COUNTRY_NAMES)
     for name, code in countries:
-        group = by_name[name]
+        group = src_by[name]
         assert group.get("type") == "fallback"
         assert group.get("interval") == 30
         assert group.get("lazy") is False
         assert group.get("proxies") == [f"{name} · прямая", f"{name} · мосты"]
-        direct = by_name[f"{name} · прямая"]
-        bridge = by_name[f"{name} · мосты"]
+        direct = src_by[f"{name} · прямая"]
+        bridge = src_by[f"{name} · мосты"]
         assert direct.get("filter") == rf"^gt_{code}-.+-[0-9]+$"
         assert bridge.get("filter") == rf"^bgt_[^_]+_gt_{code}-.+-[0-9]+$"
-        assert direct.get("include-all") is True and direct.get("exclude-filter") == ".+"
-        assert bridge.get("include-all") is True and bridge.get("exclude-filter") == ".+"
-        assert re.compile(bridge["exclude-filter"]).search(f"bgt_spb-tw-72_gt_{code}-ovh-212")
-        assert re.compile(direct["exclude-filter"]).search(f"gt_{code}-h2n-147")
+        assert direct.get("include-all") is True and direct.get("exclude-filter") is None
+        assert bridge.get("include-all") is True and bridge.get("exclude-filter") is None
         assert direct.get("lazy") is True and bridge.get("lazy") is True
         assert direct.get("empty-fallback") == "REJECT"
         assert bridge.get("empty-fallback") == "REJECT"
@@ -404,7 +418,8 @@ def self_check() -> None:
     again_doc = yaml.safe_load(again)
     assert sum(1 for g in again_doc["proxy-groups"] if g["name"] == UDP_NAME) == 1
     again_by = {g["name"]: g for g in again_doc["proxy-groups"]}
-    assert again_by[AUTO_NAME].get("proxies") == list(COUNTRY_NAMES)
+    assert AUTO_NAME not in again_by
+    assert again_by["⚡️ Авто"].get("proxies") == ["🛡️ VPN"]
     assert not again_by["🛡️ VPN"].get("proxies")
     again_names = [
         g["name"]
@@ -415,10 +430,8 @@ def self_check() -> None:
         listed = again_by[sel].get("proxies") or []
         for entry in SELECT_ENTRIES_DROPPED:
             assert entry not in listed, sel
-    again_pools = [g for g in again_doc["proxy-groups"] if str(g["name"]).endswith(POOL_SUFFIX)]
-    assert len(again_pools) == 12
-    assert all(g.get("exclude-filter") == ".+" for g in again_pools)
-    assert again.count('\n    exclude-filter: ".+"\n') == len(again_pools)
+        assert again_by[sel].get("filter") == HOST_FILTER, sel
+    assert again.count(f'filter: "{HOST_FILTER}"') == len(again_names)
 
     wl = (root / "MIHOMO/wl.yaml").read_text(encoding="utf-8")
     assert "mixed-port" not in yaml.safe_load(wl)
