@@ -283,6 +283,12 @@ sets:
   - id: category-ru-custom
     behavior: domain
     file: category-ru-custom
+  # Панели RU VPS. На устройстве правило выше summary-category-ru → PROXY.
+  # Из summary не вычитается: гейты категорию не используют, с мостов остаётся DIRECT.
+  - id: custom-ru-vpsproviders
+    behavior: domain
+    file: custom-ru-vpsproviders
+    merge-from: meta-timeweb,meta-selectel,meta-beget,meta-regru
   - id: summary-category-ru
     behavior: domain
     file: summary-category-ru

@@ -38,6 +38,7 @@
 #   meta-google-gemini          → отдельный файл выше summary-google (те же домены есть и в summary)
 #   summary-google              → включает google-gemini; выше meta-ai (прочие домены ИИ)
 #   ban-ru → PROXY              → выше RU catch-all
+#   custom-ru-vpsproviders      → PROXY выше summary-category-ru (панель хостера не видит домашний IP)
 #   google-ips leftover         → после всех process/domain (GCP без SNI)
 #
 # UDP-порт 443 (QUIC) блокируется глобально — принудительный fallback на TCP.
@@ -737,6 +738,14 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/category-ru-custom.mrs
     path: ./ruleset/category-ru-custom.mrs
+  custom-ru-vpsproviders: # merge meta-timeweb + meta-selectel + meta-beget + meta-regru
+    type: http
+    proxy: ⚡️ Авто
+    interval: *rp_interval
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/custom-ru-vpsproviders.mrs
+    path: ./ruleset/custom-ru-vpsproviders.mrs
   summary-category-ru:
     type: http
     proxy: ⚡️ Авто
@@ -1105,6 +1114,7 @@ rules:
   - RULE-SET,meta-ai,🤖 ИИ · ChatGPT · Claude      # gemini уже забран meta-google-gemini
 
   - RULE-SET,category-ban-ru,PROXY                 # выше RU catch-all (rnd.ru ⊂ оба)
+  - RULE-SET,custom-ru-vpsproviders,PROXY          # Timeweb/Selectel/Beget/Reg.ru: иначе summary-category-ru → DIRECT
 
   - RULE-SET,meta-category-ip-geo-detect,DIRECT
   - RULE-SET,summary-category-ru,DIRECT
