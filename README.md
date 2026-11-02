@@ -40,7 +40,7 @@
 | `scripts/deploy-test-branches.sh` | Throwaway `<ветка>-cdn` и `<ветка>-debug` от текущего HEAD (CDN-URL + debug-патч) |
 | `scripts/patch-include-proxies.py` | Debug-патч: `include-all: true`, селектор `📡 UDP`, без блокировки Remnawave |
 
-> Мелкие наборы (`wine`, `games-proxy-rules`, `mail-ports`) — `type: inline` rule-providers в шаблоне (без отдельных загрузок). `vpn-clients` — отдельный YAML. Локальные MRS без upstream: `private-domains-custom`, `category-ru-custom`, `private-ips-custom`, `torrent-domains-custom`, `games-domain-custom` — правишь `rule-sets/mrs/text/<имя>.list`, `mrs-tool.sh pack` собирает `bin/*.mrs` (sync их пропускает). `custom-ru-vpsproviders` — склейка `meta-timeweb`, `meta-selectel`, `meta-beget`, `meta-regru` (`merge-from`, список пересобирается).
+> Мелкие наборы (`wine`, `games-proxy-rules`, `mail-ports`) — `type: inline` rule-providers в шаблоне (без отдельных загрузок). `vpn-clients` — отдельный YAML. Локальные MRS без upstream: `private-domains-custom`, `category-ru-custom`, `private-ips-custom`, `torrent-domains-custom`, `games-domain-custom` — правишь `rule-sets/mrs/text/<имя>.list`, `mrs-tool.sh pack` собирает `bin/*.mrs` (sync их пропускает). `custom-ru-vpsproviders` — склейка `meta-timeweb`, `meta-selectel`, `meta-beget`, `meta-regru` и локального `ruvds-custom` (`merge-from`, список пересобирается). В meta-rules-dat категории ruvds нет.
 
 ## Категории Xray
 

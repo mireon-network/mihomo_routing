@@ -738,7 +738,7 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/category-ru-custom.mrs
     path: ./ruleset/category-ru-custom.mrs
-  custom-ru-vpsproviders: # merge meta-timeweb + meta-selectel + meta-beget + meta-regru
+  custom-ru-vpsproviders: # merge meta-timeweb + meta-selectel + meta-beget + meta-regru + ruvds-custom
     type: http
     proxy: ⚡️ Авто
     interval: *rp_interval
@@ -1114,7 +1114,7 @@ rules:
   - RULE-SET,meta-ai,🤖 ИИ · ChatGPT · Claude      # gemini уже забран meta-google-gemini
 
   - RULE-SET,category-ban-ru,PROXY                 # выше RU catch-all (rnd.ru ⊂ оба)
-  - RULE-SET,custom-ru-vpsproviders,PROXY          # Timeweb/Selectel/Beget/Reg.ru: иначе summary-category-ru → DIRECT
+  - RULE-SET,custom-ru-vpsproviders,PROXY          # Timeweb/Selectel/Beget/Reg.ru/RUVDS: иначе summary-category-ru → DIRECT
 
   - RULE-SET,meta-category-ip-geo-detect,DIRECT
   - RULE-SET,summary-category-ru,DIRECT

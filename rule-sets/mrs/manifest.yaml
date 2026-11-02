@@ -283,12 +283,16 @@ sets:
   - id: category-ru-custom
     behavior: domain
     file: category-ru-custom
+  # Локальный: в meta-rules-dat категории ruvds нет.
+  - id: ruvds-custom
+    behavior: domain
+    file: ruvds-custom
   # Панели RU VPS. На устройстве правило выше summary-category-ru → PROXY.
   # Из summary не вычитается: гейты категорию не используют, с мостов остаётся DIRECT.
   - id: custom-ru-vpsproviders
     behavior: domain
     file: custom-ru-vpsproviders
-    merge-from: meta-timeweb,meta-selectel,meta-beget,meta-regru
+    merge-from: meta-timeweb,meta-selectel,meta-beget,meta-regru,ruvds-custom
   - id: summary-category-ru
     behavior: domain
     file: summary-category-ru
