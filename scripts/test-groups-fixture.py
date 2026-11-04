@@ -35,8 +35,8 @@ COUNTRIES = ("fi", "de", "fr", "nl", "pl", "us")
 BUILTIN = {"DIRECT", "REJECT", "REJECT-DROP", "COMPATIBLE", "PASS"}
 # Дольше interval fallback (30с), короче прежнего 180с.
 FAILOVER_WAIT_S = 45
-# Дольше timeout проверки (3с): стартовый health-check уже закончился до обрыва прямых.
-FAILOVER_SETTLE_S = 4
+# Дольше timeout проверки (8с): стартовый health-check уже закончился до обрыва прямых.
+FAILOVER_SETTLE_S = 10
 
 # Схема имён (см. шапку шаблона): прямая gt_<cc>-<хостер>-<октет>, мост bgt_<локация-хостер-октет>_gt_<cc>-…
 def full_nodes() -> list[str]:
