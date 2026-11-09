@@ -130,10 +130,7 @@ html {
   position: relative;
 }
 
-[data-slot='card'],
-[data-slot='sidebar-inner'],
-.rounded-2xl.backdrop-blur-xl,
-.rounded-2xl.backdrop-blur-3xl {
+[data-slot='sidebar-inner'] {
   background: #16143ce8 !important;
   color: #f4f6ff !important;
   backdrop-filter: blur(18px) saturate(1.3);
@@ -143,10 +140,17 @@ html {
     0 0 0 1px #ffffff14 inset;
 }
 
-[data-slot='card']::before,
-[data-slot='sidebar-inner']::before,
-.rounded-2xl.backdrop-blur-xl::before,
-.rounded-2xl.backdrop-blur-3xl::before {
+[data-slot='card'],
+.rounded-2xl.backdrop-blur-xl,
+.rounded-2xl.backdrop-blur-3xl {
+  background: #0e0c28eb !important;
+  color: #f4f6ff !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+[data-slot='sidebar-inner']::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -162,6 +166,12 @@ html {
     linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
+}
+
+[data-slot='card']::before,
+.rounded-2xl.backdrop-blur-xl::before,
+.rounded-2xl.backdrop-blur-3xl::before {
+  content: none;
 }
 
 [data-slot='card'][class*='bg-primary/10'] {
@@ -244,11 +254,11 @@ html {
 }
 
 [role='button'][aria-selected='false'].rounded-2xl {
-  background: var(--profile-inactive) !important;
+  background: #0e0c28eb !important;
 }
 
 [role='button'][aria-selected='false'].rounded-2xl:hover {
-  background: color-mix(in oklab, var(--accent) 60%, var(--profile-inactive)) !important;
+  background: #16143cf0 !important;
 }
 
 [role='button'][aria-selected='true'].rounded-2xl {
@@ -422,7 +432,7 @@ html.light [data-slot='tooltip-content'] [data-slot='kbd'] {
 /* Карточки настроек — аккордеон без своего фона. В светлой теме
    сквозь него просвечивает светлая карта. */
 [data-slot='accordion'] {
-  background: #16143ce8 !important;
+  background: #0e0c28eb !important;
   color: #f4f6ff !important;
   border-color: #ffffff1f !important;
 }
@@ -466,63 +476,45 @@ html.light body {
   background-size: contain;
 }
 
-/* Логи и список подключений: текст поверх ленты, чуть крупнее и плотнее. */
+/* Списки: один размер текста, без тени. Тень мылила буквы на тёмной плашке. */
 [class*='log-seq-width'] > span:first-child,
 [class*='log-seq-width'] > time {
   color: #e4e9ff !important;
   font-size: 13px;
   font-weight: 600;
-  text-shadow: 0 1px 2px #050318ee;
 }
 
-[class*='log-seq-width'] > span:last-child {
-  color: #f7f8ff;
-  font-size: 14.5px;
-  line-height: 1.45;
-  font-weight: 550;
-  text-shadow: 0 1px 2px #050318ee;
-}
-
+[class*='log-seq-width'] > span:last-child,
 .content .rounded-xl.border .text-sm {
-  font-size: 15px;
-  font-weight: 650;
-  letter-spacing: 0.01em;
   color: #f7f8ff;
-  text-shadow: 0 1px 2px #050318ee;
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
-.content .rounded-xl.border .text-xs {
+.content .rounded-xl.border .text-xs:not(.text-gradient-end-power-on) {
   font-size: 13px;
-  font-weight: 550;
+  font-weight: 600;
   color: #e7ebff !important;
-  text-shadow: 0 1px 2px #050318ee;
 }
 
-/* Строки подключений: заливка плотнее и темнее, лента меньше просвечивает. */
+/* Плашки списков и таблица подключений. */
 .content .rounded-xl.border.bg-card\/40,
-.content .rounded-xl.border.to-card\/40 {
+.content .rounded-xl.border.to-card\/40,
+.content .h-full.rounded-2xl.border {
   background: #0e0c28eb !important;
 }
 
 .content .rounded-xl.border.bg-card\/40:hover,
-.content .rounded-xl.border.to-card\/40:hover {
+.content .rounded-xl.border.to-card\/40:hover,
+[data-slot='card']:hover:not([class*='bg-primary/10']):not([class*='bg-amber-500/8']) {
   background: #16143cf0 !important;
 }
 
-/* Правила и логи: те же плашки, что у списка подключений. */
-[data-slot='card'].gap-0.py-0.rounded-xl:not(.border-none) {
-  background: #0e0c28eb !important;
-  box-shadow: none !important;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-[data-slot='card'].gap-0.py-0.rounded-xl:not(.border-none):hover {
-  background: #16143cf0 !important;
-}
-
-[data-slot='card'].gap-0.py-0.rounded-xl:not(.border-none)::before {
-  content: none;
+.content .h-full.rounded-2xl.border th {
+  background: #120f30 !important;
+  color: #e4e9ff !important;
 }
 
 [class*='log-seq-width'] {
