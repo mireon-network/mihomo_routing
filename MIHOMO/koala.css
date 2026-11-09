@@ -465,3 +465,35 @@ html.light body {
   background-position: center;
   background-size: contain;
 }
+
+/* Логи и список подключений: текст поверх ленты, чуть крупнее и плотнее. */
+[class*='log-seq-width'] > span:first-child,
+[class*='log-seq-width'] > time {
+  color: #e4e9ff !important;
+  font-size: 13px;
+  font-weight: 600;
+  text-shadow: 0 1px 2px #050318ee;
+}
+
+[class*='log-seq-width'] > span:last-child {
+  color: #f7f8ff;
+  font-size: 14.5px;
+  line-height: 1.45;
+  font-weight: 550;
+  text-shadow: 0 1px 2px #050318ee;
+}
+
+.content .rounded-xl.border .text-sm {
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  color: #f7f8ff;
+  text-shadow: 0 1px 2px #050318ee;
+}
+
+.content .rounded-xl.border .text-xs {
+  font-size: 13px;
+  font-weight: 550;
+  color: #e7ebff !important;
+  text-shadow: 0 1px 2px #050318ee;
+}
