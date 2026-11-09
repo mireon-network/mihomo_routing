@@ -508,3 +508,36 @@ html.light body {
 .content .rounded-xl.border.to-card\/40:hover {
   background: #16143cf0 !important;
 }
+
+/* Правила и логи: те же плашки, что у списка подключений. */
+[data-slot='card'].gap-0.py-0.rounded-xl:not(.border-none) {
+  background: #0e0c28eb !important;
+  box-shadow: none !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+[data-slot='card'].gap-0.py-0.rounded-xl:not(.border-none):hover {
+  background: #16143cf0 !important;
+}
+
+[data-slot='card'].gap-0.py-0.rounded-xl:not(.border-none)::before {
+  content: none;
+}
+
+[class*='log-seq-width'] {
+  background: #0e0c28eb !important;
+  border: 1px solid #ffffff1f !important;
+  border-radius: calc(0.8rem + 4px);
+  margin-bottom: 0.5rem;
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+}
+
+[class*='log-seq-width']:hover {
+  background: #16143cf0 !important;
+}
+
+[class*='log-seq-width'].bg-destructive\/5 {
+  background: #2a1020eb !important;
+}
