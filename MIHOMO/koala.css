@@ -497,3 +497,14 @@ html.light body {
   color: #e7ebff !important;
   text-shadow: 0 1px 2px #050318ee;
 }
+
+/* Строки подключений: заливка плотнее и темнее, лента меньше просвечивает. */
+.content .rounded-xl.border.bg-card\/40,
+.content .rounded-xl.border.to-card\/40 {
+  background: #0e0c28eb !important;
+}
+
+.content .rounded-xl.border.bg-card\/40:hover,
+.content .rounded-xl.border.to-card\/40:hover {
+  background: #16143cf0 !important;
+}
