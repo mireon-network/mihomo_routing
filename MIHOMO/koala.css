@@ -160,8 +160,9 @@ html {
 .rounded-2xl.backdrop-blur-3xl::before {
   content: '';
   position: absolute;
-  inset: -40px;
+  inset: 0;
   z-index: -1;
+  border-radius: inherit;
   pointer-events: none;
   background: var(--glass-sheen), var(--glass);
   backdrop-filter: blur(28px) saturate(1.3);
@@ -184,7 +185,7 @@ html {
 [data-slot='card'][class*='bg-primary/10']::before,
 [role='button'][aria-selected='true'].rounded-2xl::before {
   background:
-    radial-gradient(ellipse at 50% 46%, #d4c8ff2e, transparent 82%),
+    radial-gradient(ellipse at 50% 46%, #d4c8ff12, transparent 92%),
     var(--glass-sheen),
     var(--glass);
 }
@@ -238,7 +239,7 @@ html {
 }
 
 [data-slot='sidebar-menu-button'][data-active='true'] {
-  background: radial-gradient(circle at 50% 45%, #7a6cc488, transparent 72%) !important;
+  background: radial-gradient(circle at 50% 45%, #7a6cc42e, transparent 86%) !important;
   border: 0 !important;
   border-radius: 999px !important;
   outline: none !important;
