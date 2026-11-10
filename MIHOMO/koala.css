@@ -1,11 +1,11 @@
 /* Koala */
 html:root {
   --radius: 0.8rem !important;
-  --glass: #100e2878 !important;
-  --glass-hover: #1a164890 !important;
-  --glass-sheen: linear-gradient(180deg, #ffffff1c, transparent 40%);
+  --glass: #100e28d6 !important;
+  --glass-hover: #18153ee3 !important;
+  --glass-sheen: linear-gradient(180deg, #ffffff0c, transparent 18%);
   --glass-edge:
-    inset 0 1px 0 #ffffff3d, inset 0 0 0 1px #ffffff14, 0 12px 32px #05031844;
+    inset 0 1px 0 #ffffff14, inset 0 0 0 1px #ffffff10, 0 8px 20px #05031840;
   --background: #07061c !important;
   --foreground: #faf5ff !important;
   --card: #16143c !important;
@@ -136,10 +136,10 @@ html {
 }
 
 [data-slot='sidebar-inner'] {
-  background: var(--glass-sheen), #16143c8c !important;
+  background: var(--glass-sheen), #16143cd8 !important;
   color: #faf5ff !important;
-  backdrop-filter: blur(32px) saturate(1.8);
-  -webkit-backdrop-filter: blur(32px) saturate(1.8);
+  backdrop-filter: blur(48px) saturate(1.15);
+  -webkit-backdrop-filter: blur(48px) saturate(1.15);
   box-shadow: var(--glass-edge);
 }
 
@@ -148,8 +148,8 @@ html {
 .rounded-2xl.backdrop-blur-3xl {
   background: var(--glass-sheen), var(--glass) !important;
   color: #faf5ff !important;
-  backdrop-filter: blur(28px) saturate(1.7);
-  -webkit-backdrop-filter: blur(28px) saturate(1.7);
+  backdrop-filter: blur(40px) saturate(1.15);
+  -webkit-backdrop-filter: blur(40px) saturate(1.15);
   box-shadow: var(--glass-edge);
 }
 
@@ -182,7 +182,7 @@ html {
     linear-gradient(160deg, #22b8f024, transparent 48%, #e04bd61f),
     var(--profile-active) !important;
   box-shadow:
-    inset 0 1px 0 #ffffff47,
+    inset 0 1px 0 #ffffff16,
     0 0 0 1px var(--stroke-profile-active),
     0 10px 28px #6a5cff33;
 }
@@ -211,16 +211,14 @@ html {
 }
 
 [data-slot='button'][data-variant='default'] {
-  background-image: linear-gradient(135deg, #347a9ecc, #514a96cc 55%, #6d4e86cc);
+  background-image: linear-gradient(135deg, #347a9e, #514a96 55%, #6d4e86);
   background-color: transparent;
   color: #faf5ff;
-  backdrop-filter: blur(16px) saturate(1.5);
-  -webkit-backdrop-filter: blur(16px) saturate(1.5);
   transition:
     filter 0.2s,
     box-shadow 0.2s,
     transform 0.2s;
-  box-shadow: inset 0 1px 0 #ffffff40, inset 0 -1px 0 #0000002a;
+  box-shadow: inset 0 1px 0 #ffffff18;
 }
 
 [data-slot='button'][data-variant='default']:hover {
@@ -244,11 +242,11 @@ html {
     linear-gradient(160deg, #22b8f024, transparent 48%, #e04bd61f),
     var(--profile-active);
   box-shadow:
-    inset 0 1px 0 #ffffff47,
+    inset 0 1px 0 #ffffff16,
     0 0 0 1px var(--stroke-profile-active),
     0 8px 18px #6a5cff33;
-  backdrop-filter: blur(18px) saturate(1.6);
-  -webkit-backdrop-filter: blur(18px) saturate(1.6);
+  backdrop-filter: blur(24px) saturate(1.1);
+  -webkit-backdrop-filter: blur(24px) saturate(1.1);
   color: var(--sidebar-accent-foreground);
 }
 
@@ -281,7 +279,7 @@ html {
     linear-gradient(160deg, #22b8f024, transparent 48%, #e04bd61f),
     var(--profile-active) !important;
   box-shadow:
-    inset 0 1px 0 #ffffff47,
+    inset 0 1px 0 #ffffff16,
     0 0 0 1px var(--stroke-profile-active),
     0 10px 28px #6a5cff33;
 }
@@ -451,8 +449,8 @@ html.light [data-slot='tooltip-content'] [data-slot='kbd'] {
   background: var(--glass-sheen), var(--glass) !important;
   color: #faf5ff !important;
   border-color: #ffffff1f !important;
-  backdrop-filter: blur(28px) saturate(1.7);
-  -webkit-backdrop-filter: blur(28px) saturate(1.7);
+  backdrop-filter: blur(40px) saturate(1.15);
+  -webkit-backdrop-filter: blur(40px) saturate(1.15);
   box-shadow: var(--glass-edge);
 }
 
@@ -463,11 +461,11 @@ html.light [data-slot='tooltip-content'] [data-slot='kbd'] {
   color: #faf5ff !important;
   border-color: var(--stroke-profile-active) !important;
   box-shadow:
-    inset 0 1px 0 #ffffff47,
+    inset 0 1px 0 #ffffff16,
     0 0 0 1px var(--stroke-profile-active),
     0 8px 18px #6a5cff33;
-  backdrop-filter: blur(18px) saturate(1.6);
-  -webkit-backdrop-filter: blur(18px) saturate(1.6);
+  backdrop-filter: blur(24px) saturate(1.1);
+  -webkit-backdrop-filter: blur(24px) saturate(1.1);
 }
 
 [data-guide='home-power-toggle'] > div {
@@ -531,8 +529,8 @@ html.light body {
 .content .rounded-xl.border.to-card\/40,
 .content .h-full.rounded-2xl.border {
   background: var(--glass-sheen), var(--glass) !important;
-  backdrop-filter: blur(28px) saturate(1.7);
-  -webkit-backdrop-filter: blur(28px) saturate(1.7);
+  backdrop-filter: blur(40px) saturate(1.15);
+  -webkit-backdrop-filter: blur(40px) saturate(1.15);
   box-shadow: var(--glass-edge);
 }
 
@@ -554,8 +552,8 @@ html.light body {
   margin-bottom: 0.5rem;
   padding-top: 0.55rem;
   padding-bottom: 0.55rem;
-  backdrop-filter: blur(28px) saturate(1.7);
-  -webkit-backdrop-filter: blur(28px) saturate(1.7);
+  backdrop-filter: blur(40px) saturate(1.15);
+  -webkit-backdrop-filter: blur(40px) saturate(1.15);
   box-shadow: var(--glass-edge);
 }
 
