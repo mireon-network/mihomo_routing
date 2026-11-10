@@ -142,20 +142,29 @@ html {
 [data-slot='sidebar-inner'] {
   background: var(--glass-sheen), #12163ccc !important;
   color: #faf5ff !important;
+  border: 0 !important;
+  outline: none !important;
   backdrop-filter: blur(36px) saturate(1.12);
   -webkit-backdrop-filter: blur(36px) saturate(1.12);
   box-shadow: var(--glass-edge);
+  -webkit-mask-image: linear-gradient(#000 0 0);
+  mask-image: linear-gradient(#000 0 0);
 }
 
 [data-slot='card'],
 .rounded-2xl.backdrop-blur-xl,
 .rounded-2xl.backdrop-blur-3xl {
-  background: var(--glass-sheen), var(--glass) !important;
+  background-image: var(--glass-sheen), linear-gradient(var(--glass), var(--glass)) !important;
+  background-color: transparent !important;
+  background-clip: padding-box !important;
   color: #faf5ff !important;
+  border: 0 !important;
+  outline: none !important;
   backdrop-filter: blur(34px) saturate(1.12);
   -webkit-backdrop-filter: blur(34px) saturate(1.12);
-  border: 1px solid #ffffff18 !important;
   box-shadow: var(--glass-edge);
+  -webkit-mask-image: linear-gradient(#000 0 0);
+  mask-image: linear-gradient(#000 0 0);
 }
 
 [data-slot='sidebar-inner']::before {
@@ -169,12 +178,10 @@ html {
 }
 
 [data-slot='card'][class*='bg-primary/10'] {
-  background:
-    linear-gradient(180deg, #ffffff1a, #22b8f012 46%, #e04bd612),
-    #070514f2 !important;
-  outline: 1px solid #c9c2ffcc;
-  outline-offset: -1px;
-  box-shadow: 0 0 16px #6a5cff33;
+  background-image: linear-gradient(#070514f2, #070514f2) !important;
+  background-color: #070514f2 !important;
+  outline: none !important;
+  box-shadow: 0 0 18px #6a5cff44;
 }
 
 [data-slot='card'][class*='bg-primary/10']:hover {
@@ -186,9 +193,8 @@ html {
 }
 
 [data-slot='card'][class*='bg-amber-500/8'] {
-  background: color-mix(in oklab, var(--warning) 16%, transparent) !important;
-  outline: 1px solid color-mix(in oklab, var(--warning) 55%, transparent);
-  outline-offset: -1px;
+  background-image: linear-gradient(color-mix(in oklab, var(--warning) 22%, #070514) , color-mix(in oklab, var(--warning) 22%, #070514)) !important;
+  outline: none !important;
   box-shadow: 0 8px 20px #e0b15a22;
 }
 
@@ -204,8 +210,11 @@ html {
   background-image: linear-gradient(180deg, #ffffff1c, transparent 48%), linear-gradient(135deg, #22b8f024, #6a5cff22);
   background-color: #121433cc;
   color: #faf5ff;
-  border: 1px solid #ffffff1c;
+  border: 0 !important;
   border-radius: 999px;
+  outline: none !important;
+  -webkit-mask-image: linear-gradient(#000 0 0);
+  mask-image: linear-gradient(#000 0 0);
   font-weight: 650;
   letter-spacing: 0.04em;
   backdrop-filter: blur(22px) saturate(1.1);
@@ -234,13 +243,15 @@ html {
 }
 
 [data-slot='sidebar-menu-button'][data-active='true'] {
-  background: #070514f2 !important;
+  background: #100c28 !important;
+  border: 0 !important;
   border-radius: 999px;
-  outline: 1px solid #c9c2ffcc;
-  outline-offset: -1px;
+  outline: none !important;
   box-shadow: none !important;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+  -webkit-mask-image: linear-gradient(#000 0 0);
+  mask-image: linear-gradient(#000 0 0);
   color: var(--sidebar-accent-foreground);
 }
 
@@ -271,12 +282,10 @@ html {
 }
 
 [role='button'][aria-selected='true'].rounded-2xl {
-  background:
-    linear-gradient(180deg, #ffffff1a, #22b8f012 46%, #e04bd612),
-    #070514f2 !important;
-  outline: 1px solid #c9c2ffcc;
-  outline-offset: -1px;
-  box-shadow: 0 0 16px #6a5cff33;
+  background-image: linear-gradient(#070514f2, #070514f2) !important;
+  background-color: #070514f2 !important;
+  outline: none !important;
+  box-shadow: 0 0 18px #6a5cff44;
 }
 
 [role='button'][aria-selected='true'].rounded-2xl:hover {
@@ -449,16 +458,15 @@ html.light [data-slot='tooltip-content'] [data-slot='kbd'] {
 }
 
 [data-slot='tabs-list'][data-variant='default'] [data-slot='tabs-trigger'][data-state='active'] {
-  background:
-    linear-gradient(180deg, #ffffff1a, #22b8f012 46%, #e04bd612),
-    #070514f2 !important;
+  background: #070514f2 !important;
   color: #faf5ff !important;
-  border-color: var(--stroke-profile-active) !important;
-  outline: 1px solid #c9c2ffcc;
-  outline-offset: -1px;
-  box-shadow: 0 0 12px #6a5cff33;
-  backdrop-filter: blur(22px) saturate(1.1);
-  -webkit-backdrop-filter: blur(22px) saturate(1.1);
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  -webkit-mask-image: linear-gradient(#000 0 0);
+  mask-image: linear-gradient(#000 0 0);
 }
 
 [data-guide='home-power-toggle'] > div {
