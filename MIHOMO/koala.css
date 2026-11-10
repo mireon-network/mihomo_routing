@@ -579,14 +579,24 @@
    .content [data-active='true'],
    .content [data-state='active'],
    .content [data-state='on'],
-   .content [class~='bg-primary'],
-   .content [class*='bg-primary/9'],
    .content [class*='border-primary'],
    .content [class*='ring-primary'],
    [role='button'][aria-selected='true'] {
      background: rgba(12, 45, 72, 0.96) !important;
      border-color: #7dd3fc !important;
      box-shadow: inset 0 0 0 1px #7dd3fc !important;
+   }
+
+   [class~='bg-primary']:not([data-slot='card']):not([data-slot='button']):not([role='button']) {
+     background-color: #38bdf8 !important;
+     color: #030914 !important;
+     -webkit-text-fill-color: #030914 !important;
+     box-shadow: none !important;
+   }
+
+   [class~='bg-primary']:not([data-slot='card']):not([data-slot='button']):not([role='button']) * {
+     color: #030914 !important;
+     -webkit-text-fill-color: #030914 !important;
    }
    
    .content .h-full.rounded-2xl.border th {
