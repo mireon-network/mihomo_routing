@@ -243,15 +243,13 @@ html {
 }
 
 [data-slot='sidebar-menu-button'][data-active='true'] {
-  background: #100c28 !important;
+  background: radial-gradient(circle at 50% 42%, #4a3c8c, #241c52 74%) !important;
   border: 0 !important;
   border-radius: 999px;
   outline: none !important;
-  box-shadow: none !important;
+  box-shadow: 0 0 14px #6a5cff88 !important;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  -webkit-mask-image: linear-gradient(#000 0 0);
-  mask-image: linear-gradient(#000 0 0);
   color: var(--sidebar-accent-foreground);
 }
 
