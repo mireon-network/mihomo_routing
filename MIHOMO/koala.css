@@ -184,7 +184,7 @@ html {
 [data-slot='card'][class*='bg-primary/10']::before,
 [role='button'][aria-selected='true'].rounded-2xl::before {
   background:
-    radial-gradient(ellipse at 50% 50%, #4a3c8ccc, transparent 68%),
+    radial-gradient(ellipse at 50% 40%, #c4b6ff99, #6a5cff3d 48%, transparent 76%),
     var(--glass-sheen),
     var(--glass);
 }
