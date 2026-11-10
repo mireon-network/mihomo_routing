@@ -140,31 +140,26 @@ html {
 }
 
 [data-slot='sidebar-inner'] {
-  background: var(--glass-sheen), #12163ccc !important;
+  background: #10122ef0 !important;
   color: #faf5ff !important;
   border: 0 !important;
   outline: none !important;
-  backdrop-filter: blur(36px) saturate(1.12);
-  -webkit-backdrop-filter: blur(36px) saturate(1.12);
-  box-shadow: var(--glass-edge);
-  -webkit-mask-image: linear-gradient(#000 0 0);
-  mask-image: linear-gradient(#000 0 0);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none !important;
 }
 
 [data-slot='card'],
 .rounded-2xl.backdrop-blur-xl,
 .rounded-2xl.backdrop-blur-3xl {
-  background-image: var(--glass-sheen), linear-gradient(var(--glass), var(--glass)) !important;
-  background-color: transparent !important;
-  background-clip: padding-box !important;
+  background: #12142ef2 !important;
+  background-clip: border-box !important;
   color: #faf5ff !important;
   border: 0 !important;
   outline: none !important;
-  backdrop-filter: blur(34px) saturate(1.12);
-  -webkit-backdrop-filter: blur(34px) saturate(1.12);
-  box-shadow: var(--glass-edge);
-  -webkit-mask-image: linear-gradient(#000 0 0);
-  mask-image: linear-gradient(#000 0 0);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none !important;
 }
 
 [data-slot='sidebar-inner']::before {
@@ -213,12 +208,10 @@ html {
   border: 0 !important;
   border-radius: 999px;
   outline: none !important;
-  -webkit-mask-image: linear-gradient(#000 0 0);
-  mask-image: linear-gradient(#000 0 0);
   font-weight: 650;
   letter-spacing: 0.04em;
-  backdrop-filter: blur(22px) saturate(1.1);
-  -webkit-backdrop-filter: blur(22px) saturate(1.1);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   transition:
     filter 0.2s,
     box-shadow 0.2s,
@@ -448,10 +441,10 @@ html.light [data-slot='tooltip-content'] [data-slot='kbd'] {
 [data-slot='accordion'] {
   background: var(--glass-sheen), var(--glass) !important;
   color: #faf5ff !important;
-  border-color: #ffffff1f !important;
-  backdrop-filter: blur(34px) saturate(1.12);
-  -webkit-backdrop-filter: blur(34px) saturate(1.12);
-  border-color: #ffffff18 !important;
+  border: 0 !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 0 !important;
   box-shadow: var(--glass-edge);
 }
 
@@ -463,8 +456,6 @@ html.light [data-slot='tooltip-content'] [data-slot='kbd'] {
   box-shadow: none !important;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  -webkit-mask-image: linear-gradient(#000 0 0);
-  mask-image: linear-gradient(#000 0 0);
 }
 
 [data-guide='home-power-toggle'] > div {
@@ -528,9 +519,9 @@ html.light body {
 .content .rounded-xl.border.to-card\/40,
 .content .h-full.rounded-2xl.border {
   background: var(--glass-sheen), var(--glass) !important;
-  backdrop-filter: blur(34px) saturate(1.12);
-  -webkit-backdrop-filter: blur(34px) saturate(1.12);
-  border-color: #ffffff18 !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 0 !important;
   box-shadow: var(--glass-edge);
 }
 
@@ -547,14 +538,14 @@ html.light body {
 
 [class*='log-seq-width'] {
   background: var(--glass-sheen), var(--glass) !important;
-  border: 1px solid #ffffff1f !important;
+  border: 0 !important;
   border-radius: calc(0.8rem + 4px);
   margin-bottom: 0.5rem;
   padding-top: 0.55rem;
   padding-bottom: 0.55rem;
-  backdrop-filter: blur(34px) saturate(1.12);
-  -webkit-backdrop-filter: blur(34px) saturate(1.12);
-  border-color: #ffffff18 !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 0 !important;
   box-shadow: var(--glass-edge);
 }
 
@@ -580,6 +571,6 @@ html.light body {
   letter-spacing: 0.08em;
   font-weight: 650;
   background: #ffffff0f !important;
-  border: 1px solid #ffffff1c !important;
+  border: 0 !important;
   box-shadow: none;
 }
