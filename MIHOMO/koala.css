@@ -185,7 +185,7 @@ html {
 [data-slot='card'][class*='bg-primary/10']::before,
 [role='button'][aria-selected='true'].rounded-2xl::before {
   background:
-    radial-gradient(ellipse at 50% 46%, #d4c8ff12, transparent 92%),
+    radial-gradient(ellipse at 50% 42%, #c9b8ff5c, transparent 74%),
     var(--glass-sheen),
     var(--glass);
 }
@@ -239,7 +239,7 @@ html {
 }
 
 [data-slot='sidebar-menu-button'][data-active='true'] {
-  background: radial-gradient(circle at 50% 45%, #7a6cc42e, transparent 86%) !important;
+  background: radial-gradient(circle at 50% 45%, #7a6cc466, transparent 78%) !important;
   border: 0 !important;
   border-radius: 999px !important;
   outline: none !important;
