@@ -1,470 +1,818 @@
-/* Koala */
-html:root {
-  --radius: 0.8rem !important;
-  --background: #07061c !important;
-  --foreground: #f4f6ff !important;
-  --card: #16143c !important;
-  --card-foreground: #f4f6ff !important;
-  --popover: #121033 !important;
-  --popover-foreground: #f4f6ff !important;
-  --primary: #3ec5f5 !important;
-  --primary-foreground: #061018 !important;
-  --secondary: #1b1844 !important;
-  --secondary-foreground: #f4f6ff !important;
-  --muted: #1b1844 !important;
-  --muted-foreground: #a7add4 !important;
-  --profile-active: #6a5cff55 !important;
-  --stroke-profile-active: #8b80ff !important;
-  --profile-inactive: #15143a80 !important;
-  --stroke-profile-inactive: #3a3870 !important;
-  --stroke: #3c3a72 !important;
-  --accent: #221f4c !important;
-  --accent-foreground: #f4f6ff !important;
-  --border: #ffffff1f !important;
-  --input: #ffffff26 !important;
-  --ring: #3ec5f5 !important;
-  --sidebar: #100e2c !important;
-  --sidebar-foreground: #f4f6ff !important;
-  --sidebar-primary: #3ec5f5 !important;
-  --sidebar-primary-foreground: #061018 !important;
-  --sidebar-accent: #221f4c !important;
-  --sidebar-accent-foreground: #f4f6ff !important;
-  --sidebar-border: #ffffff1f !important;
-  --sidebar-ring: #3ec5f5 !important;
-  --chart-1: #22b8f0 !important;
-  --chart-2: #6a5cff !important;
-  --chart-3: #b44cff !important;
-  --chart-4: #3ec5f5 !important;
-  --chart-5: #e04bd6 !important;
-  --stroke-power-off: #3a3870 !important;
-  --gradient-start-power-off: #2a2758 !important;
-  --gradient-end-power-off: #12102e !important;
-  --stroke-power-on: #3ec5f5 !important;
-  --gradient-start-power-on: #22b8f0 !important;
-  --gradient-end-power-on: #6a5cff !important;
-  --destructive: #ff5c7a !important;
-  --destructive-foreground: #fff !important;
-  --success: #3ddea0 !important;
-  --success-foreground: #061018 !important;
-  --warning: #e0b15a !important;
-  --warning-foreground: #061018 !important;
-  --color-background: #07061c !important;
-  --color-foreground: #f4f6ff !important;
-  --color-card: #16143c !important;
-  --color-card-foreground: #f4f6ff !important;
-  --color-popover: #121033 !important;
-  --color-popover-foreground: #f4f6ff !important;
-  --color-primary: #3ec5f5 !important;
-  --color-primary-foreground: #061018 !important;
-  --color-secondary: #1b1844 !important;
-  --color-secondary-foreground: #f4f6ff !important;
-  --color-muted: #1b1844 !important;
-  --color-muted-foreground: #a7add4 !important;
-  --color-profile-active: #6a5cff55 !important;
-  --color-stroke-profile-active: #8b80ff !important;
-  --color-profile-inactive: #15143a80 !important;
-  --color-stroke-profile-inactive: #3a3870 !important;
-  --color-stroke: #3c3a72 !important;
-  --color-accent: #221f4c !important;
-  --color-accent-foreground: #f4f6ff !important;
-  --color-border: #ffffff1f !important;
-  --color-input: #ffffff26 !important;
-  --color-ring: #3ec5f5 !important;
-  --color-sidebar: #100e2c !important;
-  --color-sidebar-foreground: #f4f6ff !important;
-  --color-sidebar-primary: #3ec5f5 !important;
-  --color-sidebar-primary-foreground: #061018 !important;
-  --color-sidebar-accent: #221f4c !important;
-  --color-sidebar-accent-foreground: #f4f6ff !important;
-  --color-sidebar-border: #ffffff1f !important;
-  --color-sidebar-ring: #3ec5f5 !important;
-  --color-chart-1: #22b8f0 !important;
-  --color-chart-2: #6a5cff !important;
-  --color-chart-3: #b44cff !important;
-  --color-chart-4: #3ec5f5 !important;
-  --color-chart-5: #e04bd6 !important;
-  --color-stroke-power-off: #3a3870 !important;
-  --color-gradient-start-power-off: #2a2758 !important;
-  --color-gradient-end-power-off: #12102e !important;
-  --color-stroke-power-on: #3ec5f5 !important;
-  --color-gradient-start-power-on: #22b8f0 !important;
-  --color-gradient-end-power-on: #6a5cff !important;
-  --color-destructive: #ff5c7a !important;
-  --color-destructive-foreground: #fff !important;
-  --color-success: #3ddea0 !important;
-  --color-success-foreground: #061018 !important;
-  --color-warning: #e0b15a !important;
-  --color-warning-foreground: #061018 !important;
-}
+/* ==========================================================================
+   KOALA — NOVA AI / LIQUID GLASS EDITION
+   ========================================================================== */
 
-html {
-  color-scheme: dark !important;
-}
+   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap');
 
-[data-slot='sidebar-wrapper'] {
-  background-color: #07061c !important;
-  isolation: isolate;
-}
+   html:root {
+     /* Геометрия и шрифты */
+     --radius: 1rem !important;
+     --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+     --font-mono: 'JetBrains Mono', 'Fira Code', monospace !important;
+   
+     /* Базовая палитра: Deep Space Obsidian & Liquid Neon */
+     --background: #04030f !important;
+     --foreground: #f4f7ff !important;
+   
+     --card: #100e2b99 !important;
+     --card-foreground: #f4f7ff !important;
+   
+     --popover: #0d0b26e6 !important;
+     --popover-foreground: #f4f7ff !important;
+   
+     --primary: #38bdf8 !important;
+     --primary-foreground: #030914 !important;
+   
+     --secondary: #17143a99 !important;
+     --secondary-foreground: #f4f7ff !important;
+   
+     --muted: #15133680 !important;
+     --muted-foreground: #949bc7 !important;
+   
+     --profile-active: #6d5dfc3d !important;
+     --stroke-profile-active: #818cf8 !important;
+     --profile-inactive: #110f2e66 !important;
+     --stroke-profile-inactive: #ffffff14 !important;
+   
+     --stroke: #ffffff1a !important;
+     --accent: #201d4a99 !important;
+     --accent-foreground: #ffffff !important;
+   
+     --border: #ffffff17 !important;
+     --input: #ffffff1f !important;
+     --ring: #38bdf8 !important;
+   
+     --sidebar: #09081fcc !important;
+     --sidebar-foreground: #f4f7ff !important;
+     --sidebar-primary: #38bdf8 !important;
+     --sidebar-primary-foreground: #030914 !important;
+     --sidebar-accent: #1e1b4699 !important;
+     --sidebar-accent-foreground: #ffffff !important;
+     --sidebar-border: #ffffff14 !important;
+     --sidebar-ring: #38bdf8 !important;
+   
+     /* Графики и телеметрия */
+     --chart-1: #38bdf8 !important;
+     --chart-2: #818cf8 !important;
+     --chart-3: #c084fc !important;
+     --chart-4: #2dd4bf !important;
+     --chart-5: #f472b6 !important;
+   
+     /* Кнопка включения */
+     --stroke-power-off: #ffffff24 !important;
+     --gradient-start-power-off: #23204a !important;
+     --gradient-end-power-off: #0c0a22 !important;
+     --stroke-power-on: #7dd3fc !important;
+     --gradient-start-power-on: #38bdf8 !important;
+     --gradient-end-power-on: #6366f1 !important;
+   
+     /* Статусы */
+     --destructive: #fb7185 !important;
+     --destructive-foreground: #030914 !important;
+     --success: #34d399 !important;
+     --success-foreground: #030914 !important;
+     --warning: #fbbf24 !important;
+     --warning-foreground: #030914 !important;
+   
+     /* Дублирование токенов для Tailwind v4 / CSS Variables */
+     --color-background: var(--background) !important;
+     --color-foreground: var(--foreground) !important;
+     --color-card: var(--card) !important;
+     --color-card-foreground: var(--card-foreground) !important;
+     --color-popover: var(--popover) !important;
+     --color-popover-foreground: var(--popover-foreground) !important;
+     --color-primary: var(--primary) !important;
+     --color-primary-foreground: var(--primary-foreground) !important;
+     --color-secondary: var(--secondary) !important;
+     --color-secondary-foreground: var(--secondary-foreground) !important;
+     --color-muted: var(--muted) !important;
+     --color-muted-foreground: var(--muted-foreground) !important;
+     --color-profile-active: var(--profile-active) !important;
+     --color-stroke-profile-active: var(--stroke-profile-active) !important;
+     --color-profile-inactive: var(--profile-inactive) !important;
+     --color-stroke-profile-inactive: var(--stroke-profile-inactive) !important;
+     --color-stroke: var(--stroke) !important;
+     --color-accent: var(--accent) !important;
+     --color-accent-foreground: var(--accent-foreground) !important;
+     --color-border: var(--border) !important;
+     --color-input: var(--input) !important;
+     --color-ring: var(--ring) !important;
+     --color-sidebar: var(--sidebar) !important;
+     --color-sidebar-foreground: var(--sidebar-foreground) !important;
+     --color-sidebar-primary: var(--sidebar-primary) !important;
+     --color-sidebar-primary-foreground: var(--sidebar-primary-foreground) !important;
+     --color-sidebar-accent: var(--sidebar-accent) !important;
+     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground) !important;
+     --color-sidebar-border: var(--sidebar-border) !important;
+     --color-sidebar-ring: var(--sidebar-ring) !important;
+     --color-chart-1: var(--chart-1) !important;
+     --color-chart-2: var(--chart-2) !important;
+     --color-chart-3: var(--chart-3) !important;
+     --color-chart-4: var(--chart-4) !important;
+     --color-chart-5: var(--chart-5) !important;
+     --color-stroke-power-off: var(--stroke-power-off) !important;
+     --color-gradient-start-power-off: var(--gradient-start-power-off) !important;
+     --color-gradient-end-power-off: var(--gradient-end-power-off) !important;
+     --color-stroke-power-on: var(--stroke-power-on) !important;
+     --color-gradient-start-power-on: var(--gradient-start-power-on) !important;
+     --color-gradient-end-power-on: var(--gradient-end-power-on) !important;
+     --color-destructive: var(--destructive) !important;
+     --color-destructive-foreground: var(--destructive-foreground) !important;
+     --color-success: var(--success) !important;
+     --color-success-foreground: var(--success-foreground) !important;
+     --color-warning: var(--warning) !important;
+     --color-warning-foreground: var(--warning-foreground) !important;
+   }
+   
+   /* ==========================================================================
+      ТИПОГРАФИКА И СУБПИКСЕЛЬНОЕ СГЛАЖИВАНИЕ
+      ========================================================================== */
+   
+   html {
+     color-scheme: dark !important;
+     font-family: var(--font-sans);
+     -webkit-font-smoothing: antialiased !important;
+     -moz-osx-font-smoothing: grayscale !important;
+     text-rendering: optimizeLegibility !important;
+     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss01';
+   }
+   
+   body,
+   button,
+   input,
+   select,
+   textarea {
+     font-family: var(--font-sans) !important;
+     letter-spacing: -0.011em;
+   }
+   
+   /* Заголовок экрана держит градиент. Остальные заголовки — сплошные, карточки тише. */
+   [data-guide='home-profile-header'] .font-medium,
+   [data-slot='card-title'],
+   .title,
+   h1, h2, h3 {
+     font-family: var(--font-sans) !important;
+     font-weight: 600 !important;
+     letter-spacing: -0.025em !important;
+   }
 
-[data-slot='sidebar-wrapper']::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse 75% 55% at 6% 4%, #22b8f052, transparent 58%),
-    radial-gradient(ellipse 70% 52% at 98% 96%, #e04bd640, transparent 55%),
-    radial-gradient(ellipse 44% 38% at 86% 14%, #6a5cff30, transparent 60%);
-}
+   [data-guide='home-profile-header'] .font-medium {
+     background-image: linear-gradient(100deg, #ffffff 15%, #bae6fd 58%, #c7d2fe 95%);
+     -webkit-background-clip: text;
+     background-clip: text;
+     color: transparent;
+   }
 
-[data-slot='sidebar-wrapper'] > img {
-  opacity: 0.32 !important;
-  z-index: 0;
-}
+   .title,
+   h1, h2 {
+     background-image: none;
+     color: #f4f7ff !important;
+   }
 
-[data-slot='card']:not(.fixed):not(.absolute),
-[data-slot='sidebar-inner']:not(.fixed):not(.absolute),
-.rounded-2xl.backdrop-blur-xl:not(.fixed):not(.absolute),
-.rounded-2xl.backdrop-blur-3xl:not(.fixed):not(.absolute) {
-  position: relative;
-}
+   [data-slot='card-title'],
+   h3 {
+     background-image: none;
+     color: #b7c0e4 !important;
+   }
+   
+   /* Моноширинные числа для трафика, пинга, портов и времени */
+   time,
+   [class*='log-seq-width'] > span:first-child,
+   .tabular-nums {
+     font-family: var(--font-mono) !important;
+     font-variant-numeric: tabular-nums !important;
+   }
+   
+   /* ==========================================================================
+      ФОНОВАЯ АТМОСФЕРА (AMBIENT AURORA MESH)
+      ========================================================================== */
+   
+   [data-slot='sidebar-wrapper'] {
+     background-color: #04030f !important;
+     isolation: isolate;
+   }
+   
+   [data-slot='sidebar-wrapper']::before {
+     content: '';
+     position: absolute;
+     inset: 0;
+     z-index: -1;
+     pointer-events: none;
+     background:
+       radial-gradient(ellipse 72% 55% at 8% 2%, #38bdf83d, transparent 62%),
+       radial-gradient(ellipse 68% 50% at 96% 96%, #c084fc30, transparent 58%),
+       radial-gradient(ellipse 50% 42% at 84% 12%, #6366f12b, transparent 64%),
+       radial-gradient(ellipse 60% 45% at 22% 88%, #0ea5e91a, transparent 65%);
+   }
+   
+   [data-slot='sidebar-wrapper'] > img {
+     opacity: 0.26 !important;
+     z-index: 0;
+     filter: contrast(1.08) saturate(1.15);
+   }
+   
+   /* ==========================================================================
+      LIQUID GLASS: САЙДБАР, КАРТОЧКИ И КОНТЕЙНЕРЫ
+      ========================================================================== */
+   
+   [data-slot='card']:not(.fixed):not(.absolute),
+   [data-slot='sidebar-inner']:not(.fixed):not(.absolute),
+   .rounded-2xl.backdrop-blur-xl:not(.fixed):not(.absolute),
+   .rounded-2xl.backdrop-blur-3xl:not(.fixed):not(.absolute) {
+     position: relative;
+   }
+   
+   /* Сайдбар — глубокое матовое стекло с верхним внутренним бликом */
+   [data-slot='sidebar-inner'] {
+     background: linear-gradient(
+       165deg,
+       rgba(255, 255, 255, 0.065) 0%,
+       rgba(19, 17, 48, 0.72) 45%,
+       rgba(10, 9, 28, 0.85) 100%
+     ) !important;
+     color: #f4f7ff !important;
+     backdrop-filter: blur(28px) saturate(165%) !important;
+     -webkit-backdrop-filter: blur(28px) saturate(165%) !important;
+     box-shadow:
+       0 20px 50px rgba(2, 1, 10, 0.65),
+       inset 0 1px 0 0 rgba(255, 255, 255, 0.22),
+       inset 0 0 24px rgba(56, 189, 248, 0.04) !important;
+   }
+   
+   /* Карточки — настоящее жидкое стекло вместо глухой заливки */
+   [data-slot='card'],
+   .rounded-2xl.backdrop-blur-xl,
+   .rounded-2xl.backdrop-blur-3xl {
+     background: linear-gradient(
+       135deg,
+       rgba(14, 12, 38, 0.84) 0%,
+       rgba(22, 19, 56, 0.88) 48%,
+       rgba(12, 10, 34, 0.92) 100%
+     ) !important;
+     color: #f4f7ff !important;
+     backdrop-filter: blur(22px) saturate(155%) !important;
+     -webkit-backdrop-filter: blur(22px) saturate(155%) !important;
+     border-color: rgba(255, 255, 255, 0.07) !important;
+     box-shadow:
+       0 12px 32px -4px rgba(2, 1, 12, 0.5),
+       inset 0 1px 0 0 rgba(255, 255, 255, 0.16),
+       inset 0 -1px 0 0 rgba(255, 255, 255, 0.03) !important;
+     transition:
+       background 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+       box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+       transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+       border-color 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+   }
+   
+   /* Оптическая кромка (Specular Rim) на сайдбаре и карточках */
+   [data-slot='sidebar-inner']::before,
+   [data-slot='card']::before,
+   .rounded-2xl.backdrop-blur-xl::before,
+   .rounded-2xl.backdrop-blur-3xl::before {
+     content: '';
+     position: absolute;
+     inset: 0;
+     padding: 1px;
+     border-radius: inherit;
+     pointer-events: none;
+     background: linear-gradient(
+       135deg,
+       rgba(255, 255, 255, 0.34) 0%,
+       transparent 55%
+     );
+     -webkit-mask:
+       linear-gradient(#000 0 0) content-box,
+       linear-gradient(#000 0 0);
+     mask:
+       linear-gradient(#000 0 0) content-box,
+       linear-gradient(#000 0 0);
+     -webkit-mask-composite: xor;
+     mask-composite: exclude;
+   }
+   
+   /* Акцентные карточки (Primary / Warning) */
+   [data-slot='card'][class*='bg-primary/10'] {
+     background: linear-gradient(
+       135deg,
+       rgba(56, 189, 248, 0.18) 0%,
+       rgba(30, 27, 75, 0.84) 100%
+     ) !important;
+     box-shadow:
+       0 12px 30px rgba(56, 189, 248, 0.14),
+       inset 0 1px 0 0 rgba(186, 230, 253, 0.3) !important;
+   }
+   
+   [data-slot='card'][class*='bg-primary/10']::before {
+     background: linear-gradient(135deg, #38bdf8, transparent 50%, #818cf8);
+   }
+   
+   [data-slot='card'][class*='bg-amber-500/8'] {
+     background: linear-gradient(
+       135deg,
+       rgba(251, 191, 36, 0.16) 0%,
+       rgba(36, 26, 48, 0.84) 100%
+     ) !important;
+     box-shadow:
+       0 12px 30px rgba(251, 191, 36, 0.12),
+       inset 0 1px 0 0 rgba(253, 230, 138, 0.28) !important;
+   }
+   
+   [data-slot='card'][class*='bg-amber-500/8']::before {
+     background: linear-gradient(135deg, var(--warning), transparent 50%, var(--warning));
+   }
+   
+   /* ==========================================================================
+      ИНТЕРАКТИВНЫЕ ЭЛЕМЕНТЫ: КНОПКИ, МЕНЮ, ПРОФИЛИ, СВИТЧИ
+      ========================================================================== */
+   
+   /* Главные кнопки — приглушённый циан, тёмные чернила */
+   [data-slot='button'][data-variant='default'] {
+     background-image: none;
+     background-color: #0284c7;
+     color: #030914;
+     font-weight: 600;
+     letter-spacing: -0.01em;
+     border: none;
+     box-shadow:
+       0 8px 18px -8px rgba(2, 8, 23, 0.55),
+       inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
+       inset 0 -1px 0 0 rgba(0, 0, 0, 0.22);
+     transition:
+       filter 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+       box-shadow 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+       transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+   }
+   
+   [data-slot='button'][data-variant='default']:hover {
+     filter: brightness(1.12);
+     transform: translateY(-1px);
+     box-shadow:
+       0 10px 22px -8px rgba(2, 8, 23, 0.5),
+       inset 0 1px 0 0 rgba(255, 255, 255, 0.28);
+   }
+   
+   [data-slot='button'][data-variant='default']:active {
+     transform: translateY(0);
+   }
+   
+   /* Навигация в сайдбаре */
+   [data-slot='sidebar-menu-button'] {
+     border-radius: 0.75rem;
+     font-weight: 500;
+     transition:
+       background 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+       box-shadow 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+       color 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+   }
+   
+   [data-slot='sidebar-menu-button']:hover:not([data-active='true']) {
+     background: rgba(255, 255, 255, 0.06) !important;
+     box-shadow: none;
+   }
 
-[data-slot='sidebar-inner'] {
-  background: #16143ce8 !important;
-  color: #f4f6ff !important;
-  backdrop-filter: blur(18px) saturate(1.3);
-  -webkit-backdrop-filter: blur(18px) saturate(1.3);
-  box-shadow:
-    0 14px 36px #05031880,
-    0 0 0 1px #ffffff14 inset;
-}
+   [data-slot='sidebar-menu-button']:focus,
+   [data-slot='sidebar-menu-button']:focus-visible {
+     outline: none !important;
+     box-shadow: none !important;
+   }
+   
+   [data-slot='sidebar-menu-button'][data-active='true'] {
+     background: rgba(56, 189, 248, 0.16) !important;
+     box-shadow: none !important;
+     outline: none !important;
+     color: #f4f7ff !important;
+     font-weight: 600;
+   }
+   
+   /* Плашки выбора профилей и нод */
+   [role='button'][aria-selected='false'].rounded-2xl {
+     background: linear-gradient(
+       135deg,
+       rgba(255, 255, 255, 0.04) 0%,
+       rgba(16, 14, 44, 0.58) 100%
+     ) !important;
+     backdrop-filter: blur(16px);
+     -webkit-backdrop-filter: blur(16px);
+     box-shadow:
+       0 4px 16px rgba(0, 0, 0, 0.25),
+       inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+     transition:
+       background 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+       box-shadow 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+   }
+   
+   [role='button'][aria-selected='false'].rounded-2xl:hover {
+     background: linear-gradient(
+       135deg,
+       rgba(255, 255, 255, 0.075) 0%,
+       rgba(26, 23, 68, 0.68) 100%
+     ) !important;
+     box-shadow:
+       0 8px 24px rgba(0, 0, 0, 0.35),
+       inset 0 1px 0 0 rgba(255, 255, 255, 0.18);
+   }
+   
+   [role='button'][aria-selected='true'].rounded-2xl {
+     background:
+       linear-gradient(
+         145deg,
+         rgba(56, 189, 248, 0.2) 0%,
+         rgba(99, 102, 241, 0.18) 52%,
+         rgba(192, 132, 252, 0.16) 100%
+       ),
+       rgba(20, 18, 56, 0.72) !important;
+     backdrop-filter: blur(20px);
+     -webkit-backdrop-filter: blur(20px);
+     box-shadow:
+       0 0 0 1px rgba(125, 211, 252, 0.55),
+       0 12px 32px -4px rgba(99, 102, 241, 0.32),
+       inset 0 1px 0 0 rgba(255, 255, 255, 0.3) !important;
+   }
+   
+   [role='button'][aria-selected='true'].rounded-2xl:hover {
+     filter: brightness(1.06);
+   }
+   
+   /* Переключатели (Switches) */
+   [data-slot='switch'] {
+     transition:
+       background 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+       box-shadow 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+       border-color 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+   }
+   
+   [data-slot='switch'][data-state='checked'] {
+     background-image: linear-gradient(135deg, #38bdf8, #6366f1) !important;
+     background-color: #38bdf8 !important;
+     box-shadow:
+       0 0 0 1px rgba(125, 211, 252, 0.55),
+       inset 0 1px 0 0 rgba(255, 255, 255, 0.35);
+   }
+   
+   [data-slot='switch-thumb'] {
+     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+   }
+   
+   /* Вкладки (Tabs) и Аккордеоны */
+   [data-slot='accordion'] {
+     background: linear-gradient(
+       135deg,
+       rgba(14, 12, 38, 0.84) 0%,
+       rgba(16, 14, 44, 0.9) 100%
+     ) !important;
+     backdrop-filter: blur(20px) !important;
+     -webkit-backdrop-filter: blur(20px) !important;
+     color: #f4f7ff !important;
+     border-color: rgba(255, 255, 255, 0.1) !important;
+     box-shadow:
+       0 10px 28px rgba(2, 1, 12, 0.4),
+       inset 0 1px 0 0 rgba(255, 255, 255, 0.14) !important;
+   }
+   
+   [data-slot='tabs-list'][data-variant='default'] {
+     background: rgba(12, 10, 34, 0.65) !important;
+     backdrop-filter: blur(16px);
+     border: 1px solid rgba(255, 255, 255, 0.08);
+   }
+   
+   [data-slot='tabs-list'][data-variant='default'] [data-slot='tabs-trigger'][data-state='active'] {
+     background-image: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(99, 102, 241, 0.25)) !important;
+     color: #ffffff !important;
+     border-color: rgba(125, 211, 252, 0.45) !important;
+     box-shadow:
+       0 4px 14px rgba(56, 189, 248, 0.18),
+       inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
+   }
+   
+   /* Центральная кнопка питания (Liquid Orb) */
+   [data-guide='home-power-toggle'] > div {
+     background-image: radial-gradient(circle at 32% 28%, rgba(58, 54, 110, 0.9), rgba(14, 12, 38, 0.95)) !important;
+     border-color: rgba(255, 255, 255, 0.16) !important;
+     box-shadow:
+       0 16px 40px rgba(2, 1, 12, 0.7),
+       inset 0 2px 4px rgba(255, 255, 255, 0.22),
+       inset 0 -6px 16px rgba(0, 0, 0, 0.5) !important;
+     transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+   }
+   
+   [data-guide='home-power-toggle'] > div.border-stroke-power-on {
+     background-image: radial-gradient(circle at 32% 28%, #7dd3fc 0%, #38bdf8 32%, #6366f1 78%, #4f46e5 100%) !important;
+     border-color: #bae6fd !important;
+     color: #030914 !important;
+     box-shadow:
+       0 0 36px rgba(56, 189, 248, 0.48),
+       0 16px 44px rgba(99, 102, 241, 0.42),
+       inset 0 2px 6px rgba(255, 255, 255, 0.65),
+       inset 0 -6px 16px rgba(30, 27, 75, 0.55) !important;
+   }
 
-[data-slot='card'],
-.rounded-2xl.backdrop-blur-xl,
-.rounded-2xl.backdrop-blur-3xl {
-  background: #0e0c28eb !important;
-  color: #f4f6ff !important;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  box-shadow: none;
-}
+   [data-guide='home-power-toggle'] > div.border-stroke-power-on svg {
+     color: #030914;
+     stroke: currentColor;
+   }
+   
+   /* ==========================================================================
+      СПИСКИ, ТАБЛИЦЫ ПОДКЛЮЧЕНИЙ И ЛОГИ
+      ========================================================================== */
+   
+   /* Чёткая визуальная иерархия без «пережирнения» всех строчек */
+   [class*='log-seq-width'] > span:first-child,
+   [class*='log-seq-width'] > time {
+     color: #a5b4fc !important;
+     font-size: 12.5px;
+     font-weight: 500;
+     letter-spacing: 0;
+   }
+   
+   [class*='log-seq-width'] > span:last-child {
+     color: #f4f7ff;
+     font-size: 13.5px;
+     line-height: 1.35;
+     font-weight: 400;
+     letter-spacing: -0.008em;
+   }
 
-[data-slot='sidebar-inner']::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  padding: 1px;
-  border-radius: inherit;
-  pointer-events: none;
-  background: linear-gradient(135deg, #22b8f0a6, transparent 42%, #e04bd6a0);
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-}
+   .content .rounded-lg.border .text-sm,
+   .content .rounded-xl.border .text-sm,
+   .content .rounded-2xl.border .text-sm {
+     color: #f4f7ff;
+     font-size: 13.5px;
+     line-height: 1.5;
+     font-weight: 700 !important;
+     letter-spacing: -0.008em;
+   }
+   
+   .content .rounded-xl.border .text-xs:not(.text-gradient-end-power-on) {
+     font-size: 12.5px;
+     font-weight: 500;
+     color: #b4bce3 !important;
+   }
+   
+   /* Строки списков на всех вкладках — как карточки подключений.
+      Выбранный сервер из этого правила исключён. */
+   .content .rounded-lg.border:not([aria-selected='true']):not([data-active='true']):not([data-state='active']):not([data-state='on']):not(.proxy-active-card):not([class*='border-primary']):not([class*='ring-primary']):not([class*='bg-primary/9']):not([class~='bg-primary']),
+   .content .rounded-xl.border:not([aria-selected='true']):not([data-active='true']):not([data-state='active']):not([data-state='on']):not(.proxy-active-card):not([class*='border-primary']):not([class*='ring-primary']):not([class*='bg-primary/9']):not([class~='bg-primary']),
+   .content .rounded-2xl.border:not(.h-full):not([aria-selected='true']):not([data-active='true']):not([data-state='active']):not([data-state='on']):not(.proxy-active-card):not([class*='border-primary']):not([class*='ring-primary']):not([class*='bg-primary/9']):not([class~='bg-primary']),
+   .content [data-slot='card']:not(.h-full):not([aria-selected='true']):not([data-active='true']):not([data-state='active']):not([data-state='on']):not(.proxy-active-card):not([class*='border-primary']):not([class*='ring-primary']):not([class*='bg-primary/9']):not([class~='bg-primary']),
+   .content .h-full.rounded-2xl.border:not([aria-selected='true']):not([data-active='true']):not([data-state='active']) {
+     background: linear-gradient(
+       135deg,
+       rgba(14, 12, 38, 0.84) 0%,
+       rgba(15, 13, 40, 0.9) 100%
+     ) !important;
+     backdrop-filter: blur(18px) !important;
+     -webkit-backdrop-filter: blur(18px) !important;
+     border-color: rgba(255, 255, 255, 0.08) !important;
+     box-shadow: none !important;
+     transition: background 0.22s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+   }
 
-[data-slot='card']::before,
-.rounded-2xl.backdrop-blur-xl::before,
-.rounded-2xl.backdrop-blur-3xl::before {
-  content: none;
-}
+   .content .rounded-lg.border:not([aria-selected='true']):not([data-active='true'])::before,
+   .content .rounded-xl.border:not([aria-selected='true']):not([data-active='true'])::before,
+   .content .rounded-2xl.border:not(.h-full):not([aria-selected='true']):not([data-active='true'])::before,
+   .content [data-slot='card']:not(.h-full):not([aria-selected='true']):not([data-active='true'])::before {
+     content: none !important;
+   }
 
-[data-slot='card'][class*='bg-primary/10'] {
-  background: color-mix(in oklab, var(--primary) 16%, transparent) !important;
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--primary) 35%, transparent),
-    0 10px 24px #22b8f026;
-}
+   .content .proxy-active-card,
+   .content [aria-selected='true'],
+   .content [data-active='true'],
+   .content [data-state='active'],
+   .content [data-state='on'],
+   .content [class~='bg-primary'],
+   .content [class*='bg-primary/9'],
+   .content [class*='border-primary'],
+   .content [class*='ring-primary'],
+   [role='button'][aria-selected='true'] {
+     background: rgba(12, 45, 72, 0.96) !important;
+     border-color: #7dd3fc !important;
+     box-shadow: inset 0 0 0 1px #7dd3fc !important;
+   }
+   
+   .content .h-full.rounded-2xl.border th {
+     background: rgba(16, 14, 44, 0.88) !important;
+     backdrop-filter: blur(16px);
+     color: #cbd5e1 !important;
+     font-weight: 600;
+     text-transform: uppercase;
+     font-size: 11.5px;
+     letter-spacing: 0.04em;
+   }
+   
+   [class*='log-seq-width'] {
+     background: transparent !important;
+     backdrop-filter: none !important;
+     -webkit-backdrop-filter: none !important;
+     border: none !important;
+     box-shadow: none;
+     border-radius: 0;
+     margin-bottom: 0;
+     padding: 2px 8px;
+   }
 
-[data-slot='card'][class*='bg-primary/10']:hover {
-  background: color-mix(in oklab, var(--primary) 24%, transparent) !important;
-}
+   [class*='log-seq-width'].bg-destructive\/5 {
+     background: transparent !important;
+     border-left: 3px solid var(--destructive) !important;
+   }
 
-[data-slot='card'][class*='bg-primary/10']::before {
-  background: linear-gradient(135deg, var(--primary), transparent 42%, var(--primary));
-}
+   [class*='log-seq-width'].bg-destructive\/5 > span:last-child {
+     color: #fb7185 !important;
+     font-weight: 600;
+   }
+   
+   /* ==========================================================================
+      СКРОЛЛБАРЫ
+      ========================================================================== */
+   
+   .custom-scrollbar {
+     scrollbar-width: thin;
+     scrollbar-color: rgba(255, 255, 255, 0.28) transparent;
+   }
+   
+   .custom-scrollbar::-webkit-scrollbar {
+     width: 8px;
+     height: 8px;
+   }
+   
+   .custom-scrollbar::-webkit-scrollbar-thumb {
+     background: rgba(255, 255, 255, 0.28);
+     border-radius: 9999px;
+   }
+   
+   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+     background: rgba(255, 255, 255, 0.45);
+   }
+   
+   .custom-scrollbar::-webkit-scrollbar-track {
+     background: transparent;
+   }
 
-[data-slot='card'][class*='bg-amber-500/8'] {
-  background: color-mix(in oklab, var(--warning) 16%, transparent) !important;
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--warning) 45%, transparent),
-    0 10px 24px #e0b15a22;
-}
+   :focus-visible {
+     outline: 2px solid #e0f2fe !important;
+     outline-offset: 2px;
+   }
 
-[data-slot='card'][class*='bg-amber-500/8']:hover {
-  background: color-mix(in oklab, var(--warning) 24%, transparent) !important;
-}
-
-[data-slot='card'][class*='bg-amber-500/8']::before {
-  background: linear-gradient(135deg, var(--warning), transparent 42%, var(--warning));
-}
-
-[data-slot='button'][data-variant='default'] {
-  background-image: linear-gradient(135deg, #22b8f0, #6a5cff 52%, #c44cff);
-  background-color: transparent;
-  color: #fff;
-  transition:
-    filter 0.2s,
-    box-shadow 0.2s,
-    transform 0.2s;
-  box-shadow: 0 6px 18px #6a5cff33;
-}
-
-[data-slot='button'][data-variant='default']:hover {
-  filter: brightness(1.06);
-}
-
-[data-slot='sidebar-menu-button'] {
-  transition:
-    background-color 0.2s,
-    box-shadow 0.2s,
-    color 0.2s;
-}
-
-[data-slot='sidebar-menu-button']:hover {
-  background: color-mix(in oklab, var(--accent) 82%, transparent);
-  box-shadow: inset 0 0 0 1px #3ec5f559;
-}
-
-[data-slot='sidebar-menu-button'][data-active='true'] {
-  background: linear-gradient(135deg, #22b8f036, #b44cff36);
-  box-shadow: inset 0 0 0 1px #3ec5f566;
-  color: var(--sidebar-accent-foreground);
-}
-
-[data-slot='sidebar-menu-button'][data-active='true'] span {
-  background: linear-gradient(90deg, #3ec5f5, #c89bff);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-[data-guide='home-profile-header'] .font-medium,
-[data-slot='card-title'],
-.title {
-  background-image: linear-gradient(90deg, #7ad9ff, #c3b4ff 55%, #f0a4ff);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-[role='button'][aria-selected='false'].rounded-2xl {
-  background: #0e0c28eb !important;
-}
-
-[role='button'][aria-selected='false'].rounded-2xl:hover {
-  background: #16143cf0 !important;
-}
-
-[role='button'][aria-selected='true'].rounded-2xl {
-  background:
-    linear-gradient(160deg, #22b8f024, transparent 48%, #e04bd61f),
-    var(--profile-active) !important;
-  box-shadow:
-    0 0 0 1px var(--stroke-profile-active),
-    0 10px 28px #6a5cff33;
-}
-
-[role='button'][aria-selected='true'].rounded-2xl:hover {
-  filter: brightness(1.06);
-}
-
-[data-slot='switch'] {
-  transition:
-    background 0.2s,
-    box-shadow 0.2s,
-    border-color 0.2s;
-}
-
-[data-slot='switch'][data-state='checked'] {
-  background-image: linear-gradient(to right, #22b8f0, #6a5cff) !important;
-  background-color: #22b8f0 !important;
-  box-shadow:
-    0 0 0 1px #3ec5f58c,
-    0 0 14px #22b8f055;
-}
-
-[data-slot='switch-thumb'] {
-  box-shadow: 0 1px 3px #0003;
-}
-
-.custom-scrollbar,
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #6a5cff66 transparent;
-}
-
-*::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-*::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #22b8f0, #6a5cff);
-  border-radius: 8px;
-}
-
-*::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-/* Светлая карта — тот же рисунок в сером. Фильтр красит линии в цвет тёмной. */
-html.light {
-  --koala-map-recolor: brightness(0.2) sepia(0.7) hue-rotate(175deg) saturate(4);
-}
-
-html.light [data-slot='sidebar-wrapper'] > img {
-  filter: brightness(0.2) sepia(0.7) hue-rotate(175deg) saturate(4) !important;
-}
-
-html.light [data-slot='sidebar-wrapper'] > img.blur-3xl {
-  filter: brightness(0.2) sepia(0.7) hue-rotate(175deg) saturate(4) blur(64px) !important;
-}
-
-html.light .dark\:text-blue-400 {
-  color: var(--color-blue-400);
-}
-
-html.light .dark\:border-blue-400\/40 {
-  border-color: color-mix(in oklab, var(--color-blue-400) 40%, transparent);
-}
-
-html.light .dark\:text-emerald-400 {
-  color: var(--color-emerald-400);
-}
-
-html.light .dark\:border-emerald-400\/40 {
-  border-color: color-mix(in oklab, var(--color-emerald-400) 40%, transparent);
-}
-
-html.light .dark\:border-emerald-500\/40 {
-  border-color: color-mix(in oklab, var(--color-emerald-500) 40%, transparent);
-}
-
-html.light .dark\:bg-emerald-950\/50 {
-  background-color: color-mix(in oklab, var(--color-emerald-950) 50%, transparent);
-}
-
-html.light .dark\:text-amber-400 {
-  color: var(--color-amber-400);
-}
-
-html.light .dark\:border-amber-400\/40 {
-  border-color: color-mix(in oklab, var(--color-amber-400) 40%, transparent);
-}
-
-html.light .dark\:text-violet-400 {
-  color: var(--color-violet-400);
-}
-
-html.light .dark\:border-violet-400\/40 {
-  border-color: color-mix(in oklab, var(--color-violet-400) 40%, transparent);
-}
-
-html.light .dark\:text-rose-400 {
-  color: var(--color-rose-400);
-}
-
-html.light .dark\:border-rose-400\/40 {
-  border-color: color-mix(in oklab, var(--color-rose-400) 40%, transparent);
-}
-
-html.light .dark\:text-warning {
-  color: var(--warning);
-}
-
-html.light [data-slot='checkbox']:not([data-state='checked']) {
-  background-color: color-mix(in oklab, var(--input) 30%, transparent);
-}
-
-html.light .dark\:bg-destructive\/60 {
-  background-color: color-mix(in oklab, var(--destructive) 60%, transparent);
-}
-
-html.light [data-slot='dropdown-menu-item'][data-variant='destructive']:focus {
-  background-color: color-mix(in oklab, var(--destructive) 20%, transparent);
-}
-
-html.light .dark\:focus-visible\:ring-destructive\/40:focus-visible,
-html.light .dark\:aria-invalid\:ring-destructive\/40[aria-invalid='true'],
-html.light
-  .dark\:has-\[\[data-slot\]\[aria-invalid\=true\]\]\:ring-destructive\/40:has(
-    [data-slot][aria-invalid='true']
-  ) {
-  --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
-}
-
-html.light [data-slot='tooltip-content'] [data-slot='kbd'] {
-  background-color: color-mix(in oklab, var(--background) 10%, transparent);
-}
-
-/* Всплывающие окна: стекло не должно снимать fixed. Иначе top: 50%
-   считается от низа страницы и диалог уезжает за край окна. */
-.fixed,
-[data-slot='dialog-overlay'],
-[data-slot='alert-dialog-overlay'],
-[data-slot='dialog-content'],
-[data-slot='alert-dialog-content'],
-[data-slot='sheet-content'] {
-  position: fixed !important;
-}
-
-[data-slot='dialog-overlay'],
-[data-slot='alert-dialog-overlay'] {
-  inset: 0 !important;
-}
-
-[data-slot='dialog-content'],
-[data-slot='alert-dialog-content'] {
-  top: 50% !important;
-  left: 50% !important;
-  right: auto !important;
-  bottom: auto !important;
-  margin: 0 !important;
-  translate: -50% -50% !important;
-}
-
-/* Карточки настроек — аккордеон без своего фона. В светлой теме
-   сквозь него просвечивает светлая карта. */
-[data-slot='accordion'] {
-  background: #0e0c28eb !important;
-  color: #f4f6ff !important;
-  border-color: #ffffff1f !important;
-}
-
-[data-slot='tabs-list'][data-variant='default'] [data-slot='tabs-trigger'][data-state='active'] {
-  background-image: linear-gradient(135deg, #22b8f040, #6a5cff40) !important;
-  color: #f4f6ff !important;
-  border-color: #3ec5f580 !important;
-}
-
-[data-guide='home-power-toggle'] > div {
-  background-image: radial-gradient(circle at 30% 45%, #2a2758ee, #12102eee) !important;
-  border-color: #3a3870 !important;
-}
-
-[data-guide='home-power-toggle'] > div.border-stroke-power-on {
-  background-image: radial-gradient(circle at 30% 45%, #22b8f0ee, #6a5cffee) !important;
-  border-color: #3ec5f5 !important;
-}
-
-html.light,
-html.light body {
-  background-color: #07061c !important;
-  color: #f4f6ff !important;
-  color-scheme: dark !important;
-}
+   @media (prefers-reduced-motion: reduce) {
+     [data-slot='button'],
+     [data-slot='card'],
+     [role='button'],
+     [data-slot='sidebar-menu-button'],
+     [data-slot='switch'],
+     [data-guide='home-power-toggle'] > div {
+       transition: none !important;
+       transform: none !important;
+     }
+   }
+   
+   /* ==========================================================================
+      МОДАЛЬНЫЕ ОКНА И ДИАЛОГИ (СОХРАНЕНИЕ FIXED ПОЗИЦИОНИРОВАНИЯ)
+      ========================================================================== */
+   
+   .fixed,
+   [data-slot='dialog-overlay'],
+   [data-slot='alert-dialog-overlay'],
+   [data-slot='dialog-content'],
+   [data-slot='alert-dialog-content'],
+   [data-slot='sheet-content'] {
+     position: fixed !important;
+   }
+   
+   [data-slot='dialog-overlay'],
+   [data-slot='alert-dialog-overlay'] {
+     inset: 0 !important;
+     background: rgba(3, 2, 12, 0.65) !important;
+     backdrop-filter: blur(10px) !important;
+     -webkit-backdrop-filter: blur(10px) !important;
+   }
+   
+   [data-slot='dialog-content'],
+   [data-slot='alert-dialog-content'] {
+     top: 50% !important;
+     left: 50% !important;
+     right: auto !important;
+     bottom: auto !important;
+     margin: 0 !important;
+     translate: -50% -50% !important;
+     background: linear-gradient(
+       145deg,
+       rgba(255, 255, 255, 0.08) 0%,
+       rgba(18, 16, 48, 0.82) 45%,
+       rgba(10, 8, 28, 0.92) 100%
+     ) !important;
+     backdrop-filter: blur(32px) saturate(180%) !important;
+     -webkit-backdrop-filter: blur(32px) saturate(180%) !important;
+     border: 1px solid rgba(255, 255, 255, 0.14) !important;
+     box-shadow:
+       0 28px 70px rgba(0, 0, 0, 0.75),
+       inset 0 1px 0 0 rgba(255, 255, 255, 0.25) !important;
+   }
+   
+   /* ==========================================================================
+      СВЕТЛАЯ ТЕМА: ПРИНУДИТЕЛЬНЫЙ ПЕРЕВОД В LIQUID DARK
+      ========================================================================== */
+   
+   html.light,
+   html.light body {
+     background-color: #04030f !important;
+     color: #f4f7ff !important;
+     color-scheme: dark !important;
+   }
+   
+   html.light {
+     --koala-map-recolor: brightness(0.2) sepia(0.7) hue-rotate(175deg) saturate(1.15);
+   }
+   
+   html.light [data-slot='sidebar-wrapper'] > img {
+     filter: brightness(0.2) sepia(0.7) hue-rotate(175deg) saturate(1.15) !important;
+   }
+   
+   html.light [data-slot='sidebar-wrapper'] > img.blur-3xl {
+     filter: brightness(0.2) sepia(0.7) hue-rotate(175deg) saturate(1.15) blur(64px) !important;
+   }
+   
+   html.light .dark\:text-blue-400 {
+     color: var(--color-blue-400);
+   }
+   
+   html.light .dark\:border-blue-400\/40 {
+     border-color: color-mix(in oklab, var(--color-blue-400) 40%, transparent);
+   }
+   
+   html.light .dark\:text-emerald-400 {
+     color: var(--color-emerald-400);
+   }
+   
+   html.light .dark\:border-emerald-400\/40 {
+     border-color: color-mix(in oklab, var(--color-emerald-400) 40%, transparent);
+   }
+   
+   html.light .dark\:border-emerald-500\/40 {
+     border-color: color-mix(in oklab, var(--color-emerald-500) 40%, transparent);
+   }
+   
+   html.light .dark\:bg-emerald-950\/50 {
+     background-color: color-mix(in oklab, var(--color-emerald-950) 50%, transparent);
+   }
+   
+   html.light .dark\:text-amber-400 {
+     color: var(--color-amber-400);
+   }
+   
+   html.light .dark\:border-amber-400\/40 {
+     border-color: color-mix(in oklab, var(--color-amber-400) 40%, transparent);
+   }
+   
+   html.light .dark\:text-violet-400 {
+     color: var(--color-violet-400);
+   }
+   
+   html.light .dark\:border-violet-400\/40 {
+     border-color: color-mix(in oklab, var(--color-violet-400) 40%, transparent);
+   }
+   
+   html.light .dark\:text-rose-400 {
+     color: var(--color-rose-400);
+   }
+   
+   html.light .dark\:border-rose-400\/40 {
+     border-color: color-mix(in oklab, var(--color-rose-400) 40%, transparent);
+   }
+   
+   html.light .dark\:text-warning {
+     color: var(--warning);
+   }
+   
+   html.light [data-slot='checkbox']:not([data-state='checked']) {
+     background-color: color-mix(in oklab, var(--input) 30%, transparent);
+   }
+   
+   html.light .dark\:bg-destructive\/60 {
+     background-color: color-mix(in oklab, var(--destructive) 60%, transparent);
+   }
+   
+   html.light [data-slot='dropdown-menu-item'][data-variant='destructive']:focus {
+     background-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+   }
+   
+   html.light .dark\:focus-visible\:ring-destructive\/40:focus-visible,
+   html.light .dark\:aria-invalid\:ring-destructive\/40[aria-invalid='true'],
+   html.light
+     .dark\:has-\[\[data-slot\]\[aria-invalid\=true\]\]\:ring-destructive\/40:has(
+       [data-slot][aria-invalid='true']
+     ) {
+     --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
+   }
+   
+   html.light [data-slot='tooltip-content'] [data-slot='kbd'] {
+     background-color: color-mix(in oklab, var(--background) 10%, transparent);
+   }
 
 /* Лента логотипа: исходник 2.5×, без квадратной подложки. */
 [data-slot='sidebar-wrapper']::after {
   content: '';
   position: absolute;
-  z-index: 4;
+  z-index: -1;
+  opacity: 0.22;
   left: -150px;
   bottom: -120px;
   width: 520px;
@@ -474,62 +822,4 @@ html.light body {
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
-}
-
-/* Списки: один размер текста, без тени. Тень мылила буквы на тёмной плашке. */
-[class*='log-seq-width'] > span:first-child,
-[class*='log-seq-width'] > time {
-  color: #e4e9ff !important;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-[class*='log-seq-width'] > span:last-child,
-.content .rounded-xl.border .text-sm {
-  color: #f7f8ff;
-  font-size: 14px;
-  line-height: 1.45;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-}
-
-.content .rounded-xl.border .text-xs:not(.text-gradient-end-power-on) {
-  font-size: 13px;
-  font-weight: 600;
-  color: #e7ebff !important;
-}
-
-/* Плашки списков и таблица подключений. */
-.content .rounded-xl.border.bg-card\/40,
-.content .rounded-xl.border.to-card\/40,
-.content .h-full.rounded-2xl.border {
-  background: #0e0c28eb !important;
-}
-
-.content .rounded-xl.border.bg-card\/40:hover,
-.content .rounded-xl.border.to-card\/40:hover,
-[data-slot='card']:hover:not([class*='bg-primary/10']):not([class*='bg-amber-500/8']) {
-  background: #16143cf0 !important;
-}
-
-.content .h-full.rounded-2xl.border th {
-  background: #120f30 !important;
-  color: #e4e9ff !important;
-}
-
-[class*='log-seq-width'] {
-  background: #0e0c28eb !important;
-  border: 1px solid #ffffff1f !important;
-  border-radius: calc(0.8rem + 4px);
-  margin-bottom: 0.5rem;
-  padding-top: 0.55rem;
-  padding-bottom: 0.55rem;
-}
-
-[class*='log-seq-width']:hover {
-  background: #16143cf0 !important;
-}
-
-[class*='log-seq-width'].bg-destructive\/5 {
-  background: #2a1020eb !important;
 }
