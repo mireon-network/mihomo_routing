@@ -2,15 +2,15 @@
 html:root {
   --radius: 0.8rem !important;
   --background: #07061c !important;
-  --foreground: #f4f6ff !important;
+  --foreground: #faf5ff !important;
   --card: #16143c !important;
-  --card-foreground: #f4f6ff !important;
+  --card-foreground: #faf5ff !important;
   --popover: #121033 !important;
-  --popover-foreground: #f4f6ff !important;
+  --popover-foreground: #faf5ff !important;
   --primary: #3ec5f5 !important;
   --primary-foreground: #061018 !important;
   --secondary: #1b1844 !important;
-  --secondary-foreground: #f4f6ff !important;
+  --secondary-foreground: #faf5ff !important;
   --muted: #1b1844 !important;
   --muted-foreground: #a7add4 !important;
   --profile-active: #6a5cff55 !important;
@@ -19,16 +19,16 @@ html:root {
   --stroke-profile-inactive: #3a3870 !important;
   --stroke: #3c3a72 !important;
   --accent: #221f4c !important;
-  --accent-foreground: #f4f6ff !important;
+  --accent-foreground: #faf5ff !important;
   --border: #ffffff1f !important;
   --input: #ffffff26 !important;
   --ring: #3ec5f5 !important;
   --sidebar: #100e2c !important;
-  --sidebar-foreground: #f4f6ff !important;
+  --sidebar-foreground: #faf5ff !important;
   --sidebar-primary: #3ec5f5 !important;
   --sidebar-primary-foreground: #061018 !important;
   --sidebar-accent: #221f4c !important;
-  --sidebar-accent-foreground: #f4f6ff !important;
+  --sidebar-accent-foreground: #faf5ff !important;
   --sidebar-border: #ffffff1f !important;
   --sidebar-ring: #3ec5f5 !important;
   --chart-1: #22b8f0 !important;
@@ -49,15 +49,15 @@ html:root {
   --warning: #e0b15a !important;
   --warning-foreground: #061018 !important;
   --color-background: #07061c !important;
-  --color-foreground: #f4f6ff !important;
+  --color-foreground: #faf5ff !important;
   --color-card: #16143c !important;
-  --color-card-foreground: #f4f6ff !important;
+  --color-card-foreground: #faf5ff !important;
   --color-popover: #121033 !important;
-  --color-popover-foreground: #f4f6ff !important;
+  --color-popover-foreground: #faf5ff !important;
   --color-primary: #3ec5f5 !important;
   --color-primary-foreground: #061018 !important;
   --color-secondary: #1b1844 !important;
-  --color-secondary-foreground: #f4f6ff !important;
+  --color-secondary-foreground: #faf5ff !important;
   --color-muted: #1b1844 !important;
   --color-muted-foreground: #a7add4 !important;
   --color-profile-active: #6a5cff55 !important;
@@ -66,16 +66,16 @@ html:root {
   --color-stroke-profile-inactive: #3a3870 !important;
   --color-stroke: #3c3a72 !important;
   --color-accent: #221f4c !important;
-  --color-accent-foreground: #f4f6ff !important;
+  --color-accent-foreground: #faf5ff !important;
   --color-border: #ffffff1f !important;
   --color-input: #ffffff26 !important;
   --color-ring: #3ec5f5 !important;
   --color-sidebar: #100e2c !important;
-  --color-sidebar-foreground: #f4f6ff !important;
+  --color-sidebar-foreground: #faf5ff !important;
   --color-sidebar-primary: #3ec5f5 !important;
   --color-sidebar-primary-foreground: #061018 !important;
   --color-sidebar-accent: #221f4c !important;
-  --color-sidebar-accent-foreground: #f4f6ff !important;
+  --color-sidebar-accent-foreground: #faf5ff !important;
   --color-sidebar-border: #ffffff1f !important;
   --color-sidebar-ring: #3ec5f5 !important;
   --color-chart-1: #22b8f0 !important;
@@ -132,7 +132,7 @@ html {
 
 [data-slot='sidebar-inner'] {
   background: #16143ce8 !important;
-  color: #f4f6ff !important;
+  color: #faf5ff !important;
   backdrop-filter: blur(18px) saturate(1.3);
   -webkit-backdrop-filter: blur(18px) saturate(1.3);
   box-shadow:
@@ -144,7 +144,7 @@ html {
 .rounded-2xl.backdrop-blur-xl,
 .rounded-2xl.backdrop-blur-3xl {
   background: #0e0c28eb !important;
-  color: #f4f6ff !important;
+  color: #faf5ff !important;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   box-shadow: none;
@@ -205,18 +205,18 @@ html {
 }
 
 [data-slot='button'][data-variant='default'] {
-  background-image: linear-gradient(135deg, #22b8f0, #6a5cff 52%, #c44cff);
+  background-image: linear-gradient(135deg, #347a9e, #514a96 55%, #6d4e86);
   background-color: transparent;
-  color: #fff;
+  color: #faf5ff;
   transition:
     filter 0.2s,
     box-shadow 0.2s,
     transform 0.2s;
-  box-shadow: 0 6px 18px #6a5cff33;
+  box-shadow: none;
 }
 
 [data-slot='button'][data-variant='default']:hover {
-  filter: brightness(1.06);
+  filter: brightness(1.12);
 }
 
 [data-slot='sidebar-menu-button'] {
@@ -433,13 +433,13 @@ html.light [data-slot='tooltip-content'] [data-slot='kbd'] {
    сквозь него просвечивает светлая карта. */
 [data-slot='accordion'] {
   background: #0e0c28eb !important;
-  color: #f4f6ff !important;
+  color: #faf5ff !important;
   border-color: #ffffff1f !important;
 }
 
 [data-slot='tabs-list'][data-variant='default'] [data-slot='tabs-trigger'][data-state='active'] {
   background-image: linear-gradient(135deg, #22b8f040, #6a5cff40) !important;
-  color: #f4f6ff !important;
+  color: #faf5ff !important;
   border-color: #3ec5f580 !important;
 }
 
@@ -456,7 +456,7 @@ html.light [data-slot='tooltip-content'] [data-slot='kbd'] {
 html.light,
 html.light body {
   background-color: #07061c !important;
-  color: #f4f6ff !important;
+  color: #faf5ff !important;
   color-scheme: dark !important;
 }
 
@@ -486,7 +486,7 @@ html.light body {
 
 [class*='log-seq-width'] > span:last-child,
 .content .rounded-xl.border .text-sm {
-  color: #f7f8ff;
+  color: #faf5ff;
   font-size: 14px;
   line-height: 1.45;
   font-weight: 600;
