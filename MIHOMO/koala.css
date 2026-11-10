@@ -1,6 +1,11 @@
 /* Koala */
 html:root {
   --radius: 0.8rem !important;
+  --glass: #100e2878 !important;
+  --glass-hover: #1a164890 !important;
+  --glass-sheen: linear-gradient(180deg, #ffffff1c, transparent 40%);
+  --glass-edge:
+    inset 0 1px 0 #ffffff3d, inset 0 0 0 1px #ffffff14, 0 12px 32px #05031844;
   --background: #07061c !important;
   --foreground: #faf5ff !important;
   --card: #16143c !important;
@@ -131,23 +136,21 @@ html {
 }
 
 [data-slot='sidebar-inner'] {
-  background: #16143ce8 !important;
+  background: var(--glass-sheen), #16143c8c !important;
   color: #faf5ff !important;
-  backdrop-filter: blur(18px) saturate(1.3);
-  -webkit-backdrop-filter: blur(18px) saturate(1.3);
-  box-shadow:
-    0 14px 36px #05031880,
-    0 0 0 1px #ffffff14 inset;
+  backdrop-filter: blur(32px) saturate(1.8);
+  -webkit-backdrop-filter: blur(32px) saturate(1.8);
+  box-shadow: var(--glass-edge);
 }
 
 [data-slot='card'],
 .rounded-2xl.backdrop-blur-xl,
 .rounded-2xl.backdrop-blur-3xl {
-  background: #0e0c28eb !important;
+  background: var(--glass-sheen), var(--glass) !important;
   color: #faf5ff !important;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  box-shadow: none;
+  backdrop-filter: blur(28px) saturate(1.7);
+  -webkit-backdrop-filter: blur(28px) saturate(1.7);
+  box-shadow: var(--glass-edge);
 }
 
 [data-slot='sidebar-inner']::before {
@@ -175,14 +178,17 @@ html {
 }
 
 [data-slot='card'][class*='bg-primary/10'] {
-  background: color-mix(in oklab, var(--primary) 16%, transparent) !important;
+  background:
+    linear-gradient(160deg, #22b8f024, transparent 48%, #e04bd61f),
+    var(--profile-active) !important;
   box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--primary) 35%, transparent),
-    0 10px 24px #22b8f026;
+    inset 0 1px 0 #ffffff47,
+    0 0 0 1px var(--stroke-profile-active),
+    0 10px 28px #6a5cff33;
 }
 
 [data-slot='card'][class*='bg-primary/10']:hover {
-  background: color-mix(in oklab, var(--primary) 24%, transparent) !important;
+  filter: brightness(1.06);
 }
 
 [data-slot='card'][class*='bg-primary/10']::before {
@@ -205,14 +211,16 @@ html {
 }
 
 [data-slot='button'][data-variant='default'] {
-  background-image: linear-gradient(135deg, #347a9e, #514a96 55%, #6d4e86);
+  background-image: linear-gradient(135deg, #347a9ecc, #514a96cc 55%, #6d4e86cc);
   background-color: transparent;
   color: #faf5ff;
+  backdrop-filter: blur(16px) saturate(1.5);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
   transition:
     filter 0.2s,
     box-shadow 0.2s,
     transform 0.2s;
-  box-shadow: none;
+  box-shadow: inset 0 1px 0 #ffffff40, inset 0 -1px 0 #0000002a;
 }
 
 [data-slot='button'][data-variant='default']:hover {
@@ -232,8 +240,15 @@ html {
 }
 
 [data-slot='sidebar-menu-button'][data-active='true'] {
-  background: linear-gradient(135deg, #22b8f036, #b44cff36);
-  box-shadow: inset 0 0 0 1px #3ec5f566;
+  background:
+    linear-gradient(160deg, #22b8f024, transparent 48%, #e04bd61f),
+    var(--profile-active);
+  box-shadow:
+    inset 0 1px 0 #ffffff47,
+    0 0 0 1px var(--stroke-profile-active),
+    0 8px 18px #6a5cff33;
+  backdrop-filter: blur(18px) saturate(1.6);
+  -webkit-backdrop-filter: blur(18px) saturate(1.6);
   color: var(--sidebar-accent-foreground);
 }
 
@@ -254,11 +269,11 @@ html {
 }
 
 [role='button'][aria-selected='false'].rounded-2xl {
-  background: #0e0c28eb !important;
+  background: var(--glass-sheen), var(--glass) !important;
 }
 
 [role='button'][aria-selected='false'].rounded-2xl:hover {
-  background: #16143cf0 !important;
+  background: var(--glass-sheen), var(--glass-hover) !important;
 }
 
 [role='button'][aria-selected='true'].rounded-2xl {
@@ -266,6 +281,7 @@ html {
     linear-gradient(160deg, #22b8f024, transparent 48%, #e04bd61f),
     var(--profile-active) !important;
   box-shadow:
+    inset 0 1px 0 #ffffff47,
     0 0 0 1px var(--stroke-profile-active),
     0 10px 28px #6a5cff33;
 }
@@ -432,15 +448,26 @@ html.light [data-slot='tooltip-content'] [data-slot='kbd'] {
 /* Карточки настроек — аккордеон без своего фона. В светлой теме
    сквозь него просвечивает светлая карта. */
 [data-slot='accordion'] {
-  background: #0e0c28eb !important;
+  background: var(--glass-sheen), var(--glass) !important;
   color: #faf5ff !important;
   border-color: #ffffff1f !important;
+  backdrop-filter: blur(28px) saturate(1.7);
+  -webkit-backdrop-filter: blur(28px) saturate(1.7);
+  box-shadow: var(--glass-edge);
 }
 
 [data-slot='tabs-list'][data-variant='default'] [data-slot='tabs-trigger'][data-state='active'] {
-  background-image: linear-gradient(135deg, #22b8f040, #6a5cff40) !important;
+  background:
+    linear-gradient(160deg, #22b8f024, transparent 48%, #e04bd61f),
+    var(--profile-active) !important;
   color: #faf5ff !important;
-  border-color: #3ec5f580 !important;
+  border-color: var(--stroke-profile-active) !important;
+  box-shadow:
+    inset 0 1px 0 #ffffff47,
+    0 0 0 1px var(--stroke-profile-active),
+    0 8px 18px #6a5cff33;
+  backdrop-filter: blur(18px) saturate(1.6);
+  -webkit-backdrop-filter: blur(18px) saturate(1.6);
 }
 
 [data-guide='home-power-toggle'] > div {
@@ -503,13 +530,16 @@ html.light body {
 .content .rounded-xl.border.bg-card\/40,
 .content .rounded-xl.border.to-card\/40,
 .content .h-full.rounded-2xl.border {
-  background: #0e0c28eb !important;
+  background: var(--glass-sheen), var(--glass) !important;
+  backdrop-filter: blur(28px) saturate(1.7);
+  -webkit-backdrop-filter: blur(28px) saturate(1.7);
+  box-shadow: var(--glass-edge);
 }
 
 .content .rounded-xl.border.bg-card\/40:hover,
 .content .rounded-xl.border.to-card\/40:hover,
 [data-slot='card']:hover:not([class*='bg-primary/10']):not([class*='bg-amber-500/8']) {
-  background: #16143cf0 !important;
+  background: var(--glass-sheen), var(--glass-hover) !important;
 }
 
 .content .h-full.rounded-2xl.border th {
@@ -518,16 +548,19 @@ html.light body {
 }
 
 [class*='log-seq-width'] {
-  background: #0e0c28eb !important;
+  background: var(--glass-sheen), var(--glass) !important;
   border: 1px solid #ffffff1f !important;
   border-radius: calc(0.8rem + 4px);
   margin-bottom: 0.5rem;
   padding-top: 0.55rem;
   padding-bottom: 0.55rem;
+  backdrop-filter: blur(28px) saturate(1.7);
+  -webkit-backdrop-filter: blur(28px) saturate(1.7);
+  box-shadow: var(--glass-edge);
 }
 
 [class*='log-seq-width']:hover {
-  background: #16143cf0 !important;
+  background: var(--glass-sheen), var(--glass-hover) !important;
 }
 
 [class*='log-seq-width'].bg-destructive\/5 {
