@@ -139,52 +139,54 @@ html {
   position: relative;
 }
 
-[data-slot='sidebar-inner'] {
-  background: #10122ef0 !important;
-  color: #faf5ff !important;
-  border: 0 !important;
-  outline: none !important;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  box-shadow: none !important;
-}
-
+[data-slot='sidebar-inner'],
 [data-slot='card'],
 .rounded-2xl.backdrop-blur-xl,
 .rounded-2xl.backdrop-blur-3xl {
-  background: #12142ef2 !important;
-  background-clip: border-box !important;
+  background: transparent !important;
   color: #faf5ff !important;
   border: 0 !important;
   outline: none !important;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
   box-shadow: none !important;
+  overflow: hidden;
+  isolation: isolate;
 }
 
-[data-slot='sidebar-inner']::before {
-  content: none;
-}
-
+/* Размытие лежит на слое больше плашки. Скругление родителя обрезает его
+   ровно, поэтому край не становится лесенкой. */
+[data-slot='sidebar-inner']::before,
 [data-slot='card']::before,
 .rounded-2xl.backdrop-blur-xl::before,
 .rounded-2xl.backdrop-blur-3xl::before {
-  content: none;
+  content: '';
+  position: absolute;
+  inset: -40px;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--glass-sheen), var(--glass);
+  backdrop-filter: blur(28px) saturate(1.3);
+  -webkit-backdrop-filter: blur(28px) saturate(1.3);
 }
 
-[data-slot='card'][class*='bg-primary/10'] {
-  background-image: linear-gradient(#070514f2, #070514f2) !important;
-  background-color: #070514f2 !important;
+[data-slot='card'][class*='bg-primary/10'],
+[role='button'][aria-selected='true'].rounded-2xl {
+  background: transparent !important;
   outline: none !important;
-  box-shadow: 0 0 18px #6a5cff44;
+  border: 0 !important;
+  box-shadow: 0 0 18px #6a5cff55 !important;
 }
 
-[data-slot='card'][class*='bg-primary/10']:hover {
+[data-slot='card'][class*='bg-primary/10']:hover,
+[role='button'][aria-selected='true'].rounded-2xl:hover {
   filter: brightness(1.06);
 }
 
-[data-slot='card'][class*='bg-primary/10']::before {
-  background: linear-gradient(135deg, var(--primary), transparent 42%, var(--primary));
+[data-slot='card'][class*='bg-primary/10']::before,
+[role='button'][aria-selected='true'].rounded-2xl::before {
+  background:
+    radial-gradient(ellipse at 50% 50%, #4a3c8ccc, transparent 68%),
+    var(--glass-sheen),
+    var(--glass);
 }
 
 [data-slot='card'][class*='bg-amber-500/8'] {
@@ -210,8 +212,8 @@ html {
   outline: none !important;
   font-weight: 650;
   letter-spacing: 0.04em;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
   transition:
     filter 0.2s,
     box-shadow 0.2s,
@@ -272,16 +274,7 @@ html {
   background: var(--glass-sheen), var(--glass-hover) !important;
 }
 
-[role='button'][aria-selected='true'].rounded-2xl {
-  background-image: linear-gradient(#070514f2, #070514f2) !important;
-  background-color: #070514f2 !important;
-  outline: none !important;
-  box-shadow: 0 0 18px #6a5cff44;
-}
 
-[role='button'][aria-selected='true'].rounded-2xl:hover {
-  filter: brightness(1.06);
-}
 
 [data-slot='switch'] {
   transition:
@@ -442,8 +435,8 @@ html.light [data-slot='tooltip-content'] [data-slot='kbd'] {
   background: var(--glass-sheen), var(--glass) !important;
   color: #faf5ff !important;
   border: 0 !important;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  backdrop-filter: blur(28px) saturate(1.3);
+  -webkit-backdrop-filter: blur(28px) saturate(1.3);
   border: 0 !important;
   box-shadow: var(--glass-edge);
 }
@@ -519,8 +512,8 @@ html.light body {
 .content .rounded-xl.border.to-card\/40,
 .content .h-full.rounded-2xl.border {
   background: var(--glass-sheen), var(--glass) !important;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  backdrop-filter: blur(28px) saturate(1.3);
+  -webkit-backdrop-filter: blur(28px) saturate(1.3);
   border: 0 !important;
   box-shadow: var(--glass-edge);
 }
@@ -543,8 +536,8 @@ html.light body {
   margin-bottom: 0.5rem;
   padding-top: 0.55rem;
   padding-bottom: 0.55rem;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  backdrop-filter: blur(28px) saturate(1.3);
+  -webkit-backdrop-filter: blur(28px) saturate(1.3);
   border: 0 !important;
   box-shadow: var(--glass-edge);
 }
