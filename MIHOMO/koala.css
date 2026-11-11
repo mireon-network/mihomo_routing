@@ -538,8 +538,8 @@
      color: #f4f7ff;
      font-size: 13.5px;
      line-height: 1.5;
-     font-weight: 700 !important;
-     letter-spacing: -0.008em;
+     font-weight: 600 !important;
+     letter-spacing: 0 !important;
    }
    
    .content .rounded-xl.border .text-xs:not(.text-gradient-end-power-on) {
@@ -657,9 +657,40 @@
      background: transparent;
    }
 
+   ::selection {
+     background: rgba(56, 189, 248, 0.28);
+     color: #f4f7ff;
+   }
+
+   /* Без !important: у полей уже есть outline-none и своё кольцо.
+      Иначе #e0f2fe рисует белую рамку поверх скругления. */
    :focus-visible {
-     outline: 2px solid #e0f2fe !important;
-     outline-offset: 2px;
+     outline: 1px solid rgba(125, 211, 252, 0.4);
+     outline-offset: 0;
+   }
+
+   input:focus-visible,
+   textarea:focus-visible,
+   select:focus-visible {
+     outline: none;
+     border-color: rgba(125, 211, 252, 0.5);
+     box-shadow:
+       0 0 0 1px rgba(125, 211, 252, 0.32),
+       0 0 0 4px rgba(56, 189, 248, 0.12);
+   }
+
+   /* Поле внутри группы без скругления — кольцо на нём рисуется квадратом.
+      Подсветка остаётся на скруглённой оболочке. */
+   [data-slot='input-group-control']:focus,
+   [data-slot='input-group-control']:focus-visible {
+     outline: none !important;
+     border-color: transparent !important;
+     box-shadow: none !important;
+   }
+
+   [data-slot='input-group']:has([data-slot='input-group-control']:focus-visible) {
+     border-color: rgba(125, 211, 252, 0.45) !important;
+     box-shadow: inset 0 0 0 1px rgba(125, 211, 252, 0.4) !important;
    }
 
    @media (prefers-reduced-motion: reduce) {
