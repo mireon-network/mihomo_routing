@@ -37,7 +37,7 @@
 #   google-process              → процессы Gemini/Antigravity → 🌐 Google · Gemini · Antigravity (не 🤖 ИИ)
 #   meta-google-gemini          → отдельный файл выше summary-google (те же домены есть и в summary)
 #   summary-google              → включает google-gemini; выше meta-ai (прочие домены ИИ)
-#   ban-ru → PROXY              → выше RU catch-all
+#   ban-ru / category-ban-custom → PROXY выше RU catch-all (+.by иначе забирает gokino.by)
 #   custom-ru-vpsproviders      → PROXY выше summary-category-ru (панель хостера не видит домашний IP)
 #   google-ips leftover         → после всех process/domain (GCP без SNI)
 #
@@ -236,7 +236,7 @@ dns:
     "rule-set:meta-category-games,games-domain-custom": *dns_ru
     # PROXY-сервисы — резолв через узел VPN (legiz/Davoyan nameserver-policy)
     # games-proxy-rules тоже: иначе easebar/deadorbit получают настоящий IP от RU DNS и UDP обходит PROXY
-    "rule-set:meta-youtube,category-ban-ru,meta-discord,games-proxy-rules": *dns_proxy
+    "rule-set:meta-youtube,category-ban-ru,category-ban-custom,meta-discord,games-proxy-rules": *dns_proxy
     # RU-домены (идут DIRECT) — резолвим через RU DNS напрямую: верный CDN и меньше задержка
     "rule-set:summary-category-ru,category-ru-custom,wld": *dns_ru
     # DIRECT-сервисы — резолвим напрямую: geo-detect, торрент-трекеры, игровые CDN
@@ -1023,6 +1023,14 @@ rule-providers:
     format: mrs
     url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/category-ban-ru.mrs
     path: ./ruleset/category-ban-ru.mrs
+  category-ban-custom: # локальный mrs (source: rule-sets/mrs/text/category-ban-custom.list)
+    type: http
+    proxy: ⚡️ Авто
+    interval: *rp_interval
+    behavior: domain
+    format: mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/category-ban-custom.mrs
+    path: ./ruleset/category-ban-custom.mrs
   discord-voiceips:
     type: http
     proxy: ⚡️ Авто
@@ -1114,6 +1122,7 @@ rules:
 
   - RULE-SET,meta-ai,🤖 ИИ · ChatGPT · Claude      # gemini уже забран meta-google-gemini
 
+  - RULE-SET,category-ban-custom,PROXY             # gokino.by: иначе +.by в summary-category-ru → DIRECT
   - RULE-SET,category-ban-ru,PROXY                 # выше RU catch-all (rnd.ru ⊂ оба)
   - RULE-SET,custom-ru-vpsproviders,PROXY          # Timeweb/Selectel/Beget/Reg.ru/RUVDS: иначе summary-category-ru → DIRECT
 

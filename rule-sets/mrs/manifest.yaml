@@ -283,6 +283,10 @@ sets:
   - id: category-ru-custom
     behavior: domain
     file: category-ru-custom
+  # Локальные домены в PROXY выше summary-category-ru (+.by иначе забирает gokino.by).
+  - id: category-ban-custom
+    behavior: domain
+    file: category-ban-custom
   # Локальный: в meta-rules-dat категории ruvds нет.
   - id: ruvds-custom
     behavior: domain
