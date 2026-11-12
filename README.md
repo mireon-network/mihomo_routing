@@ -106,8 +106,11 @@
 
 ```bash
 ./scripts/cdn-url.sh rule-sets/yaml/games.yaml
-./scripts/cdn-purge.sh rule-sets/yaml/ai.yaml   # сброс кэша jsDelivr
-./scripts/cdn-purge.sh --all                     # @main + @<ветка>-cdn/debug: шаблоны, rule-providers, XRAY/*.dat
+./scripts/cdn-purge.sh rule-sets/yaml/ai.yaml   # один файл
+./scripts/cdn-purge.sh --koala                  # только MIHOMO/koala.css
+./scripts/cdn-purge.sh --mihomo-routing         # .mrs из шаблонов
+./scripts/cdn-purge.sh --xray-routing           # XRAY/*
+./scripts/cdn-purge.sh --all                    # тема, mrs, XRAY, шаблоны, yaml rule-providers
 ```
 
 После `git push` в `main` файлы доступны на CDN автоматически (кэш jsDelivr может обновляться с задержкой; при срочном обновлении — `./scripts/cdn-purge.sh` или [purge](https://www.jsdelivr.com/tools/purge)).
