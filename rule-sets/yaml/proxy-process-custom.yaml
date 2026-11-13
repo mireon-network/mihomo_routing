@@ -1,0 +1,8 @@
+payload:
+  # Процессы → PROXY (форс по имени, выше DIRECT-доменов).
+  # Komi Store — магазин релизов GitHub/Codeberg/Forgejo (packageName Komi-Store).
+  - PROCESS-NAME,zed.rainxch.githubstore # Android / macOS bundle id
+  - PROCESS-NAME,Komi Store
+  - PROCESS-NAME,Komi-Store
+  - PROCESS-NAME,Komi-Store.exe
+  - PROCESS-NAME,komi-store

@@ -24,6 +24,7 @@
 | `rule-sets/yaml/wld-apps-custom.yaml` | Локальные дополнения для `wl.yaml` `tun.exclude-package` (домены из `wld.list`) |
 | `rule-sets/yaml/ai.yaml` | AI / LLM — **только локально**, upstream не синхронизируется |
 | `rule-sets/yaml/google-process.yaml` | Процессы Google (Antigravity/agy, Gemini) → 🌐 Google · Gemini · Antigravity — **только локально** |
+| `rule-sets/yaml/proxy-process-custom.yaml` | Процессы → PROXY (Komi Store и др.) — **только локально** |
 | `rule-sets/yaml/vpn-clients.yaml` | Overlay LAN (Radmin, Hamachi, Porthole, ZeroTier, Tailscale, playit.gg, GameRanger) → DIRECT |
 | `rule-sets/mrs/text/*.list` | Распакованные MRS-наборы (редактировать здесь) |
 | `rule-sets/mrs/bin/*.mrs` | Бинарные rule-set для Mihomo (собираются из `text/`) |
@@ -99,6 +100,7 @@
 - `…/rule-sets/yaml/ru-apps-custom.yaml`
 - `…/rule-sets/yaml/ai.yaml`
 - `…/rule-sets/yaml/google-process.yaml`
+- `…/rule-sets/yaml/proxy-process-custom.yaml`
 - `…/rule-sets/yaml/vpn-clients.yaml`
 - `…/rule-sets/mrs/bin/<имя>.mrs`
 
@@ -258,7 +260,7 @@ python3 scripts/generate-gfn-games-block.py
 2. **rule-providers** — `google-process` → `rule-sets/yaml/google-process.yaml`; `meta-google-gemini` — geosite `google-gemini` (он же `google-deepmind`: Gemini, Antigravity, NotebookLM, AI Studio, Jules), отдельный файл; `summary-google` (merge `meta-google`, `meta-google-play`, `meta-google-cn`, `meta-google-registry`, `meta-google-trust-services`, `meta-google-gemini`) и `meta-geoip-google`.
 3. **rules** — пересечения с Google-доменами (`+.google.com`, `+.googleapis.com`, `+.googleusercontent.com`):
    - YouTube, Discord (вложения на `storage.googleapis.com`), FCM → **выше** обоих Google-наборов;
-   - процессы игр/лаунчеров/Wine/Cursor/ru-apps и `google-process` → **выше** доменов (Tekken на `*.bc.googleusercontent.com`);
+   - процессы игр/лаунчеров/Wine/Cursor/ru-apps, `proxy-process-custom` (Komi Store → PROXY) и `google-process` → **выше** доменов (Tekken на `*.bc.googleusercontent.com`);
    - `meta-google-gemini` → **выше** `summary-google` (отдельный файл; те же домены входят и в summary, широкие `+.google.com` / `+.googleapis.com` остаются в summary); оба набора идут в `🌐 Google · Gemini · Antigravity`;
    - `meta-ai` → **ниже** (`gemini`/`antigravity` уже в Google);
    - `meta-geoip-google` leftover (TCP) → **после** всех process/domain, в ту же группу: IP без SNI не отличить от остального GCP.
