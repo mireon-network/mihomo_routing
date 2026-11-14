@@ -81,7 +81,7 @@ x-anchors:
   rp_interval_static: &rp_interval_static 2592000 # meta/private: 30 дней — почти не меняются
 
 mode: rule
-log-level: warning
+log-level: debug
 allow-lan: false
 ipv6: false # не перехватывать IPv6: с TUN+REJECT Happy Eyeballs не откатывается на IPv4
 unified-delay: true
@@ -188,7 +188,6 @@ proxy-groups:
     include-all: true
     empty-fallback: REJECT # нет узлов wlgt_ — не COMPATIBLE/DIRECT
     # требует mihomo >= v1.19.27: на старых ядрах пустая группа = COMPATIBLE (DIRECT)
-    filter: "(?i)^wlgt_[a-z]{2}-.+-[0-9]+$" # wlgt_fi-hz-102
   - name: PROXY
     type: select
     hidden: true
@@ -202,7 +201,7 @@ rule-providers:
     proxy: PROXY
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geosite-private.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/meta-geosite-private.mrs
     path: ./ruleset/meta-geosite-private.mrs
     interval: *rp_interval_static
   private-domains-custom: # локальный mrs (source: rule-sets/mrs/text/private-domains-custom.list)
@@ -211,7 +210,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/private-domains-custom.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/private-domains-custom.mrs
     path: ./ruleset/private-domains-custom.mrs
   meta-geoip-private:
     type: http
@@ -219,7 +218,7 @@ rule-providers:
     interval: *rp_interval_static
     behavior: ipcidr
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-geoip-private.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/meta-geoip-private.mrs
     path: ./ruleset/meta-geoip-private.mrs
   private-ips-custom: # локальный mrs (source: rule-sets/mrs/text/private-ips-custom.list)
     type: http
@@ -227,7 +226,7 @@ rule-providers:
     interval: *rp_interval
     behavior: ipcidr
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/private-ips-custom.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/private-ips-custom.mrs
     path: ./ruleset/private-ips-custom.mrs
   meta-category-gov-ru:
     type: http
@@ -235,7 +234,7 @@ rule-providers:
     interval: *rp_interval_static
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-gov-ru.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/meta-category-gov-ru.mrs
     path: ./ruleset/meta-category-gov-ru.mrs
   meta-category-medicine-ru:
     type: http
@@ -243,7 +242,7 @@ rule-providers:
     interval: *rp_interval_static
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/meta-category-medicine-ru.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/meta-category-medicine-ru.mrs
     path: ./ruleset/meta-category-medicine-ru.mrs
   wld:
     type: http
@@ -251,7 +250,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/wld.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/wld.mrs
     path: ./ruleset/wld.mrs
   torrent-trackers:
     type: http
@@ -259,7 +258,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-trackers.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/torrent-trackers.mrs
     path: ./ruleset/torrent-trackers.mrs
   torrent-domains-custom: # локальный mrs (source: rule-sets/mrs/text/torrent-domains-custom.list)
     type: http
@@ -267,7 +266,7 @@ rule-providers:
     interval: *rp_interval
     behavior: domain
     format: mrs
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/mrs/bin/torrent-domains-custom.mrs
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/mrs/bin/torrent-domains-custom.mrs
     path: ./ruleset/torrent-domains-custom.mrs
   torrent-clients:
     type: http
@@ -275,7 +274,7 @@ rule-providers:
     interval: *rp_interval
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-clients.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/yaml/torrent-clients.yaml
     path: ./ruleset/torrent-clients.yaml
   torrent-clients-custom:
     type: http
@@ -283,7 +282,7 @@ rule-providers:
     interval: *rp_interval
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/torrent-clients-custom.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/yaml/torrent-clients-custom.yaml
     path: ./ruleset/torrent-clients-custom.yaml
   mail-ports: # инлайн (мелкий список — без отдельной загрузки)
     type: inline
@@ -303,7 +302,7 @@ rule-providers:
     interval: *rp_interval
     behavior: classical
     format: yaml
-    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main/rule-sets/yaml/vpn-clients.yaml
+    url: https://cdn.jsdelivr.net/gh/mireon-network/mihomo_routing@main-debug/rule-sets/yaml/vpn-clients.yaml
     path: ./ruleset/vpn-clients.yaml
 
 rules:
